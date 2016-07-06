@@ -57,7 +57,7 @@ gulp.task('handlebars', function() {
     gulp.src('src/handlebars/views/**/*.hbs')
         .on('error', onError)
         // Compile each Handlebars template source file to a template function
-        .pipe(gulpHandlebars({handlebars: require('handlebars')}))
+        .pipe(gulpHandlebars({handlebars: require('./src/handlebars/customHelpers')}))
         // Wrap each template function in a call to Handlebars.template
         .pipe(wrap('Handlebars.template(<%= contents %>)'))
         // Declare template functions as properties and sub-properties of exports
@@ -74,7 +74,7 @@ gulp.task('handlebars', function() {
         // Concatenate down to a single file
         .pipe(concat('views.js'))
         // Add the Handlebars module in the final output
-        .pipe(wrap('var Handlebars = require("handlebars");\n <%= contents %>'))
+        .pipe(wrap('var Handlebars = require("../handlebars/customHelpers");\n <%= contents %>'))
         // WRite the output into the templates folder
         .pipe(gulp.dest('src/gen'));
 
@@ -91,7 +91,7 @@ gulp.task('handlebars', function() {
             }
         }))
         .pipe(concat('partials.js'))
-        .pipe(wrap('var Handlebars = require("handlebars");\n <%= contents %>'))
+        .pipe(wrap('var Handlebars = require("../handlebars/customHelpers");\n <%= contents %>'))
         .pipe(gulp.dest('src/gen'));
 });
 
@@ -100,6 +100,7 @@ gulp.task('watch', function () {
     gulp.watch(['./src/app/**/*.js'], ['javascript']);
     gulp.watch(['./src/stylus/**/*.styl'], ['stylus']);
     gulp.watch(['./src/handlebars/**/*.hbs'], ['handlebars', 'javascript']);
+    gulp.watch(['./src/handlebars/customHelpers.js'], ['handlebars', 'javascript']);
 });
 
 gulp.task('default', ['javascript', 'handlebars', 'stylus', 'watch']);

@@ -5,7 +5,9 @@
   "version": "0.0.1",
   "license": "MIT",
   "dependencies": {
+    "async": "^2.0.0-rc.6",
     "browserify": "^13.0.1",
+    "extend": "^3.0.0",
     "gulp": "^*",
     "gulp-autoprefixer": "*",
     "gulp-concat": "*",
@@ -21,6 +23,7 @@
     "jquery": "*",
     "merge-stream": "^1.0.0",
     "page": "*",
+    "request": "^2.72.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   }

@@ -3,12 +3,16 @@
   .matches
     text-align center
 
-#upcomingMatches
-  .competitions
+.competitions
+  .wrapper
     display flex
     flex-wrap wrap
 
-.competition.upcomingMatches
+.matchesWrapper
+  max-height 400px
+  overflow-y scroll
+
+.competition
   flex 1
   text-align center
   border-right 1px solid #EEE
@@ -17,6 +21,8 @@
   header
     background #F9F9F9
     padding 1rem
+    a
+      display block
 
   ul
     padding 1.5rem 0

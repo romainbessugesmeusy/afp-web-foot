@@ -16,16 +16,81 @@ var views = require('../gen/views');
 var $page = $('#page');
 
 page('/', function () {
-    $page.empty().append(views.scoreboard());
+
+    $.getJSON('/data/scoreboard.json', function (data) {
+        var scoreboard = {
+            competitions: data.competitions,
+            upcomingDateList: [],
+            upcomingMatches: {},
+            pastDateList: [],
+            pastMatches: {}
+        };
+        var now = new Date().toISOString();
+        var nowDate = now.substr(0, 10);
+        var nowTime = now.substr(11, 5);
+
+        var matchesByDateAndCompetition = {};
+
+        $.each(data.dates, function (date, matches) {
+
+            if (date > nowDate) {
+                scoreboard.upcomingDateList.push(date);
+            } else if (date < nowDate) {
+                scoreboard.pastDateList.push(date);
+            }
+
+            if (typeof matchesByDateAndCompetition[date] === 'undefined') {
+                matchesByDateAndCompetition[date] = {};
+            }
+
+            $(matches).each(function (i, match) {
+                if (typeof matchesByDateAndCompetition[date][match.competition] === 'undefined') {
+                    matchesByDateAndCompetition[date][match.competition] = [];
+                }
+
+                matchesByDateAndCompetition[date][match.competition].push(match);
+            });
+
+            $.each(matchesByDateAndCompetition[date], function (competition, matches) {
+                matches.sort(function (a, b) {
+                    return a.time < b.time;
+                });
+            });
+        });
+
+        scoreboard.upcomingDateList.sort().length = 5;
+        scoreboard.pastDateList.sort().reverse().length = 5;
+
+        $(scoreboard.upcomingDateList).each(function (i, date) {
+            scoreboard.upcomingMatches[date] = matchesByDateAndCompetition[date];
+        });
+        $(scoreboard.pastDateList).each(function (i, date) {
+            scoreboard.pastMatches[date] = matchesByDateAndCompetition[date];
+        });
+
+        $page.empty().append(views.scoreboard(scoreboard));
+    });
+
 });
 
 page('/matches/:matchId', function () {
     $page.empty().append(views.match({}));
 });
 
-$page.on('click', '.sectionNavbar a', function () {
-    $(this).closest('nav').find('a').removeClass('active');
-    $(this).addClass('active');
+page('/competitions', function () {
+    $page.empty().append(views.competitions({}));
+});
+
+page('/competitions/:competition', function () {
+    $page.empty().append(views.competition({}));
+});
+
+$page.on('click', '.tabs .sectionNavbar a', function () {
+    var $a = $(this);
+    $a.closest('nav').find('a').removeClass('active');
+    $a.addClass('active');
+    $a.closest('.tabs').find('.tab').removeClass('active');
+    $a.closest('.tabs').find($a.attr('href')).addClass('active');
     return false;
 });
 

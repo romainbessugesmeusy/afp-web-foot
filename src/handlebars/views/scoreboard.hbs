@@ -9,18 +9,43 @@
 </section>
 <section id="upcomingMatches">
     <h2>Matches à venir</h2>
-    <nav class="sectionNavbar">
-        <a href="#">Aujourd'hui</a>
-        <a href="#">Demain</a>
-        <a href="#">10 Septembre</a>
-    </nav>
-    <div class="competitions">
-    {{> competitionUpcomingMatches }}
-    {{> competitionUpcomingMatches }}
-    {{> competitionUpcomingMatches }}
+    <div class="tabs">
+        <nav class="sectionNavbar">
+            {{#each upcomingDateList}}
+                <a class="{{#if @first}}active{{/if}}" href="#upcomingMatches-date-{{this}}">{{this}}</a>
+            {{/each}}
+        </nav>
+        <div class="competitions">
+            {{#each upcomingDateList as |date| }}
+                <div class="tab date {{#if @first}}active{{/if}}" id="upcomingMatches-date-{{date}}">
+                    <div class="wrapper">
+                        {{#each_competition @root.upcomingMatches date}}
+                            {{> competitionUpcomingMatches }}
+                        {{/each_competition}}
+                    </div>
+                </div>
+            {{/each}}
+        </div>
     </div>
-    <div class="clear"></div>
 </section>
 <section id="finishedMatches">
     <h2>Matches Terminés</h2>
+    <div class="tabs">
+        <nav class="sectionNavbar">
+            {{#each pastDateList}}
+                <a class="{{#if @first}}active{{/if}}" href="#pastMatches-date-{{this}}">{{this}}</a>
+            {{/each}}
+        </nav>
+        <div class="competitions">
+            {{#each pastDateList as |date| }}
+                <div class="tab date {{#if @first}}active{{/if}}" id="pastMatches-date-{{date}}">
+                    <div class="wrapper">
+                        {{#each_competition @root.pastMatches date}}
+                            {{> competitionPastMatches }}
+                        {{/each_competition}}
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
 </section>

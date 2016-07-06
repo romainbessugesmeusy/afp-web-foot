@@ -1,9 +1,9 @@
-<article class="competition upcomingMatches">
+<article class="competition pastMatches">
     {{> scoreboardCompetitionHeader }}
     <div class="matchesWrapper">
         <ul>
             {{#each matches}}
-                <li>{{> upcomingMatch this}}</li>
+                <li>{{> pastMatch this}}</li>
             {{/each}}
         </ul>
     </div>

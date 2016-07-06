@@ -28,17 +28,36 @@
         </div>
     </div>
 
-    <nav class="sectionNavbar light">
-        <a href="#" class="important">LIVE</a>
-        <a href="#">Composition</a>
-        <a href="#">Arbitres</a>
-        <a href="#">Stade</a>
-    </nav>
     <div class="tabs">
-        <div class="tab feed">
-            <div class="event home">
+        <nav class="sectionNavbar light">
+            <a href="#evenements" class="important">LIVE</a>
+            <a href="#composition">Composition</a>
+            <a href="#arbitres">Arbitres</a>
+            <a href="#stade">Stade</a>
+        </nav>
+        <div class="tab feed active" id="evenements">
+            <div class="event home" id="evenements">
+                Event home
+            </div>
+            <div class="event away" id="evenements">
+                Event away
+            </div>
+            <div class="event away" id="evenements">
+                Event away
+            </div>
+            <div class="event home" id="evenements">
                 Event home
             </div>
         </div>
+        <div class="tab" id="composition">
+            {{> teamCompoPlayer }}
+        </div>
+        <div class="tab" id="arbitres">
+            Arbitres
+        </div>
+        <div class="tab" id="stade">
+            Arbitres
+        </div>
+
     </div>
 </div>
