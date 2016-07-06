@@ -1,0 +1,26 @@
+<section id="liveMatches">
+    <h2>Matches en cours</h2>
+    <div class="matches">
+        {{> liveMatch }}
+        {{> liveMatch }}
+        {{> liveMatch }}
+        {{> liveMatch }}
+    </div>
+</section>
+<section id="upcomingMatches">
+    <h2>Matches à venir</h2>
+    <nav class="sectionNavbar">
+        <a href="#">Aujourd'hui</a>
+        <a href="#">Demain</a>
+        <a href="#">10 Septembre</a>
+    </nav>
+    <div class="competitions">
+    {{> competitionUpcomingMatches }}
+    {{> competitionUpcomingMatches }}
+    {{> competitionUpcomingMatches }}
+    </div>
+    <div class="clear"></div>
+</section>
+<section id="finishedMatches">
+    <h2>Matches Terminés</h2>
+</section>

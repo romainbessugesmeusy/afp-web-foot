@@ -1,0 +1,27 @@
+{
+  "name": "afp-web-foot",
+  "description": "WebApp that displays information about Football",
+  "repository": "https://github.com/romainbessugesmeusy/afp-web-foot",
+  "version": "0.0.1",
+  "license": "MIT",
+  "dependencies": {
+    "browserify": "^13.0.1",
+    "gulp": "^*",
+    "gulp-autoprefixer": "*",
+    "gulp-concat": "*",
+    "gulp-declare": "*",
+    "gulp-handlebars": "*",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-stylus": "*",
+    "gulp-uglify": "^1.5.4",
+    "gulp-util": "^3.0.7",
+    "gulp-wrap": "*",
+    "handlebars": "*",
+    "handlebars-helpers": "*",
+    "jquery": "*",
+    "merge-stream": "^1.0.0",
+    "page": "*",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}

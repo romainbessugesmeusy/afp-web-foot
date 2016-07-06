@@ -1,0 +1,107 @@
+
+.liveMatchScoreboard
+  $liveMatchWidth = 450
+
+  background linear-gradient(#F1F1F1, #FFF)
+  border-radius 4px
+  border 1px solid #C5C5C5
+  min-width $liveMatchWidth px
+  max-width 600px
+  height unit($liveMatchWidth * 0.25, px)
+  box-shadow 0 10px 15px rgba(black, .1)
+  margin 2rem
+  position relative
+  text-align center
+  display inline-block
+
+  .team
+    position absolute
+    top 0
+    width unit($liveMatchWidth / 2.3, px)
+
+  .logoAndName
+    text-align center
+
+  .logoWrapper
+    width unit($liveMatchWidth * 0.15, px)
+    overflow hidden
+    max-height 90px
+    margin 0 auto
+    img
+      max-width 100%
+  //max-height 140px
+
+  $cardsMargin = 5px
+
+  .cards
+    position absolute
+    top $cardsMargin
+
+  .card
+    display inline-block
+    line-height 27px
+    margin 1px
+    height 27px
+    width 20px
+    border-radius 2px
+    color white
+    font-size .9em
+    &.yellow
+      background #D2C738
+    &.red
+      background #D0021B
+
+  .goals, .penaltyShootout
+    position absolute
+    font-size 2.5rem
+    font-weight 700
+    top 30px
+
+  .penaltyShootout
+    top 70px
+    font-size 2rem
+
+  .home
+    left 0
+    .cards
+      left $cardsMargin
+    .goals, .penaltyShootout
+      text-align right
+      right 10px
+    .penaltyShootout
+      right 30px
+
+  .away
+    right 0
+    .cards
+      right $cardsMargin
+    .goals, .penaltyShootout
+      text-align left
+      left 10px
+    .penaltyShootout
+      left 30px
+
+  .time
+    background linear-gradient(#333, #666)
+    border-radius 0 0 4px 4px
+    color white
+    font-weight 500
+    width 170px
+    padding .2rem
+    margin 0 auto
+    font-size 1.1rem
+    border 1px solid #333
+    text-shadow 0 1px 2px black
+
+  .scoreSeparator
+    background black
+    height 5px
+    width 10px
+    margin 20px auto 30px auto
+
+  .button
+    position absolute
+    bottom 10px
+    left 50%
+    width 32px
+    margin-left -32px

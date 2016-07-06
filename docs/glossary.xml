@@ -1,0 +1,422 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<afpdb lang="fr-FR">
+    <head>
+        <message type="000" file="x0-00000fb-000-fr" timestamp="2016-06-14T16:43:01+02:00"/>
+    </head>
+    <body>
+        <discipline code="FB" name="Football">
+            <type>
+                <constant code="XXXXX" name="?"/>
+            </type>
+            <type>
+                <constant code="W" name="dames"/>
+                <constant code="M" name="messieurs"/>
+            </type>
+            <type>
+                <constant code="PAARR" name="Arrivé"/>
+                <constant code="PAWIN" name="Gagnant"/>
+                <constant code="PALOS" name="Perdant"/>
+            </type>
+            <type>
+                <constant code="ECENC" name="En cours"/>
+                <constant code="ECFIN" name="Terminé"/>
+                <constant code="ECCAL" name="Au calendrier"/>
+                <constant code="ECAJO" name="Ajourné"/>
+                <constant code="ECSUP" name="Annulé"/>
+                <constant code="ECPRE" name="Date indéterminée"/>
+            </type>
+            <type>
+                <constant code="MTBEA" name="Beau"/>
+                <constant code="MTBRU" name="Brumeux"/>
+                <constant code="MTCHA" name="Chaud"/>
+                <constant code="MTDOU" name="Doux"/>
+                <constant code="MTSOL" name="Ensoleillé"/>
+                <constant code="MTFRA" name="Frais"/>
+                <constant code="MTFRO" name="Froid"/>
+                <constant code="MTHUM" name="Humide"/>
+                <constant code="MTNEI" name="Neigeux"/>
+                <constant code="MTCOU" name="Nuageux"/>
+                <constant code="MTORA" name="Orageux"/>
+                <constant code="MTPLU" name="Pluvieux"/>
+                <constant code="MTVEN" name="Venteux"/>
+            </type>
+            <type>
+                <constant code="TRBON" name="Bon"/>
+                <constant code="TRBOU" name="Boueux"/>
+                <constant code="TRDET" name="Détrempé"/>
+                <constant code="TRDUR" name="Dur"/>
+                <constant code="TRGEL" name="Gelé"/>
+                <constant code="TRGLI" name="Glissant"/>
+                <constant code="TRGRA" name="Gras"/>
+                <constant code="TRIMP" name="Impraticable"/>
+                <constant code="TRBAD" name="Mauvais"/>
+                <constant code="TRMOY" name="Moyen"/>
+                <constant code="TRPEL" name="Pelé"/>
+                <constant code="TRSYN" name="Synthétique"/>
+            </type>
+            <type>
+                <constant code="COKC1" name="Coupe continentale (Clubs)"/>
+                <constant code="COCCO" name="Championnat continental"/>
+                <constant code="COCNA" name="Championnat national"/>
+                <constant code="COKMO" name="Coupe du monde"/>
+                <constant code="COKMC" name="Coupe du monde (Clubs)"/>
+                <constant code="COKNA" name="Coupe nationale"/>
+                <constant code="COKCO" name="Coupe continentale"/>
+                <constant code="COCMO" name="Championnat du Monde"/>
+            </type>
+            <type>
+                <constant code="CPPAY" name="Pays"/>
+                <constant code="CPASS" name="Association de pays"/>
+                <constant code="CPOLD" name="Pays disparu"/>
+            </type>
+            <type>
+                <constant code="RSRES" name="Résultat d'un match"/>
+                <constant code="RSSCO" name="Score d'une équipe"/>
+            </type>
+            <type>
+                <constant code="ECBON" name="Bon"/>
+                <constant code="ECDEF" name="Déficient"/>
+                <constant code="ECFAI" name="Faible"/>
+            </type>
+            <type>
+                <constant code="CAPRO" name="Seniors/professionnels"/>
+                <constant code="CAESP" name="Espoirs (sub 23)"/>
+                <constant code="CAS21" name="Sub 21"/>
+                <constant code="CAAMA" name="Séniors/Amateurs"/>
+                <constant code="CAJUN" name="Juniors"/>
+                <constant code="CAPUS" name="Poussins"/>
+            </type>
+            <type>
+                <constant code="EVSLI" name="Liste de départ"/>
+                <constant code="EVINT" name="Résultat intermédiaire"/>
+                <constant code="EVUNO" name="Résultat non officiel"/>
+                <constant code="EVRDY" name="Prêt"/>
+                <constant code="EVOFF" name="Résultat officiel"/>
+                <constant code="EVSEC" name="Résultat sec d'un match"/>
+                <constant code="EVFTE" name="Fiche technique"/>
+                <constant code="EVRUN" name="Running"/>
+                <constant code="EVFIN" name="Terminé"/>
+                <constant code="EVUNC" name="Terminé mais non confirmé"/>
+            </type>
+            <type>
+                <constant code="L_POS" name="Position"/>
+                <constant code="L_EQU" name="Equipe"/>
+                <constant code="L_PTS" name="Point"/>
+                <constant code="L_MAJ" name="Match joué"/>
+                <constant code="L_MAG" name="Match gagné"/>
+                <constant code="L_MAN" name="Match nul"/>
+                <constant code="L_MAP" name="Match perdu"/>
+                <constant code="L_GF_" name="But pour"/>
+                <constant code="L_GA_" name="But contre"/>
+                <constant code="L_DIF" name="Différence"/>
+                <constant code="L_GRP" name="Groupe"/>
+                <constant code="L_JOU" name="Joueur"/>
+                <constant code="L_MSP" name="Moyenne de spectateurs"/>
+                <constant code="L_JAU" name="Nombre de cartons jaunes"/>
+                <constant code="L_ROU" name="Nombre de cartons rouges"/>
+                <constant code="L_SPE" name="Nombre de spectateurs"/>
+                <constant code="L_PAY" name="Pays"/>
+                <constant code="L_TOT" name="Total"/>
+            </type>
+            <type>
+                <constant code="PSPRE" name="Président"/>
+                <constant code="PSENT" name="Entraîneur"/>
+                <constant code="PSADJ" name="Entraîneur adjoint"/>
+                <constant code="PSGOL" name="Gardien de but"/>
+                <constant code="PSDEF" name="Défenseur"/>
+                <constant code="PSMIL" name="Milieu de terrain"/>
+                <constant code="PSAVA" name="Attaquant"/>
+                <constant code="PSMAN" name="Manager"/>
+                <constant code="PSRPJ" name="Remplaçant qui a joué"/>
+                <constant code="PSRPL" name="Remplaçant"/>
+                <constant code="PSARB" name="Arbitre"/>
+                <constant code="PSJUT" name="Arbitre assistant"/>
+                <constant code="PSAUX" name="Arbitre auxiliaire"/>
+                <constant code="PSDEL" name="Délégué officiel"/>
+                <constant code="REOUT" name="Joueur sortant"/>
+                <constant code="RE_IN" name="Joueur entrant"/>
+                <constant code="PSSUS" name="Joueur suspendu"/>
+                <constant code="PSINJ" name="Joueur blessé"/>
+                <constant code="PSABS" name="Joueur absent"/>
+            </type>
+            <type>
+                <constant code="TPCLF" name="Classement final"/>
+                <constant code="TPFIN" name="Finale"/>
+                <constant code="TPSFI" name="Demi-finale"/>
+                <constant code="TPQFI" name="Quart de finale"/>
+                <constant code="TP8FI" name="8e de finale"/>
+                <constant code="TP16F" name="16e de finale"/>
+                <constant code="TP32F" name="32e de finale"/>
+                <constant code="TP64F" name="64e de finale"/>
+                <constant code="TPGRP" name="Phase de groupe"/>
+                <constant code="TPTR7" name="7e tour"/>
+                <constant code="TPTR6" name="6e tour"/>
+                <constant code="TPTR5" name="5e tour"/>
+                <constant code="TPTR4" name="4e tour"/>
+                <constant code="TPTR3" name="3e tour"/>
+                <constant code="TPTR2" name="2e tour"/>
+                <constant code="TPTR1" name="1er tour"/>
+                <constant code="TPMFI" name="Finale MLS"/>
+                <constant code="TPCFI" name="Finale de conférence"/>
+                <constant code="TPCSF" name="Demi-finale de conférence"/>
+                <constant code="TPFIB" name="Finale barrages"/>
+                <constant code="TPBTI" name="Barrage pour le titre"/>
+                <constant code="TPBC3" name="Barrage C3"/>
+                <constant code="TPBAR" name="Barrage"/>
+                <constant code="TPQU3" name="Qualification - 3e tour"/>
+                <constant code="TPBC1" name="Barrage C1"/>
+                <constant code="TPQU2" name="Qualification - 2e tour"/>
+                <constant code="TPQU1" name="Qualification - 1e tour"/>
+                <constant code="TPBRE" name="Barrage pour la relégation"/>
+                <constant code="TPSAR" name="Saison Régulière"/>
+                <constant code="TPBIT" name="Barrage Intertoto"/>
+                <constant code="TPQUA" name="Qualification"/>
+                <constant code="TPPRE" name="Tour préliminaire"/>
+                <constant code="TPFRI" name="Matches amicaux"/>
+            </type>
+            <type>
+                <constant code="FDNPT" name="Départage normal points"/>
+                <constant code="FDNDI" name="Départage normal différence de buts"/>
+                <constant code="FDNBP" name="Départage normal attaque"/>
+                <constant code="FDWIN" name="Départage normal matches gagnés"/>
+                <constant code="FDPPT" name="Départage particulier points"/>
+                <constant code="FDPDI" name="Départage particulier différence de buts"/>
+                <constant code="FDPBP" name="Départage particulier attaque"/>
+                <constant code="FDAUT" name="Automatique"/>
+            </type>
+            <type>
+                <constant code="EMNCO" name="Non commencé"/>
+                <constant code="EMENC" name="En cours"/>
+                <constant code="EMPAU" name="Pause"/>
+                <constant code="EMFIN" name="Terminé"/>
+                <constant code="EMBRK" name="Interrompu"/>
+                <constant code="EMAJO" name="Ajourné"/>
+                <constant code="EMREP" name="Reporté"/>
+                <constant code="EMEXE" name="Equipe exemptée du match"/>
+                <constant code="EMUND" name="Date indéterminée"/>
+            </type>
+            <type>
+                <constant code="VTBUT" name="But"/>
+                <constant code="VTCSC" name="But contre son camp"/>
+                <constant code="VTPEN" name="But sur penalty"/>
+                <constant code="VTPEM" name="Penalty manqué"/>
+                <constant code="VTJAU" name="Carton jaune"/>
+                <constant code="VT_RJ" name="Carton Jaune/Rouge"/>
+                <constant code="VTROU" name="Carton rouge"/>
+                <constant code="VTRPL" name="Remplacement"/>
+                <constant code="VTTAB" name="Tir au but réussi"/>
+                <constant code="VTTAX" name="Tir au but raté"/>
+                <constant code="VTBLE" name="Blessure"/>
+            </type>
+            <type>
+                <constant code="PMTP1" name="1ère mi-temps"/>
+                <constant code="PMTP2" name="2ème mi-temps"/>
+                <constant code="PMPR1" name="1ère prolongation"/>
+                <constant code="PMPR2" name="2ème prolongation"/>
+                <constant code="PMTAB" name="Tirs au but"/>
+                <constant code="PMPGO" name="But en or"/>
+                <constant code="PMPSI" name="But en argent"/>
+                <constant code="PMPFD" name="Tirage au sort - Domicile"/>
+                <constant code="PMPFE" name="Pile ou face - Extérieur"/>
+                <constant code="PMPFA" name="Tirage au sort"/>
+                <constant code="PMTOT" name="Total"/>
+            </type>
+            <type>
+                <constant code="PHUNI" name="Match unique"/>
+                <constant code="PHALR" name="Matches aller-retour"/>
+                <constant code="PH1AR" name="But en argent ou tirs au but"/>
+                <constant code="PH1OR" name="But en or ou tirs au but"/>
+                <constant code="PH1PT" name="Prolongation ou tirs au but"/>
+                <constant code="PH1TB" name="Tir au but"/>
+                <constant code="PH1BA" name="Match d'appui"/>
+                <constant code="PH1PB" name="Prolongation ou match d'appui"/>
+                <constant code="PH1PF" name="Prolongation ou tirage au sort"/>
+                <constant code="PH2AR" name="Match A/R avec but en argent ou tirs au but"/>
+                <constant code="PH2OR" name="Match A/R avec but en or ou tirs au but"/>
+                <constant code="PH2PT" name="Match A/R avec prolongation ou tirs au but"/>
+                <constant code="PH2TB" name="Match A/R avec tirs au but"/>
+                <constant code="PH2BA" name="Match A/R avec match d'appui"/>
+                <constant code="PH2PB" name="Match A/R avec prolongation ou match d'appui"/>
+                <constant code="PH2PF" name="Match A/R avec prolongation ou tirage au sort"/>
+                <constant code="PHPOU" name="Phase de poule match unique"/>
+                <constant code="PHPAR" name="Phase de poule match A/R"/>
+                <constant code="PH2AR" name="Matches double aller-retour"/>
+                <constant code="PHARA" name="Matches A/R+A (3 rencontres)"/>
+            </type>
+            <type>
+                <constant code="EDEVT" name="Données étendues d'événement"/>
+                <constant code="EDSLE" name="Staff lié à l'événement"/>
+                <constant code="ED_TZ" name="TimeZone"/>
+                <constant code="EDSPE" name="Spectateurs"/>
+                <constant code="ED_CC" name="Type de colonne d'un classement"/>
+                <constant code="EDMTO" name="Temps"/>
+                <constant code="EDTER" name="Terrain"/>
+                <constant code="EDECL" name="Eclairage"/>
+                <constant code="EDTEA" name="Température"/>
+                <constant code="EDPMA" name="Points pour un match"/>
+                <constant code="EDPQA" name="Places qualificatives"/>
+                <constant code="EDSOC" name="Critères de tri en fin de saison"/>
+                <constant code="EDSOS" name="Critères de tri en cours de saison"/>
+                <constant code="EDSAS" name="Jeu de critères de tri actif"/>
+                <constant code="EDCSH" name="Couleur du maillot"/>
+                <constant code="EDCST" name="Couleur du short"/>
+                <constant code="EDCSO" name="Couleur des chaussettes"/>
+                <constant code="EDMED" name="Attibution de médailles"/>
+                <constant code="EDMAG" name="Moyenne d'âge"/>
+                <constant code="EDHOM" name="Equipe jouant à domicile"/>
+                <constant code="EDAWA" name="Equipe jouant à l'extérieur"/>
+                <constant code="EDAFF" name="Type d'affichage des groupes"/>
+                <constant code="EDMIN" name="Minutage"/>
+                <constant code="EDEVS" name="Evénement sélectionné"/>
+                <constant code="EDTSP" name="Phase de départ pour le classement des buteurs"/>
+            </type>
+            <type>
+                <constant code="TEEQU" name="Equipe"/>
+            </type>
+            <type>
+                <constant code="CECLU" name="Equipe de club"/>
+                <constant code="CENAT" name="Equipe nationale"/>
+                <constant code="CEINT" name="Equipe internationale"/>
+                <constant code="CETAB" name="Tableau"/>
+                <constant code="CEN20" name="Equipe nationale moins de 20 ans"/>
+            </type>
+            <type>
+                <constant code="LXSTA" name="Stade"/>
+            </type>
+            <type>
+                <constant code="FIN1P" name="Finale 1ère place"/>
+                <constant code="FIN3P" name="Match pour la 3e place"/>
+                <constant code="FINAP" name="Match d'appui"/>
+            </type>
+            <type>
+                <constant code="STNBM" name="Nombre de matchs"/>
+                <constant code="STJOU" name="Nombre de matchs joués"/>
+                <constant code="STTIT" name="Nombre de matchs débutés comme titulaire"/>
+                <constant code="STTJE" name="Temps de jeu"/>
+                <constant code="STBUT" name="Nombre de buts"/>
+                <constant code="STMOB" name="Moyenne de buts"/>
+                <constant code="STCSC" name="Nombre de buts contre son camp"/>
+                <constant code="STPEN" name="Nombre de penalties marqués"/>
+                <constant code="STPEM" name="Nombre de penalties manqués"/>
+                <constant code="STJAU" name="Nombre de cartons jaunes"/>
+                <constant code="STMOJ" name="Moyenne de cartons jaunes"/>
+                <constant code="STROU" name="Nombre de cartons rouges"/>
+                <constant code="STMOR" name="Moyenne de cartons rouges"/>
+                <constant code="STTAB" name="Nombre de tirs au but marqués"/>
+                <constant code="STTAX" name="Nombre de tirs au but manqués"/>
+                <constant code="STNBS" name="Nombre de spectateurs"/>
+                <constant code="STMOS" name="Moyenne de spectateurs"/>
+                <constant code="STPOB" name="Possession de balle"/>
+                <constant code="STSHT" name="Tir tenté"/>
+                <constant code="STFOC" name="Faute commise"/>
+                <constant code="STCOR" name="Corner"/>
+                <constant code="STOFS" name="Hors-jeu"/>
+                <constant code="STSOG" name="Tir cadré"/>
+            </type>
+            <type>
+                <constant code="DOBIO" name="Biographie"/>
+                <constant code="TVCOD" name="Code"/>
+                <constant code="TVVAL" name="Valeur numérique"/>
+                <constant code="TVXML" name="La donnée est du XML"/>
+            </type>
+            <type>
+                <constant code="PQCHL" name="Ligue des champions"/>
+                <constant code="PQCLP" name="Tour préliminaire de la Ligue des Champions"/>
+                <constant code="PQUEF" name="Coupe de l'UEFA"/>
+                <constant code="PQTOT" name="Intertoto"/>
+                <constant code="PQDUP" name="Division supérieure"/>
+                <constant code="PQDDN" name="Division inférieure"/>
+                <constant code="PQQFI" name="Qualifié pour la finale"/>
+                <constant code="PQQ3P" name="Qualifié pour le match pour la 3ème place"/>
+                <constant code="PQQTS" name="Tour suivant"/>
+                <constant code="PQRTS" name="Repêché pour le tour suivant"/>
+                <constant code="PQLIB" name="Coupe Libertadores"/>
+                <constant code="PQPHF" name="Qualifié pour la phase finale"/>
+                <constant code="PQQDF" name="Qualifié pour les 1/4 de finale"/>
+                <constant code="PQBRE" name="Barrage de relégation"/>
+                <constant code="PQBPR" name="Barrage de promotion"/>
+                <constant code="PQQPP" name="Qualifié pour la phase finale"/>
+                <constant code="PQQBA" name="Qualifié pour les barrages"/>
+            </type>
+            <type>
+                <constant code="APWIN" name="Point gagné"/>
+                <constant code="APNUL" name="Point match nul"/>
+                <constant code="APLOS" name="Point perdu"/>
+                <constant code="APNUP" name="Point match nul après prolongation"/>
+            </type>
+            <type>
+                <constant code="TCVAL" name="Valeur"/>
+                <constant code="TCXML" name="XML"/>
+            </type>
+            <type>
+                <constant code="CCPOS" name="Position"/>
+                <constant code="CCPOT" name="Position totale"/>
+                <constant code="CCEQU" name="Equipe"/>
+                <constant code="CCPTS" name="nombre de points"/>
+                <constant code="CCJOU" name="nombre de matches joués"/>
+                <constant code="CCGAG" name="nombre de matches gagnés"/>
+                <constant code="CCNUL" name="nombre de matches nuls"/>
+                <constant code="CCPER" name="nombre de matches perdus"/>
+                <constant code="CC_BP" name="nombre de buts pour"/>
+                <constant code="CC_BC" name="nombre de buts contre"/>
+                <constant code="CCDIF" name="Différence de buts dans un classement"/>
+                <constant code="CCYCA" name="Carton jaune"/>
+                <constant code="CCRCA" name="Carton rouge"/>
+                <constant code="CCSPE" name="Spectateurs"/>
+                <constant code="CCMBP" name="Moyenne de buts marqués"/>
+                <constant code="CCMRC" name="Moyenne de cartons rouges"/>
+                <constant code="CCMSP" name="Moyenne de spectateurs"/>
+                <constant code="CCIND" name="Joueur"/>
+                <constant code="CCPEN" name="Nombre de points de pénalité"/>
+            </type>
+            <type>
+                <constant code="TD_XC" name="XC"/>
+            </type>
+            <type>
+                <constant code="TAFUL" name="Classement"/>
+                <constant code="TADOM" name="Classement à domicile"/>
+                <constant code="TAEXT" name="Classement à l'extérieur"/>
+                <constant code="TASTA" name="Statistiques"/>
+                <constant code="TACFI" name="Classement final"/>
+                <constant code="TATSC" name="Classement des buteurs"/>
+            </type>
+            <type>
+                <constant code="EESAV" name="Tir arrêté"/>
+                <constant code="EEBAR" name="Tir sur le cadre"/>
+                <constant code="EEWID" name="Tir hors cadre"/>
+                <constant code="EEFRK" name="Coup franc"/>
+                <constant code="EEHEA" name="Coup de tête"/>
+                <constant code="EEHAN" name="De la main"/>
+                <constant code="EERFS" name="Tir du pied droit"/>
+                <constant code="EELFS" name="Tir du pied gauche"/>
+                <constant code="EEHES" name="De la tête"/>
+                <constant code="EEIFK" name="Coup franc indirect"/>
+                <constant code="EETAK" name="Agression"/>
+                <constant code="EEKIK" name="Coup de pied"/>
+                <constant code="EEPUS" name="Bousculer"/>
+                <constant code="EEROP" name="Jeu dur"/>
+                <constant code="EEHOL" name="Retenu"/>
+                <constant code="EEHIT" name="Coup"/>
+                <constant code="EESPI" name="Cracher"/>
+                <constant code="EESCH" name="Plongeon"/>
+                <constant code="EEVMI" name="Inconduite verbale"/>
+                <constant code="EEBOD" name="Du corps"/>
+            </type>
+            <type>
+                <constant code="EIACT" name="Image active"/>
+                <constant code="EIARC" name="Image archivée"/>
+            </type>
+            <type>
+                <constant code="TAFUL" name="Classement général du groupe"/>
+                <constant code="TAHOM" name="Classement des matches à domicile"/>
+                <constant code="TAAWA" name="Classement des matches à l'extérieur"/>
+                <constant code="TAESC" name="Conférence est"/>
+                <constant code="TAWOC" name="Conférence ouest"/>
+            </type>
+            <type>
+                <constant code="TASIM" name="Affichage simple par journée"/>
+                <constant code="TACOM" name="Affichage complexe"/>
+            </type>
+        </discipline>
+    </body>
+</afpdb>

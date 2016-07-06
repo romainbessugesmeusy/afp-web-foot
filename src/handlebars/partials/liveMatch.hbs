@@ -1,0 +1,13 @@
+<div class="liveMatchScoreboard">
+    <div class="time">
+        {{time}}90'
+    </div>
+    <div class="scoreSeparator"></div>
+    <div class="home team">
+        {{> liveMatchTeam team=home}}
+    </div>
+    <div class="away team">
+        {{> liveMatchTeam team=away}}
+    </div>
+    <a href="/matches/23{{id}}" class="button">LIVE</a>
+</div>
