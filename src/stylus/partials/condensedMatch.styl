@@ -1,25 +1,22 @@
 .upcomingMatch, .pastMatch
-  display block
+  display flex
   color black
   padding .2rem 0
   text-align center
   position relative
+  text-decoration none
 
   &:hover
     background #EEE
-  .home, .away
-    position absolute
-    top 0
-    line-height 1.5rem
 
   .home
-    right 50%
-    margin-right 2rem
+    flex 1
+    text-align right
   .away
-    left 50%
-    margin-left 2rem
+    flex 1
+    text-align left
 
-  .time
+  .time, .goals
     background #C9C9C9
     margin 0 1rem
     padding .2rem
@@ -29,3 +26,9 @@
     font-size .8rem
     display inline-block
     border-radius 4px
+
+  .goals
+    margin 0 .5rem
+    padding .3rem
+    &.winner
+      background black

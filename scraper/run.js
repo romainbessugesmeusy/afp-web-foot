@@ -39,15 +39,14 @@ var listeEvenementFoot = [
     {"Id": 5392, "Label": "Coupe du monde 2018 : Qualifications Zone Europe"},
     {"Id": 6024, "Label": "Coupe des confédérations 2017"}];
 
-var defaults = {
+var options = {
     root: 'http://bdsports.afp.com:80/bdsapi/api/',
     lang: 1,
     evts: [6100,6101,4571]
 };
 
-var extract = require('./extract')(defaults);
-var transform = require('./transform')(defaults);
-var load = require('./load')(defaults);
-
+var extract = require('./extract')(options);
+var transform = require('./transform')(options);
+var load = require('./load')(options);
 
 extract(transform(load));

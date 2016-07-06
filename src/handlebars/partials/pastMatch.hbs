@@ -1,10 +1,18 @@
 <a class="pastMatch" href="/matches/{{id}}">
-    <span class="card yellow">{{home.cards.yellow}}</span>
-    <span class="card red">{{home.cards.red}}</span>
-    <span class="home">{{home.name}}</span>
-    <span class="homeGoals">{{home.goals}}</span>
-    <span class="awayGoals">{{away.goals}}</span>
-    <span class="away">{{away.name}}</span>
-    <span class="card red">{{away.cards.red}}</span>
-    <span class="card yellow">{{away.cards.yellow}}</span>
+    <div class="home">
+        <span class="cards fontFigures">
+            <span class="card yellow">{{home.cards.yellow}}</span>
+            <span class="card red">{{home.cards.red}}</span>
+        </span>
+        <span class="name">{{home.name}}</span>
+        <span class="goals fontFigures {{#if home.winner}}winner{{/if}}">{{home.goals}}</span>
+    </div>
+    <div class="away">
+        <span class="goals fontFigures {{#if away.winner}}winner{{/if}}">{{away.goals}}</span>
+        <span class="name">{{away.name}}</span>
+        <span class="cards fontFigures">
+            <span class="card red">{{away.cards.red}}</span>
+            <span class="card yellow">{{away.cards.yellow}}</span>
+        </span>
+    </div>
 </a>
