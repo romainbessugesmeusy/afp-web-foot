@@ -4,7 +4,7 @@ var path = require('path');
 var async = require('async');
 var extend = require('extend');
 
-module.exports = function(options){
+module.exports = function (options) {
 
 
     var fetch = function (resource, params, callback) {
@@ -59,6 +59,7 @@ module.exports = function(options){
     function getMatchDetail(match) {
         return function (eachMatchCb) {
             fetch('xcmatchdetail/:lang/:id', {id: match.Id}, function (err, matchDetail) {
+
                 if (err) {
                     console.error({id: match.Id}, err);
                     return eachMatchCb();
@@ -75,11 +76,9 @@ module.exports = function(options){
                 id: phase.PhaseId
             }, function (err, matches) {
                 phase.matches = matches.Matches;
-
                 async.forEach(phase.matches, function (match, eachMatchCb) {
                     async.parallel([getMatchDetail(match)], eachMatchCb)
-                });
-                matchesPhaseCb();
+                }, matchesPhaseCb);
             });
         }
     }
@@ -95,6 +94,7 @@ module.exports = function(options){
             });
         }
     }
+
     function getPhases(evenement) {
         return function (eachPhasesCb) {
             fetch('xcphases/:lang/:id', {id: evenement.id}, function (err, phasesJson) {
@@ -110,7 +110,10 @@ module.exports = function(options){
 
     function getEquipeStaff(evenement, equipe) {
         return function (eachEquipeCb) {
-            fetch('xcequipestaff/:lang/:evtId/:id', {evtId: evenement.id, id: equipe.TeamId}, function (err, teamStaff) {
+            fetch('xcequipestaff/:lang/:evtId/:id', {
+                evtId: evenement.id,
+                id: equipe.TeamId
+            }, function (err, teamStaff) {
                 extend(equipe, teamStaff);
                 eachEquipeCb();
             });

@@ -84,8 +84,21 @@ page('/', function () {
 
 });
 
-page('/matches/:matchId', function () {
-    $page.empty().append(views.match({}));
+page('/matches/:matchId', function (ctx) {
+    $.getJSON('/data/matches/' + ctx.params.matchId + '.json', function (data) {
+        data.events.forEach(function (event) {
+            event.players = event.players.map(function (playerId) {
+                var player;
+                data[event.side].players.forEach(function (p) {
+                    if (p.id === playerId) {
+                        player = p;
+                    }
+                });
+                return player;
+            });
+        });
+        $page.empty().append(views.match(data));
+    });
 });
 
 page('/competitions', function () {

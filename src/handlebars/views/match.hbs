@@ -1,5 +1,6 @@
 <div id="liveMatch">
     <div class="competition">
+        {{competition.name}}
         <img src="https://campsi.imgix.net/56261291c0e9425a0b9404d8-Hkoqy3LI.png?fit=clamp&h=100&w=100"
              alt="{{competition.name}}">
     </div>
@@ -8,52 +9,67 @@
     </div>
     <div class="summary">
         <div class="team home">
-            <h3>Espagne</h3>
+            <h3>{{home.name}}</h3>
             <div class="logo">
-                <img src="https://campsi.imgix.net/56261291c0e9425a0b9404d8-BkV4rwUU.png?fit=clamp&h=150&w=150" alt="">
+                <img src="http://bdsports.afp.com/spa-xc/images/team/{{home.id}}.png" alt="">
             </div>
         </div>
         <div class="team away">
-            <h3>Espagne</h3>
+            <h3>{{away.name}}</h3>
             <div class="logo">
-                <img src="https://campsi.imgix.net/56261291c0e9425a0b9404d8-SyHdHP8U.png?fit=clamp&h=150&w=150" alt="">
+                <img src="http://bdsports.afp.com/spa-xc/images/team/{{away.id}}.png" alt="">
             </div>
         </div>
         <div class="timeAndScore fontFigures">
             <div class="time">38'</div>
             <div class="score">
-                <span class="home">1</span>
-                <span class="away">0</span>
+                <span class="home">{{home.goals}}</span>
+                <span class="away">{{away.goals}}</span>
             </div>
         </div>
     </div>
 
     <div class="tabs">
         <nav class="sectionNavbar light">
-            <a href="#evenements" class="important">LIVE</a>
+            <a href="#live" class="important">LIVE</a>
+            <a href="#evenements">Événements</a>
             <a href="#composition">Composition</a>
             <a href="#arbitres">Arbitres</a>
             <a href="#stade">Stade</a>
         </nav>
         <div class="tab feed active" id="evenements">
-            <div class="event home" id="evenements">
-                Event home
-            </div>
-            <div class="event away" id="evenements">
-                Event away
-            </div>
-            <div class="event away" id="evenements">
-                Event away
-            </div>
-            <div class="event home" id="evenements">
-                Event home
+            <div class="eventsWrapper">
+                {{#each events}}
+                    <div class="row {{side}}">
+                        <div class="event {{side}}">
+                            <span class="time fontFigures">{{time}}'</span>
+                            {{#each players}}
+                                <span class="player">{{name}}</span>
+                            {{/each}}
+                            <img class="type" src="http://bdsports.afp.com/spa-xc/images/events/{{type}}.png"/>
+                        </div>
+                    </div>
+                {{/each}}
             </div>
         </div>
         <div class="tab" id="composition">
-            {{> teamCompoPlayer }}
+            <div class="home">
+                {{#each home.players}}
+                    {{> teamCompoPlayer}}
+                {{/each}}
+            </div>
+            <div class="away">
+                {{#each away.players}}
+                    {{> teamCompoPlayer}}
+                {{/each}}
+            </div>
         </div>
         <div class="tab" id="arbitres">
-            Arbitres
+            <ul>
+                {{#each referees}}
+                    <li>{{name}} {{country}} {{role}}</li>
+                {{/each}}
+            </ul>
         </div>
         <div class="tab" id="stade">
             Arbitres

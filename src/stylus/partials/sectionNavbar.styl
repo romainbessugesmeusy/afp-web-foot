@@ -14,7 +14,7 @@
     margin-right 1rem
     display inline-block
     text-shadow 1px 1px 1px black
-    border-radius 8px
+    border-radius 4px
     border 1px solid rgba(black, .3)
     color white
     text-decoration none
@@ -25,6 +25,11 @@
       margin-right 0
     &.active, &:active
       background linear-gradient(#000, #383838)
+
+    &.important
+      background #E6153B
+      color white
+      font-weight 400
   &.light
     border-color #f0f0f0
     background linear-gradient(#fbfbfb, #f4f4f4)
@@ -37,4 +42,8 @@
         background rgba(black, .05)
       &.active, &:active
         border 1px solid #EEE
-        background linear-gradient(#EEE, #fff)
+        background linear-gradient(#DDD, #EEE)
+
+      &.important
+        color white
+        font-weight 400
