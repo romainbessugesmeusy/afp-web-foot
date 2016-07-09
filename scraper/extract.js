@@ -3,6 +3,7 @@ var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var extend = require('extend');
+var xml2js = require('xml2js');
 
 module.exports = function (options) {
 
@@ -59,25 +60,61 @@ module.exports = function (options) {
     function getMatchDetail(match) {
         return function (eachMatchCb) {
             fetch('xcmatchdetail/:lang/:id', {id: match.Id}, function (err, matchDetail) {
-
                 if (err) {
                     console.error({id: match.Id}, err);
                     return eachMatchCb();
                 }
-                extend(match, matchDetail);
+                extend(match.Home, matchDetail.Home);
+                extend(match.Away, matchDetail.Away);
+                match.Attendance = matchDetail.Attendance;
+                match.Arbitres = matchDetail.Arbitres;
+                match.Periods = matchDetail.Periods;
+                match.Events = matchDetail.Events;
+                match.Tabs = matchDetail.Tabs;
                 eachMatchCb();
             });
         }
     }
 
-    function getPhaseMatches(phase) {
+    function getMatchComments(evenement, match) {
+        return function (matchCommentCb) {
+            var parser = new xml2js.Parser({trim: true, attrkey: 'props', charkey: 'text'});
+            var filename = path.join(
+                __dirname,
+                '../data/comments/' + evenement.Id + '/fr/comments/commentslive-fr-' + match.Id + '.xml'
+            );
+
+            fs.readFile(filename, 'utf8', function (err, data) {
+                if (err) {
+                    if (err.code !== 'ENOENT') {
+                        console.error(err);
+                    }
+                    return matchCommentCb();
+                }
+                parser.parseString(data, function (err, result) {
+                    if (err) {
+                        console.error('Error Parsing', filename);
+                        console.error(err);
+                    } else {
+                        match.Comments = result.comments.comment;
+                    }
+                    matchCommentCb();
+                });
+            });
+        }
+    }
+
+    function getPhaseMatches(evenement, phase) {
         return function (matchesPhaseCb) {
             fetch('xcmatchesphase/:lang/:id', {
                 id: phase.PhaseId
             }, function (err, matches) {
                 phase.matches = matches.Matches;
                 async.forEach(phase.matches, function (match, eachMatchCb) {
-                    async.parallel([getMatchDetail(match)], eachMatchCb)
+                    async.parallel([
+                        getMatchDetail(match),
+                        getMatchComments(evenement, match)
+                    ], eachMatchCb)
                 }, matchesPhaseCb);
             });
         }
@@ -100,10 +137,8 @@ module.exports = function (options) {
             fetch('xcphases/:lang/:id', {id: evenement.id}, function (err, phasesJson) {
                 evenement.phases = phasesJson.Phases;
                 async.forEach(evenement.phases, function (phase, eachPhaseDone) {
-                    async.parallel([getPhaseMatches(phase), getPhaseTopScorers(evenement, phase)], eachPhaseDone);
-                }, function () {
-                    eachPhasesCb();
-                });
+                    async.parallel([getPhaseMatches(evenement, phase), getPhaseTopScorers(evenement, phase)], eachPhaseDone);
+                }, eachPhasesCb);
             });
         }
     }

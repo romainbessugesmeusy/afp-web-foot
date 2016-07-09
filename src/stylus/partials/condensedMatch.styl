@@ -8,7 +8,8 @@
 
   &:hover
     background #EEE
-
+    .cards .card
+      opacity 1
   .home
     flex 1
     text-align right
@@ -32,3 +33,19 @@
     padding .3rem
     &.winner
       background black
+
+  .cards .card
+    opacity 0
+    height 20px
+    width 12px
+    font-size .8rem
+    color white
+    display inline-block
+    text-align center
+    line-height 22px
+    &.yellow
+      background #D2C738
+    &.red
+      background #D0021B
+    &:empty
+      display none

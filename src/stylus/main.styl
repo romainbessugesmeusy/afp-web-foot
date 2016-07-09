@@ -17,6 +17,11 @@ h2
   font-size 2rem
   margin 6rem 0 2rem 0
 
+h4
+  font-size .75rem
+  text-transform uppercase
+  color #666
+
 .clear
   clear both
 
@@ -38,6 +43,36 @@ a.button
   width 100%
   &.active
     display block
+
+body > header
+  background white
+  h1
+    padding 2rem
+    background white
+  nav
+    max-width 1000px
+    margin 0 auto
+    margin-top 2rem
+    background white
+    ul
+      display flex
+      flex-wrap wrap
+      justify-content space-around
+      a
+        margin-top 1rem
+        font-size 1.4rem
+        text-decoration none
+        display inline-block
+        padding-bottom .2rem
+        border-bottom 3px solid black
+        color black
+        text-transform uppercase
+        &.scoreboard
+          border-color #D0021B
+        &.competitions
+          border-color #F8E71C
+        &.teams
+          border-color #7ED321
 
 @import "views/scoreboard.styl"
 @import "views/match.styl"

@@ -14,7 +14,7 @@ module.exports = function (options) {
             }
         };
 
-        if (obj.penaltyShootoutScore === null) {
+        if (obj.penaltyShootoutScore === null || obj.penaltyShootoutScore === -1) {
             delete obj.penaltyShootoutScore;
         }
 
@@ -84,7 +84,7 @@ module.exports = function (options) {
                     id: player.Id,
                     number: player.Bib,
                     position: player.Index + ',' + player.Line,
-                    name: player.LongName || player.LomgName,
+                    name: player.ShortName || player.LomgName,
                     role: player.PositionCode
                 }
             }),
@@ -93,7 +93,7 @@ module.exports = function (options) {
             penaltyShootoutGoals: match[team].TeamTabScore
         };
 
-        if (teamDetail.penaltyShootoutGoals < 0) {
+        if (teamDetail.penaltyShootoutGoals < 0 || teamDetail.penaltyShootoutGoals === null) {
             delete teamDetail.penaltyShootoutGoals;
         }
         return teamDetail;
@@ -123,6 +123,7 @@ module.exports = function (options) {
                     stadium: match.Stadium.Id,
                     home: getTeamDetail(match, 'Home'),
                     away: getTeamDetail(match, 'Away'),
+                    comments: match.Comments,
                     events: match.Events.map(function (evt) {
                         var event = {
                             time: evt.Minute,
@@ -142,9 +143,18 @@ module.exports = function (options) {
                             event.players.push(evt.PlayerId2);
                         }
 
+                        if (Array.isArray(match.Comments)) {
+                            match.Comments.forEach(function (comment) {
+
+                                if (comment.props.time == event.time && comment.props.event == event.type) {
+                                    event.comment = comment;
+                                }
+                            });
+                        }
+
                         return event;
-                    }),
-                    raw: match
+                    })/*,
+                    raw: match*/
                 };
 
                 matchesFileArray.push({

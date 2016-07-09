@@ -11,93 +11,37 @@ var handlebars = require('handlebars/runtime');
 var partials = require('../gen/partials');
 // require the views
 var views = require('../gen/views');
-
 // DOM
 var $page = $('#page');
 
-page('/', function () {
+// Data Processors
+var processScoreboardData = require('./processScoreboardData');
+var processMatchData = require('./processMatchData');
 
-    $.getJSON('/data/scoreboard.json', function (data) {
-        var scoreboard = {
-            competitions: data.competitions,
-            upcomingDateList: [],
-            upcomingMatches: {},
-            pastDateList: [],
-            pastMatches: {}
-        };
-        var now = new Date().toISOString();
-        var nowDate = now.substr(0, 10);
-        var nowTime = now.substr(11, 5);
-
-        var matchesByDateAndCompetition = {};
-
-        $.each(data.dates, function (date, matches) {
-
-            if (date > nowDate) {
-                scoreboard.upcomingDateList.push(date);
-            } else if (date < nowDate) {
-                scoreboard.pastDateList.push(date);
-            }
-
-            if (typeof matchesByDateAndCompetition[date] === 'undefined') {
-                matchesByDateAndCompetition[date] = {};
-            }
-
-            $(matches).each(function (i, match) {
-                if (typeof matchesByDateAndCompetition[date][match.competition] === 'undefined') {
-                    matchesByDateAndCompetition[date][match.competition] = [];
-                }
-
-                var winner;
-
-                if (typeof match.home.penaltyShootoutScore !== 'undefined') {
-                    winner = (match.home.penaltyShootoutScore > match.away.penaltyShootoutScore) ? 'home' : 'away';
-                } else if (typeof match.home.goals !== 'undefined') {
-                    winner = (match.home.goals > match.away.goals) ? 'home' : 'away';
-                }
-
-                if (winner) {
-                    match[winner].winner = true;
-                }
-                matchesByDateAndCompetition[date][match.competition].push(match);
-            });
-
-            $.each(matchesByDateAndCompetition[date], function (competition, matches) {
-                matches.sort(function (a, b) {
-                    return a.time < b.time;
-                });
-            });
-        });
-
-        scoreboard.upcomingDateList.sort().length = 5;
-        scoreboard.pastDateList.sort().reverse().length = 5;
-
-        $(scoreboard.upcomingDateList).each(function (i, date) {
-            scoreboard.upcomingMatches[date] = matchesByDateAndCompetition[date];
-        });
-        $(scoreboard.pastDateList).each(function (i, date) {
-            scoreboard.pastMatches[date] = matchesByDateAndCompetition[date];
-        });
-
-        $page.empty().append(views.scoreboard(scoreboard));
+var updateActiveTabs = function(){
+    $('.tabs').each(function(){
+        var $tabs = $(this);
+        var activeTab = sessionStorage.getItem('activeTab_' + $tabs.attr('id'));
+        if(activeTab){
+            $tabs.find('a').removeClass('active').filter('a[href="' + activeTab + '"]').addClass('active');
+            $tabs.find('.tab').removeClass('active').filter(activeTab).addClass('active');
+        }
     });
+};
 
+page('/', function () {
+    $.getJSON('/data/scoreboard.json', function (data) {
+        var scoreboard = processScoreboardData(data);
+        $page.empty().append(views.scoreboard(scoreboard));
+        updateActiveTabs();
+    });
 });
 
 page('/matches/:matchId', function (ctx) {
     $.getJSON('/data/matches/' + ctx.params.matchId + '.json', function (data) {
-        data.events.forEach(function (event) {
-            event.players = event.players.map(function (playerId) {
-                var player;
-                data[event.side].players.forEach(function (p) {
-                    if (p.id === playerId) {
-                        player = p;
-                    }
-                });
-                return player;
-            });
-        });
-        $page.empty().append(views.match(data));
+        console.info('matchData', data);
+        $page.empty().append(views.match(processMatchData(data)));
+        updateActiveTabs();
     });
 });
 
@@ -111,10 +55,13 @@ page('/competitions/:competition', function () {
 
 $page.on('click', '.tabs .sectionNavbar a', function () {
     var $a = $(this);
+    var $tabs = $a.closest('.tabs');
+
     $a.closest('nav').find('a').removeClass('active');
     $a.addClass('active');
-    $a.closest('.tabs').find('.tab').removeClass('active');
-    $a.closest('.tabs').find($a.attr('href')).addClass('active');
+    $tabs.find('.tab').removeClass('active');
+    $tabs.find($a.attr('href')).addClass('active');
+    sessionStorage.setItem('activeTab_' + $tabs.attr('id'),$a.attr('href'));
     return false;
 });
 

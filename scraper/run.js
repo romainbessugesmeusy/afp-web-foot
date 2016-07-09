@@ -42,7 +42,7 @@ var listeEvenementFoot = [
 var options = {
     root: 'http://bdsports.afp.com:80/bdsapi/api/',
     lang: 1,
-    evts: [6100,6101,4571]
+    evts: [/*6100,6101,4571, */5365]
 };
 
 var extract = require('./extract')(options);

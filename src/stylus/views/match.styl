@@ -1,13 +1,17 @@
 #liveMatch
   text-align center
-  padding-top 5rem
+  >header
+    background white
+    padding-top 5rem
   .competition
     text-align center
     box-shadow 0 0 10px rgba(black, .2)
     margin 0 auto
     width 200px
+    min-width 200px
     padding 2rem
     border-radius 8px 8px 0 0
+
   .status
     background #E6153B
     color white
@@ -15,10 +19,12 @@
     padding .5rem
     font-size 1.5rem
     font-weight 100
-  .timeAndScore
 
+
+  .timeAndScore
+    box-shadow 0 0 10px rgba(black, .2)
     border-right 1px solid black
-    border-left  1px solid black
+    border-left 1px solid black
     background linear-gradient(#000, #666666)
     margin 0 auto
     width 200px
@@ -63,35 +69,94 @@
 
   .tab.feed
     box-shadow inset 0 10px 30px rgba(black, .5)
-    background-image url('https://campsi.imgix.net/56261291c0e9425a0b9404d8-H1ZfU5K8.jpg?fit=max&h=1000')
+    overflow: hidden; // added for pseudo-element
+    position: relative; // added for pseudo-element
     padding 1rem
+    min-height 800px
+    &::before
+      content ' '
+      position fixed // instead of background-attachment
+      width 100%
+      height 100%
+      top 0
+      left 0
+      background-color white
+      background url('https://campsi.imgix.net/56261291c0e9425a0b9404d8-H1ZfU5K8.jpg?fit=max&h=1000') no-repeat center center
+      background-size cover
+      will-change transform // creates a new paint layer
+      z-index -1
+
     .row.away
       text-align left
+
     .row.home
       text-align right
+
     .event
       margin-bottom 1rem
-      background white
+      background linear-gradient(white, #EEE)
       padding 1rem
       box-shadow 0 5px 10px rgba(black, .6)
-      border-radius 8px
-      display inline-flex
-      align-items center
-      img
-        margin 0 .5rem
-
-
+      display inline-block
+      p
+        display inline-flex
+        align-items center
+        width 100%
+      .players
+        flex 1
+        margin 0 1rem
+        font-size 1.2rem
+        font-weight 400
       .time
         font-weight 600
+        font-size 1.6rem
 
       &.home
-        flex-direction row-reverse
         margin-right 48%
+        p
+          flex-direction row-reverse
+
         .time
           margin-left 1rem
       &.away
         margin-left 48%
         .time
           margin-right 1rem
+    .comment
+      background white
+      border 1px solid #DDD
+      margin-top .5rem
+      padding .5rem
+      max-width 400px
+      line-height 1.5rem
+      text-align left
+      img
+        width 100%
+#composition .compositionWrapper
+  display flex
+
+  .line
+    display flex
+    justify-content center
+    align-content flex-start
+    flex-wrap wrap
+    border-bottom 1px solid #EFEFEF
+    margin-bottom 1rem
+  .team
+    flex 1
+    padding 3rem 0
+  .home
+    border-right 1px solid #EEE
+
+
+figure
+  position relative
+  figcaption
+    position absolute
+    bottom 5px
+    right 5px
+    color white
+    text-shadow 1px 1px 0 #000
+    font-size .9rem
 
 
