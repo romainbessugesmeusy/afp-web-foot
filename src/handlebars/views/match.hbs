@@ -1,108 +1,19 @@
 <div id="liveMatch">
-    <header>
-        <div class="competition">
-            {{competition.name}}
-            <img src="https://campsi.imgix.net/56261291c0e9425a0b9404d8-Hkoqy3LI.png?fit=clamp&h=100&w=100"
-                 alt="{{competition.name}}">
-        </div>
-        <div class="status">
-            MATCH EN COURS
-        </div>
-        <div class="summary">
-            <div class="team home">
-                <h3>{{home.name}}</h3>
-                <div class="logo">
-                    <img src="http://bdsports.afp.com/spa-xc/images/team/{{home.id}}.png" alt="">
-                </div>
-            </div>
-            <div class="team away">
-                <h3>{{away.name}}</h3>
-                <div class="logo">
-                    <img src="http://bdsports.afp.com/spa-xc/images/team/{{away.id}}.png" alt="">
-                </div>
-            </div>
-            <div class="timeAndScore fontFigures">
-                <div class="time">38'</div>
-                <div class="score">
-                    <span class="home">{{home.goals}}</span>
-                    <span class="away">{{away.goals}}</span>
-                </div>
-            </div>
-        </div>
-    </header>
+    {{> matchHeader }}
     <div class="tabs" id="matchTabs">
         <nav class="sectionNavbar light">
-            <a href="#live" class="important">LIVE</a>
-            <a href="#evenements">Événements</a>
+            <a href="#evenements" class="active">Événements</a>
+            {{#if penaltyShootouts}}
+                <a href="#tirs-au-but">Tirs au but</a>
+            {{/if}}
             <a href="#composition">Composition</a>
             <a href="#infos">Infos</a>
         </nav>
-        <div class="tab feed active" id="evenements">
-            <div class="eventsWrapper">
-                {{#each events}}
-                    <div class="row {{side}}">
-                        <div class="event {{side}}">
-                            <p>
-                                <span class="time fontFigures">{{time}}'</span>
-                                <span class="players">
-                                    {{#each players}}
-                                        <span class="player">{{name}}</span>
-                                    {{/each}}
-                                </span>
-                                <img class="type" src="http://bdsports.afp.com/spa-xc/images/events/{{type}}.png"/>
-                            </p>
-                            {{#if comment }}
-                                <div class="comment">
-                                    <p>{{comment.text}}</p>
-                                    {{#if comment.props.photo}}
-                                        <figure class="photo">
-                                            <img src="/data/comments/{{@root.competition.id}}/fr/comments/images/visu/{{comment.props.photo}}.jpg"
-                                                 alt="{{comment.props.copyright}}">
-                                            <figcaption>{{comment.props.copyright}}</figcaption>
-                                        </figure>
-                                    {{/if}}
-                                </div>
-                            {{/if}}
-                        </div>
-                    </div>
-                {{/each}}
-            </div>
-        </div>
-        <div class="tab" id="composition">
-            <div class="compositionWrapper">
-                <div class="team home">
-                    {{#each home.positions}}
-                        <h4>Ligne</h4>
-                        <div class="line">
-                            {{#each this}}
-                                {{> teamCompoPlayer}}
-                            {{/each}}
-                        </div>
-                    {{/each}}
-                </div>
-                <div class="team away">
-                    {{#each away.positions}}
-                        <h4>Ligne</h4>
-                        <div class="line">
-                            {{#each this}}
-                                {{> teamCompoPlayer}}
-                            {{/each}}
-                        </div>
-                    {{/each}}
-                </div>
-            </div>
-        </div>
-        <div class="tab" id="infos">
-            <div class="infosWrapper">
-                <h4>Arbitres</h4>
-                <ul>
-                    {{#each referees}}
-                        <li>{{name}} {{country}} {{role}}</li>
-                    {{/each}}
-                </ul>
-                <h4>Stade</h4>
-
-            </div>
-        </div>
+        {{> matchTabEvents}}
+        {{> matchTabCompo}}
+        {{> matchTabInfos}}
+        {{#if penaltyShootouts}}
+            {{> matchTabPenaltyShootouts }}
+        {{/if}}
     </div>
 </div>

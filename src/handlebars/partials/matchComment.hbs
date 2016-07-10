@@ -1,0 +1,10 @@
+<div class="comment">
+    <p>{{text}}</p>
+    {{#if props.photo}}
+        <figure class="photo">
+            <img src="/data/comments/{{@root.competition.code}}/fr/comments/images/visu/{{props.photo}}.jpg"
+                 alt="{{props.copyright}}">
+            <figcaption>{{props.copyright}}</figcaption>
+        </figure>
+    {{/if}}
+</div>

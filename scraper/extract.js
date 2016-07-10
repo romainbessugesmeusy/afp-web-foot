@@ -7,44 +7,65 @@ var xml2js = require('xml2js');
 
 module.exports = function (options) {
 
+    var fileExists = function (filename, existCb, notExistCb) {
+        fs.stat(filename, function (err) {
+            if (err != null && err.code === 'ENOENT') {
+                return notExistCb();
+            }
+            existCb();
+        });
+    };
+
+    var download = function (resource, filename, callback) {
+        var uri = apiUri(resource);
+        fileExists(filename, callback, function () {
+            request.head(uri, function (err, res, body) {
+                if (err) {
+                    console.error(err);
+                    return callback;
+                }
+                console.info('downloding:', uri);
+                console.log('content-type:', res.headers['content-type']);
+                console.log('content-length:', res.headers['content-length']);
+                request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+            });
+        })
+    };
+
+    var uriParams = function (resource, params) {
+        return resource.replace(/:\w+/g, function (param) {
+            return params[param.substring(1)] || options[param.substring(1)];
+        });
+    };
+
+    var apiUri = function (resource) {
+        return options.root + resource;
+    };
 
     var fetch = function (resource, params, callback) {
 
-        resource = resource.replace(/:\w+/g, function (param) {
-            return params[param.substring(1)] || options[param.substring(1)];
-        });
+        resource = uriParams(resource, params);
 
         var cacheFilename = path.join(__dirname, 'cache/' + resource.replace(/\//g, '_') + '.json');
+        fileExists(cacheFilename, function () {
+            fs.readFile(cacheFilename, 'utf8', function (err, data) {
+                if (err) return callback(err);
+                callback(null, JSON.parse(data));
+            });
+        }, function () {
+            request(apiUri(resource), function (error, response, body) {
+                var jsonData;
+                try {
+                    jsonData = JSON.parse(body);
+                } catch (err) {
+                    return callback(err);
+                }
 
-        fs.stat(cacheFilename, function (err) {
-            if (err === null) {
-                fs.readFile(cacheFilename, 'utf8', function (err, data) {
-                    if (err) {
-                        return callback(err);
-                    }
-
-                    callback(null, JSON.parse(data));
+                fs.writeFile(cacheFilename, body, function (err) {
+                    if (err)  return callback(err);
+                    callback(null, jsonData);
                 });
-            } else if (err.code == 'ENOENT') {
-                console.info('loading uncached resource', options.root + resource);
-                request(options.root + resource, function (error, response, body) {
-                    var jsonData;
-                    try {
-                        jsonData = JSON.parse(body);
-                    } catch (err) {
-                        return callback(err);
-                    }
-
-                    fs.writeFile(cacheFilename, body, function (err) {
-                        if (err) {
-                            return callback(err);
-                        }
-                        callback(null, jsonData);
-                    });
-                });
-            } else {
-                return callback(err);
-            }
+            });
         });
     };
 
@@ -81,26 +102,23 @@ module.exports = function (options) {
             var parser = new xml2js.Parser({trim: true, attrkey: 'props', charkey: 'text'});
             var filename = path.join(
                 __dirname,
-                '../data/comments/' + evenement.Id + '/fr/comments/commentslive-fr-' + match.Id + '.xml'
+                '../dist/data/comments/' + evenement.Id + '/fr/comments/commentslive-fr-' + match.Id + '.xml'
             );
 
-            fs.readFile(filename, 'utf8', function (err, data) {
-                if (err) {
-                    if (err.code !== 'ENOENT') {
-                        console.error(err);
-                    }
-                    return matchCommentCb();
-                }
-                parser.parseString(data, function (err, result) {
-                    if (err) {
-                        console.error('Error Parsing', filename);
-                        console.error(err);
-                    } else {
-                        match.Comments = result.comments.comment;
-                    }
-                    matchCommentCb();
+            fileExists(filename, function () {
+                fs.readFile(filename, 'utf8', function (err, data) {
+                    parser.parseString(data, function (err, result) {
+                        if (err) {
+                            console.error('Error Parsing', filename);
+                            console.error(err);
+                        } else {
+                            //console.info('parsing comments form match', match.Id);
+                            match.Comments = result.comments.comment;
+                        }
+                        matchCommentCb();
+                    });
                 });
-            });
+            }, matchCommentCb);
         }
     }
 
@@ -143,6 +161,14 @@ module.exports = function (options) {
         }
     }
 
+    function getFaceshot(player, cb) {
+        download(
+            uriParams('aaheadshot/:id', {id: player.Id}),
+            path.join(__dirname, '../dist/data/players', player.Id + '.jpg'),
+            cb
+        );
+    }
+
     function getEquipeStaff(evenement, equipe) {
         return function (eachEquipeCb) {
             fetch('xcequipestaff/:lang/:evtId/:id', {
@@ -150,7 +176,7 @@ module.exports = function (options) {
                 id: equipe.TeamId
             }, function (err, teamStaff) {
                 extend(equipe, teamStaff);
-                eachEquipeCb();
+                async.forEach(equipe.Staff, getFaceshot, eachEquipeCb);
             });
         }
     }

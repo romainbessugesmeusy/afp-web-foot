@@ -1,6 +1,6 @@
 #liveMatch
   text-align center
-  >header
+  > header
     background white
     padding-top 5rem
   .competition
@@ -19,7 +19,6 @@
     padding .5rem
     font-size 1.5rem
     font-weight 100
-
 
   .timeAndScore
     box-shadow 0 0 10px rgba(black, .2)
@@ -44,6 +43,25 @@
       border-radius 4px
       box-shadow 0 1px 3px black
       padding .6rem .5rem .4rem .5rem
+
+    .penaltyShootoutScore
+      display flex
+      //outline 1px solid yellow
+      justify-content space-between
+      span
+        border 1px solid #555
+        border-radius 4px
+        box-shadow inset 0 2px 4px #222
+        text-shadow 0 1px 2px black
+        font-weight bold
+        background #444
+        display block
+        width 40px
+        height 50px
+        line-height 50px
+        font-size 1.2rem
+        top 0
+        margin 0
   .summary
     h3
       font-weight 200
@@ -93,7 +111,7 @@
       text-align right
 
     .event
-      margin-bottom 1rem
+      margin-top 1rem
       background linear-gradient(white, #EEE)
       padding 1rem
       box-shadow 0 5px 10px rgba(black, .6)
@@ -118,20 +136,48 @@
 
         .time
           margin-left 1rem
+
       &.away
         margin-left 48%
         .time
           margin-right 1rem
-    .comment
-      background white
-      border 1px solid #DDD
-      margin-top .5rem
-      padding .5rem
-      max-width 400px
-      line-height 1.5rem
-      text-align left
-      img
-        width 100%
+
+      &.both
+        .comment
+          max-width 650px
+
+      .comment
+        background white
+        border 1px solid #DDD
+        margin-top .5rem
+        max-width 400px
+        line-height 1.5rem
+        text-align left
+        p
+          padding .5rem
+        img
+          width 100%
+    .group
+
+      display inline-block
+      background #FFF
+      box-shadow 0 5px 15px rgba(black, .8)
+      padding 2rem
+      max-width 650px
+      text-align justify
+
+      .comment
+        margin-bottom 1rem
+        line-height 1.5em
+        font-size .9rem
+        &:first-child
+          font-size 1.2rem
+        &:last-child
+          margin-bottom 0
+        img
+          margin-top 1rem
+          width 100%
+
 #composition .compositionWrapper
   display flex
 
@@ -148,7 +194,6 @@
   .home
     border-right 1px solid #EEE
 
-
 figure
   position relative
   figcaption
@@ -159,4 +204,69 @@ figure
     text-shadow 1px 1px 0 #000
     font-size .9rem
 
+.penaltyShootoutsOld
+  .row
+    margin-bottom -50px
+    &.home
+      text-align left
+    &.away
+      text-align right
+  .try
+    display inline-block
+    width 45%
 
+.penaltyShootoutOld
+  border-bottom 1px solid #EEE
+  background white
+  display flex
+  align-items center
+  position relative
+  //border 1px solid red
+  .teamPlayer
+    text-align center
+  //border 1px solid yellow
+  .result .number
+    color white
+    font-weight 600
+    border-radius 100px
+    background #7ED321
+    display inline-block
+    height 40px
+    width 40px
+    line-height 40px
+    text-align center
+    text-shadow 1px 1px 2px rgba(black, .4)
+
+  &.missed .result .number
+    background #E6153B
+  &.home
+    flex-direction row-reverse
+
+.penaltyShootoutsWrapper
+  display flex
+  .team
+    padding 1rem
+    flex 1
+    display flex
+    flex-wrap wrap
+    justify-content center
+    &.home
+      border-right 1px solid #ddd
+  .shootout
+    margin-bottom 50px
+
+    .shotNumber
+      color white
+      font-weight 600
+      border-radius 100px
+      background #7ED321
+      display block
+      height 40px
+      width 40px
+      line-height 40px
+      text-align center
+      text-shadow 1px 1px 2px rgba(black, .4)
+      margin 0 auto
+
+    &.missed .shotNumber
+      background #E6153B

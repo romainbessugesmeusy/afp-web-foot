@@ -2,15 +2,17 @@ var $ = require('jquery');
 
 module.exports = function (data) {
     data.events.forEach(function (event) {
-        event.players = event.players.map(function (playerId) {
-            var player = {};
-            $(data[event.side].players).each(function (i, p) {
-                if (p.id === playerId) {
-                    player = p;
-                }
+        if (Array.isArray(event.players)) {
+            event.players = event.players.map(function (playerId) {
+                var player = {};
+                $(data[event.side].players).each(function (i, p) {
+                    if (p.id === playerId) {
+                        player = p;
+                    }
+                });
+                return player;
             });
-            return player;
-        });
+        }
     });
 
     ['home', 'away'].forEach(function (side) {

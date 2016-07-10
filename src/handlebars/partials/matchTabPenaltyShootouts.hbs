@@ -1,0 +1,20 @@
+<div class="tab penaltyShootouts" id="tirs-au-but">
+    <div class="penaltyShootoutsWrapper">
+        <div class="team home">
+            {{#each penaltyShootouts.home}}
+                <div class="shootout {{#if missed}}missed{{/if}}">
+                    <span class="shotNumber fontFigures">{{number}}</span>
+                    {{penaltyShooter player}}
+                </div>
+            {{/each}}
+        </div>
+        <div class="team away">
+            {{#each penaltyShootouts.away}}
+                <div class="shootout {{#if missed}}missed{{/if}}">
+                    <span class="shotNumber fontFigures">{{number}}</span>
+                    {{penaltyShooter player}}
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</div>

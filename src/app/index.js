@@ -11,6 +11,7 @@ var handlebars = require('handlebars/runtime');
 var partials = require('../gen/partials');
 // require the views
 var views = require('../gen/views');
+
 // DOM
 var $page = $('#page');
 

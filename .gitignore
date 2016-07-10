@@ -3,4 +3,3 @@ node_modules
 src/gen/*
 scraper/cache
 dist/data
-/data/

@@ -1,0 +1,24 @@
+<div class="tab" id="composition">
+    <div class="compositionWrapper">
+        <div class="team home">
+            {{#each home.positions}}
+                <h4>Ligne</h4>
+                <div class="line">
+                    {{#each this}}
+                        {{> teamPlayer}}
+                    {{/each}}
+                </div>
+            {{/each}}
+        </div>
+        <div class="team away">
+            {{#each away.positions}}
+                <h4>Ligne</h4>
+                <div class="line">
+                    {{#each this}}
+                        {{> teamPlayer}}
+                    {{/each}}
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</div>

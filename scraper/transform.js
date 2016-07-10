@@ -99,16 +99,53 @@ module.exports = function (options) {
         return teamDetail;
     }
 
+    function getEvenementMetaData(evenement, dataCode) {
+        var value = null;
+        evenement.ExtData.forEach(function (extData) {
+            if (extData.ExtDataCode === dataCode) {
+                value = extData.ValTxt;
+            }
+        });
+        return value;
+    }
+
+    function getPenaltyShootouts(match) {
+        if (!Array.isArray(match.Tabs)) {
+            return null;
+        }
+        var counter = 0;
+        var ret = {home: [], away: []};
+
+        match.Tabs.forEach(function (tabEvent) {
+            var side = (tabEvent.TeamId === match.Home.TeamId) ? 'home' : 'away';
+            var shootout = {
+                player: tabEvent.PlayerId,
+                number: Math.floor(counter / 2) + 1
+            };
+
+            if (tabEvent.TypeEvtCode === 'VTTAX') {
+                shootout.missed = tabEvent.ExtTypeEvtCode;
+            }
+
+            counter++;
+            ret[side].push(shootout);
+        });
+
+        return ret;
+    }
+
     function getMatches(matchesFileArray, evenements) {
         return function (eachMatchCb) {
             eachMatches(evenements, function (evenement, phase, match) {
                 var data = {
                     id: match.Id,
+                    status: match.StatusCode,
                     competition: {
                         id: evenement.id,
                         date: match.Date,
                         label: evenement.label,
-                        country: evenement.CountryIso
+                        country: evenement.CountryIso,
+                        code: getEvenementMetaData(evenement, 'EDFTP')
                     },
                     phase: {
                         type: phase.PhaseCompetCode
@@ -123,7 +160,7 @@ module.exports = function (options) {
                     stadium: match.Stadium.Id,
                     home: getTeamDetail(match, 'Home'),
                     away: getTeamDetail(match, 'Away'),
-                    comments: match.Comments,
+                    penaltyShootouts: getPenaltyShootouts(match),
                     events: match.Events.map(function (evt) {
                         var event = {
                             time: evt.Minute,
@@ -142,20 +179,74 @@ module.exports = function (options) {
                         if (evt.PlayerId3) {
                             event.players.push(evt.PlayerId2);
                         }
-
-                        if (Array.isArray(match.Comments)) {
-                            match.Comments.forEach(function (comment) {
-
-                                if (comment.props.time == event.time && comment.props.event == event.type) {
-                                    event.comment = comment;
-                                }
-                            });
-                        }
-
                         return event;
                     })/*,
-                    raw: match*/
+                     raw: match*/
                 };
+
+                var commentsBeforeKickoff = [];
+                var commentEvents = [];
+                var commentsAfterMatch = [];
+                var commentIsMappedToExistingEvent;
+
+                var beforeKickoff = true;
+
+                if (Array.isArray(match.Comments)) {
+                    match.Comments.forEach(function (comment) {
+                        commentIsMappedToExistingEvent = false;
+                        data.events.forEach(function (event) {
+                            if (comment.props.time == event.time && comment.props.event == event.type) {
+                                commentIsMappedToExistingEvent = true;
+                                event.comment = comment;
+                            }
+                        });
+
+                        if (commentIsMappedToExistingEvent === false) {
+
+
+                            if (comment.props.time === '') {
+                                if (beforeKickoff) {
+                                    commentsBeforeKickoff.push(comment);
+                                } else {
+                                    commentsAfterMatch.push(comment);
+                                }
+                            } else {
+                                beforeKickoff = false;
+                                commentEvents.push({
+                                    time: comment.props.time,
+                                    comment: comment,
+                                    side: 'both'
+                                });
+                            }
+                        }
+                    });
+                }
+
+                data.events = data.events.concat(commentEvents);
+
+                if (commentsBeforeKickoff.length) {
+                    data.events.push({
+                        time: '-1000',
+                        group: 'pre',
+                        side: 'both',
+                        comments: commentsBeforeKickoff
+                    });
+                }
+                if (commentsAfterMatch.length) {
+                    data.events.push({
+                        time: '1000',
+                        group: 'post',
+                        side: 'both',
+                        comments: commentsAfterMatch
+                    });
+                }
+                data.events.sort(function (a, b) {
+                    var aTime = parseFloat(String(a.time).replace('+', '.'));
+                    var bTime = parseFloat(String(b.time).replace('+', '.'));
+                    return aTime - bTime;
+                });
+
+                data.raw = match;
 
                 matchesFileArray.push({
                     name: 'matches/' + match.Id,

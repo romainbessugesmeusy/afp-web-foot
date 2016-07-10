@@ -1,4 +1,4 @@
-.teamCompoPlayer
+.teamPlayer
   position relative
   display inline-block
   padding 1rem
@@ -22,3 +22,21 @@
     font-weight 600
     font-size .9rem
     text-shadow 0 1px 1px rgba(black, .5)
+
+
+  .faceshot
+    position absolute
+    z-index 10
+    display none
+    padding .5rem
+    background white
+    box-shadow 0 3px 10px rgba(black, .5)
+    width 150px
+    left 50%
+    top -200px
+    margin-left -75px
+    img
+      width 100%
+
+  &:hover .faceshot
+    display block

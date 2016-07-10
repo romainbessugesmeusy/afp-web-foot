@@ -1,0 +1,39 @@
+<header>
+    <div class="competition">
+        {{competition.name}}
+        <img src="https://campsi.imgix.net/56261291c0e9425a0b9404d8-Hkoqy3LI.png?fit=clamp&h=100&w=100"
+             alt="{{competition.name}}">
+    </div>
+    {{#ifEquals status "EMENC"}}
+    <div class="status">
+        MATCH EN COURS
+    </div>
+    {{/ifEquals}}
+    <div class="summary">
+        <div class="team home">
+            <h3>{{home.name}}</h3>
+            <div class="logo">
+                <img src="http://bdsports.afp.com/spa-xc/images/team/{{home.id}}.png" alt="">
+            </div>
+        </div>
+        <div class="team away">
+            <h3>{{away.name}}</h3>
+            <div class="logo">
+                <img src="http://bdsports.afp.com/spa-xc/images/team/{{away.id}}.png" alt="">
+            </div>
+        </div>
+        <div class="timeAndScore fontFigures {{#if penaltyShootouts}}withPenaltyShootouts{{/if}}">
+            <div class="time">{{matchTime this}}</div>
+            <div class="score">
+                <span class="home">{{home.goals}}</span>
+                <span class="away">{{away.goals}}</span>
+            </div>
+            {{#if penaltyShootouts}}
+                <div class="penaltyShootoutScore">
+                    <span class="home">{{home.penaltyShootoutGoals}}</span>
+                    <span class="away">{{away.penaltyShootoutGoals}}</span>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+</header>

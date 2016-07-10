@@ -1,0 +1,33 @@
+<div class="tab feed active" id="evenements">
+    <div class="eventsWrapper">
+        {{#each events}}
+            <div class="row {{side}}">
+                {{#if group}}
+                    <div class="group {{ group }}">
+                        {{#each comments}}
+                            {{> matchComment}}
+                        {{/each}}
+                    </div>
+                {{else}}
+                    <div class="event {{side}}">
+                        <p>
+                            <span class="time fontFigures">{{time}}'</span>
+                                <span class="players">
+                                    {{#each players}}
+                                        <span class="player">{{name}}</span>
+                                    {{/each}}
+                                </span>
+                            {{#if type}}
+                                <img class="type"
+                                     src="http://bdsports.afp.com/spa-xc/images/events/{{type}}.png"/>
+                            {{/if}}
+                        </p>
+                        {{#with comment }}
+                            {{> matchComment}}
+                        {{/with}}
+                    </div>
+                {{/if}}
+            </div>
+        {{/each}}
+    </div>
+</div>
