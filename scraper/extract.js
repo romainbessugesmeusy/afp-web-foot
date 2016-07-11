@@ -56,8 +56,7 @@ module.exports = function (options) {
     var fetch = function (resource, params, callback) {
 
         resource = uriParams(resource, params);
-
-        var cacheFilename = path.join(__dirname, 'cache/' + resource.replace(/\//g, '_') + '.json');
+        var cacheFilename = path.join(__dirname, '../dist/data/cache/' + resource.replace(/\//g, '_') + '.json');
         fileExists(cacheFilename, function () {
             fs.readFile(cacheFilename, 'utf8', function (err, data) {
                 if (err) return callback(err);
