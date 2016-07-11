@@ -31,6 +31,7 @@ var updateActiveTabs = function () {
 };
 
 page('/', function () {
+    unbindMatchScroll();
     $.getJSON('/data/scoreboard.json', function (data) {
         console.info('scoreboardData', data);
         var scoreboard = processScoreboardData(data, {
@@ -45,11 +46,13 @@ page('/', function () {
 });
 
 page('/matches/:matchId', function (ctx) {
+    unbindMatchScroll();
     $.getJSON('/data/matches/' + ctx.params.matchId + '.json', function (data) {
         console.info('matchData', data);
         var match = processMatchData(data);
         console.info('matchDataProcessed', match);
         $page.empty().append(views.match(match));
+        bindMatchScroll();
         updateActiveTabs();
     });
 });
@@ -74,6 +77,17 @@ $page.on('click', '.tabs .sectionNavbar a', function () {
     return false;
 });
 
+function bindMatchScroll() {
+    //var tabs = $('.tabs')[0];
+    //var tabsPositionY;
+    $(window).on('scroll', function (e) {
+        $page.toggleClass('scroll', $(window).scrollTop() > 600)
+    });
+}
+
+function unbindMatchScroll() {
+    $(window).off('scroll');
+}
 
 function paginateDatesHandler(state) {
     var inverse = 'next';
@@ -104,5 +118,4 @@ function paginateDatesHandler(state) {
 
 $page.on('click', '.sectionNavbar button.prev', paginateDatesHandler('prev'));
 $page.on('click', '.sectionNavbar button.next', paginateDatesHandler('next'));
-
 page();
