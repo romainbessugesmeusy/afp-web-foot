@@ -1,7 +1,14 @@
 var $ = require('jquery');
-var moment = require('moment');
+var defaults = {
+    displayedDays: 5,
+    upcomingMatchesOffset: 0,
+    pastMatchesOffset: 0
+};
 
-module.exports = function (data) {
+module.exports = function (data, options) {
+
+    options = $.extend({}, defaults, options);
+
     var scoreboard = {
         competitions: data.competitions,
         upcomingDateList: [],
@@ -17,7 +24,7 @@ module.exports = function (data) {
 
     $.each(data.dates, function (date, matches) {
 
-        if (date > nowDate) {
+        if (date >= nowDate) {
             scoreboard.upcomingDateList.push(date);
         } else if (date < nowDate) {
             scoreboard.pastDateList.push(date);
@@ -53,20 +60,58 @@ module.exports = function (data) {
         });
     });
 
-    if (scoreboard.upcomingDateList.length > 5) {
-        scoreboard.upcomingDateList.sort().length = 5;
-    }
-
-    if (scoreboard.pastDateList.length > 5) {
-        scoreboard.pastDateList.sort().reverse().length = 5;
-    }
-
     $(scoreboard.upcomingDateList).each(function (i, date) {
         scoreboard.upcomingMatches[date] = matchesByDateAndCompetition[date];
     });
+
     $(scoreboard.pastDateList).each(function (i, date) {
         scoreboard.pastMatches[date] = matchesByDateAndCompetition[date];
     });
 
+    function sortByDate(asc) {
+        return function (a, b) {
+            var arrayValuesToInt = function (part) {
+                return parseInt(part)
+            };
+            var pa = a.split('-').map(arrayValuesToInt);
+            var pb = b.split('-').map(arrayValuesToInt);
+            var up = (asc) ? pa : pb;
+            var low = (asc) ? pb : pa;
+
+            if (up[0] !== low[0]) {
+                return up[0] - low[0]
+            }
+
+            if (up[1] !== low[1]) {
+                return up[1] - low[1];
+            }
+
+            if (up[2] !== low[2]) {
+                return up[2] - low[2];
+            }
+
+            return 0;
+        }
+    }
+
+    scoreboard.pastDateList.sort(sortByDate(false));
+    scoreboard.pastDateList = scoreboard.pastDateList.map(wrapDates(options.pastMatchesOffset, options.displayedDays));
+    scoreboard.upcomingDateList.sort(sortByDate(true));
+    scoreboard.upcomingDateList = scoreboard.upcomingDateList.map(wrapDates(options.upcomingMatchesOffset, options.displayedDays));
     return scoreboard;
 };
+
+
+function wrapDates(offset, displayedDays){
+    return function(date, index){
+        var obj = {date: date};
+        if (index < offset ) {
+            obj.className = 'prev';
+        } else if (index >= offset + displayedDays) {
+            obj.className = 'next';
+        } else {
+            obj.className = 'current';
+        }
+        return obj;
+    }
+}

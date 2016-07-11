@@ -4,8 +4,10 @@
               transform="translate(-9.87 -0.89)"></path>
     </svg>
     <span class="number fontFigures">{{number}}</span>
-    <div class="name">{{name}}</div>
-    <div class="faceshot">
-        <img src="/data/players/{{id}}.jpg" alt="{{name}}">
-    </div>
+    <div class="name"><a href="/players/{{id}}">{{name}}</a></div>
+    {{#if faceshot}}
+        <div class="faceshot">
+            <img src="/data/players/{{id}}.jpg" width="150" height="200" alt="{{name}}">
+        </div>
+    {{/if}}
 </div>

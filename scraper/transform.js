@@ -5,8 +5,8 @@ module.exports = function (options) {
 
     function extractScoreboardTeamInfo(team) {
         var obj = {
-            name: team.TeamName,
-            goals: team.TeamScore,
+            name: (team.TeamName === '?') ? null : team.TeamName,
+            goals: (team.TeamScore === -1) ? null : team.TeamScore,
             penaltyShootoutScore: team.TeamTabScore,
             cards: {
                 yellow: team.TeamNbYellowCards,
@@ -32,6 +32,11 @@ module.exports = function (options) {
     function eachMatches(evenements, callback) {
         evenements.forEach(function (evenement) {
             evenement.phases.forEach(function (phase) {
+                if (typeof phase.matches === 'undefined') {
+                    console.error('Phase with undefined matches');
+                    console.error(evenement);
+                    process.exit();
+                }
                 phase.matches.forEach(function (match) {
                     callback(evenement, phase, match);
                 })
@@ -52,6 +57,8 @@ module.exports = function (options) {
                     id: match.Id,
                     time: time,
                     competition: evenement.id,
+                    phase: phase.PhaseCompetCode,
+                    group: match.GroupId,
                     home: extractScoreboardTeamInfo(match.Home),
                     away: extractScoreboardTeamInfo(match.Away)
                 });
@@ -73,10 +80,32 @@ module.exports = function (options) {
         }
     }
 
-    function getTeamDetail(match, team) {
-        if (typeof match[team] === 'undefined') {
-            return null;
+    function getTeamFromEventStats(evenement, teamId) {
+        var team = null;
+        evenement.statistiques.forEach(function (t) {
+            if (t.TeamId === teamId) {
+                team = t;
+            }
+        });
+        if (team === null) {
+            throw new Error('Undefined Team');
         }
+        return team;
+    }
+
+
+    function getTeamDetail(evenement, phase, match, team) {
+        if (typeof match[team] === 'undefined' || match[team].TeamId === 0) {
+            return {};
+        }
+
+        var teamFromStats = getTeamFromEventStats(evenement, match[team].TeamId);
+        var playersFromStats = {};
+
+        teamFromStats.Staff.forEach(function (player) {
+            playersFromStats[player.Id] = player;
+        });
+
         var teamDetail = {
             id: match[team].TeamId,
             players: match[team].TeamCompo.map(function (player) {
@@ -85,7 +114,8 @@ module.exports = function (options) {
                     number: player.Bib,
                     position: player.Index + ',' + player.Line,
                     name: player.ShortName || player.LomgName,
-                    role: player.PositionCode
+                    role: player.PositionCode,
+                    faceshot: (playersFromStats[player.Id]) ? playersFromStats[player.Id].Faceshot : null
                 }
             }),
             name: match[team].TeamName,
@@ -131,6 +161,10 @@ module.exports = function (options) {
             ret[side].push(shootout);
         });
 
+        if (ret.home.length + ret.away.length === 0) {
+            return null;
+        }
+
         return ret;
     }
 
@@ -158,8 +192,8 @@ module.exports = function (options) {
                         }
                     }),
                     stadium: match.Stadium.Id,
-                    home: getTeamDetail(match, 'Home'),
-                    away: getTeamDetail(match, 'Away'),
+                    home: getTeamDetail(evenement, phase, match, 'Home'),
+                    away: getTeamDetail(evenement, phase, match, 'Away'),
                     penaltyShootouts: getPenaltyShootouts(match),
                     events: match.Events.map(function (evt) {
                         var event = {
@@ -204,7 +238,7 @@ module.exports = function (options) {
                         if (commentIsMappedToExistingEvent === false) {
 
 
-                            if (comment.props.time === '') {
+                            if (comment.props.time === '' || comment.props.time === '0') {
                                 if (beforeKickoff) {
                                     commentsBeforeKickoff.push(comment);
                                 } else {

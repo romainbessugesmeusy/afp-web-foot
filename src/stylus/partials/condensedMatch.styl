@@ -13,9 +13,13 @@
   .home
     flex 1
     text-align right
+    .unknown
+      text-align right
   .away
     flex 1
     text-align left
+    .unknown
+      text-align left
 
   .time, .goals
     background #C9C9C9
@@ -33,6 +37,15 @@
     padding .3rem
     &.winner
       background black
+
+  .name
+    position relative
+
+  .unknown
+    &::before
+      content '■■■■■■■■■■■'
+      color #DDD
+
 
   .cards .card
     opacity 0

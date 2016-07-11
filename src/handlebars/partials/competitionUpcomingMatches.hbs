@@ -2,9 +2,13 @@
     {{> scoreboardCompetitionHeader }}
     <div class="matchesWrapper">
         <ul>
-            {{#each matches}}
-                <li>{{> upcomingMatch this}}</li>
-            {{/each}}
+            {{#group matches by="phase"}}
+                <li class="phase">{{value}}</li>
+                {{#each items}}
+                    <li>{{> upcomingMatch this}}</li>
+                {{/each}}
+            {{/group}}
+
         </ul>
     </div>
 </article>

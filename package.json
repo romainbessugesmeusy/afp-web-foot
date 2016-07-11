@@ -27,6 +27,7 @@
     "request": "^2.72.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "xml2js": "^0.4.17"
+    "xml2js": "^0.4.17",
+    "handlebars-group-by": "latest"
   }
 }

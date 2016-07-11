@@ -8,6 +8,7 @@ var xml2js = require('xml2js');
 module.exports = function (options) {
 
     var fileExists = function (filename, existCb, notExistCb) {
+
         fs.stat(filename, function (err) {
             if (err != null && err.code === 'ENOENT') {
                 return notExistCb();
@@ -17,17 +18,27 @@ module.exports = function (options) {
     };
 
     var download = function (resource, filename, callback) {
-        var uri = apiUri(resource);
+
+        var uri = (resource.indexOf('http') !== 0) ? apiUri(resource) : resource;
+
         fileExists(filename, callback, function () {
-            request.head(uri, function (err, res, body) {
-                if (err) {
-                    console.error(err);
-                    return callback;
+
+            var req = request(uri);
+            req.pause();
+            req.on('error', function (err) {
+                console.error('Error downloading ',uri);
+                console.error(err);
+                callback(err);
+            });
+            req.on('response', function (res) {
+                if (res.statusCode === 200) {
+                    req.pipe(fs.createWriteStream(filename));
+                    req.resume();
+                } else {
+                    callback({statusCode: res.statusCode})
                 }
-                console.info('downloding:', uri);
-                console.log('content-type:', res.headers['content-type']);
-                console.log('content-length:', res.headers['content-length']);
-                request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+            }).on('close', function () {
+                callback(null, true);
             });
         })
     };
@@ -62,7 +73,7 @@ module.exports = function (options) {
                 }
 
                 fs.writeFile(cacheFilename, body, function (err) {
-                    if (err)  return callback(err);
+                    if (err)  return callback(err, jsonData);
                     callback(null, jsonData);
                 });
             });
@@ -97,12 +108,22 @@ module.exports = function (options) {
         }
     }
 
+    function getEvenementMetaData(evenement, dataCode) {
+        var value = null;
+        evenement.ExtData.forEach(function (extData) {
+            if (extData.ExtDataCode === dataCode) {
+                value = extData.ValTxt;
+            }
+        });
+        return value;
+    }
+
     function getMatchComments(evenement, match) {
         return function (matchCommentCb) {
             var parser = new xml2js.Parser({trim: true, attrkey: 'props', charkey: 'text'});
             var filename = path.join(
                 __dirname,
-                '../dist/data/comments/' + evenement.Id + '/fr/comments/commentslive-fr-' + match.Id + '.xml'
+                '../dist/data/comments/' + getEvenementMetaData(evenement, 'EDFTP') + '/fr/comments/commentslive-fr-' + match.Id + '.xml'
             );
 
             fileExists(filename, function () {
@@ -127,6 +148,7 @@ module.exports = function (options) {
             fetch('xcmatchesphase/:lang/:id', {
                 id: phase.PhaseId
             }, function (err, matches) {
+                if (err) console.error(err);
                 phase.matches = matches.Matches;
                 async.forEach(phase.matches, function (match, eachMatchCb) {
                     async.parallel([
@@ -150,12 +172,25 @@ module.exports = function (options) {
         }
     }
 
+    function getPhaseEquipes(evenement, phase) {
+        return function (phaseEquipesCb) {
+            fetch('xcequipes/:lang/:evt/:phase', {evt: evenement.id, phase: phase.PhaseId}, function (err, equipes) {
+                phase.Equipes = equipes.Equipes;
+                async.parallel([getTeamsLogo(phase)], phaseEquipesCb)
+            })
+        }
+    }
+
     function getPhases(evenement) {
         return function (eachPhasesCb) {
             fetch('xcphases/:lang/:id', {id: evenement.id}, function (err, phasesJson) {
                 evenement.phases = phasesJson.Phases;
                 async.forEach(evenement.phases, function (phase, eachPhaseDone) {
-                    async.parallel([getPhaseMatches(evenement, phase), getPhaseTopScorers(evenement, phase)], eachPhaseDone);
+                    async.parallel([
+                        getPhaseMatches(evenement, phase),
+                        getPhaseTopScorers(evenement, phase),
+                        getPhaseEquipes(evenement, phase)
+                    ], eachPhaseDone);
                 }, eachPhasesCb);
             });
         }
@@ -165,8 +200,48 @@ module.exports = function (options) {
         download(
             uriParams('aaheadshot/:id', {id: player.Id}),
             path.join(__dirname, '../dist/data/players', player.Id + '.jpg'),
-            cb
+            function (err) {
+                if (!err) {
+                    player.Faceshot = true;
+                }
+                cb();
+            }
         );
+    }
+
+    function getPlayersFaceshots(equipe) {
+        return function (cb) {
+            async.forEach(equipe.Staff, getFaceshot, cb);
+        }
+    }
+
+    function getTeamsLogo(phase) {
+        return function (eachEquipeCb) {
+            async.forEach(phase.Equipes, function (equipe, cb) {
+                var uri;
+                switch (equipe.TeamType) {
+                    case 'CECLU':
+                        uri = uriParams('http://bdsports.afp.com/spa-xc/images/team/:id.png', {id: equipe.Id});
+                        break;
+                    case 'CENAT':
+                        uri = uriParams('http://bdsports.afp.com/spa-xc/images/flag.3/64/:iso.png', {iso: equipe.PaysIso});
+                        break;
+                    default:
+                        console.warn('Unknown team type: ' + equipe.TeamType);
+                        equipe.logo = false;
+                        return cb();
+                }
+
+                download(uri, path.join(__dirname, '../dist/data/teams', equipe.Id + '.png'), function (err) {
+                        if (!err) {
+                            equipe.logo = true;
+                        }
+                        cb();
+                    }
+                );
+
+            }, eachEquipeCb);
+        }
     }
 
     function getEquipeStaff(evenement, equipe) {
@@ -176,7 +251,7 @@ module.exports = function (options) {
                 id: equipe.TeamId
             }, function (err, teamStaff) {
                 extend(equipe, teamStaff);
-                async.forEach(equipe.Staff, getFaceshot, eachEquipeCb);
+                async.parallel([getPlayersFaceshots(equipe)], eachEquipeCb);
             });
         }
     }
@@ -187,8 +262,7 @@ module.exports = function (options) {
                 evenement.statistiques = stats.Statistiques;
                 async.forEach(evenement.statistiques, function (equipe, eachEquipeDone) {
                     async.parallel([getEquipeStaff(evenement, equipe)], eachEquipeDone);
-                });
-                evenementStatCb();
+                }, evenementStatCb);
             });
         }
     }

@@ -49,6 +49,5 @@ module.exports = function (data) {
 
     });
 
-    console.info(data);
     return data;
 };

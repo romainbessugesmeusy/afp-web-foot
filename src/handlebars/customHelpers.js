@@ -1,6 +1,10 @@
 var Handlebars = require('handlebars');
 var moment = require('moment');
 var constants = require('../app/constants');
+//var helpers = require('handlebars-helpers')('comparison', {handlebars: Handlebars});
+var groupBy = require('handlebars-group-by');
+
+groupBy.register(Handlebars);
 
 require('moment/locale/fr');
 
@@ -52,23 +56,24 @@ Handlebars.registerHelper('penaltyShooter', function (playerId, options) {
     return new Handlebars.SafeString(Handlebars.partials['teamPlayer'](player, options));
 });
 
-Handlebars.registerHelper('matchTime', function(match, options){
-     if(match.status === constants.status.inProgress){
+Handlebars.registerHelper('matchTime', function (match, options) {
+    if (match.status === constants.status.inProgress) {
         return match.time;
-     }
+    }
 
-    if(match.status === constants.status.finished){
+    if (match.status === constants.status.finished) {
         return 'TERMINÉ';
     }
 
     return ''
 });
 
-Handlebars.registerHelper('ifEquals', function(a, b, opts) {
-    if(a == b) // Or === depending on your needs
+Handlebars.registerHelper('ifEquals', function (a, b, opts) {
+    if (a == b) {
         return opts.fn(this);
-    else
+    } else {
         return opts.inverse(this);
+    }
 });
 
 module.exports = Handlebars;
