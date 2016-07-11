@@ -1,8 +1,7 @@
 <header>
     <div class="competition">
         {{competition.name}}
-        <img src="https://campsi.imgix.net/56261291c0e9425a0b9404d8-Hkoqy3LI.png?fit=clamp&h=100&w=100"
-             alt="{{competition.name}}">
+        <img src="/data/events/{{competition.id}}.png" alt="{{competition.name}}">
     </div>
     {{#ifEquals status "EMENC"}}
     <div class="status">
