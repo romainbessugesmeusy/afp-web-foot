@@ -78,13 +78,13 @@ $page.on('click', '.tabs .sectionNavbar a', function () {
 });
 
 function bindMatchScroll() {
-    $('body').on('scroll', function (e) {
+    $('body').on('scroll', function () {
         $page.toggleClass('scroll', $page[0].getBoundingClientRect().top < -337)
     });
 }
 
 function unbindMatchScroll() {
-    $(window).off('scroll');
+    $('body').off('scroll');
 }
 
 function paginateDatesHandler(state) {
