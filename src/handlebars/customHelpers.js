@@ -87,7 +87,6 @@ Handlebars.registerHelper('ifEquals', function (a, b, opts) {
 });
 
 Handlebars.registerHelper('getCompoLineLabel', function (team, index, opts) {
-    console.info(team.lines);
-    return team.lines[team.lines.length - 1 - index].Label;
+    return 'TODO'
 });
 module.exports = Handlebars;

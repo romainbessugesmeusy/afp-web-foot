@@ -55,7 +55,7 @@ module.exports = function (data, options) {
 
         $.each(matchesByDateAndCompetition[date], function (competition, matches) {
             matches.sort(function (a, b) {
-                return a.time < b.time;
+                return a.time > b.time;
             });
         });
     });

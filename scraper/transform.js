@@ -119,7 +119,7 @@ module.exports = function (options) {
                     faceshot: (playersFromStats[player.Id]) ? playersFromStats[player.Id].Faceshot : null
                 }
             }),
-            lines: teamFromStats.Positions,
+            lines: getTeamLines(match[team]),
             name: match[team].TeamName,
             goals: match[team].TeamScore,
             penaltyShootoutGoals: match[team].TeamTabScore
@@ -129,6 +129,14 @@ module.exports = function (options) {
             delete teamDetail.penaltyShootoutGoals;
         }
         return teamDetail;
+    }
+
+    function getTeamLines(team) {
+        var lines = [];
+        team.TeamCompo.forEach(function(player){
+            //if(typeof lines[player])
+        });
+        return lines;
     }
 
     function getEvenementMetaData(evenement, dataCode) {
