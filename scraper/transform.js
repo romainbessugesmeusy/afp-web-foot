@@ -227,6 +227,7 @@ module.exports = function (options) {
 
                 if (Array.isArray(match.Comments)) {
                     match.Comments.forEach(function (comment) {
+
                         commentIsMappedToExistingEvent = false;
                         data.events.forEach(function (event) {
                             if (comment.props.time == event.time && comment.props.event == event.type) {
@@ -235,10 +236,11 @@ module.exports = function (options) {
                             }
                         });
 
+                        var isHourAndMinutes = (comment.props.time.indexOf(':') > -1);
+                        var time = parseFloat(String(comment.props.time).replace('+', '.'));
+
                         if (commentIsMappedToExistingEvent === false) {
-
-
-                            if (comment.props.time === '' || comment.props.time === '0') {
+                            if (time === 0 || isNaN(time) || isHourAndMinutes) {
                                 if (beforeKickoff) {
                                     commentsBeforeKickoff.push(comment);
                                 } else {

@@ -78,10 +78,8 @@ $page.on('click', '.tabs .sectionNavbar a', function () {
 });
 
 function bindMatchScroll() {
-    //var tabs = $('.tabs')[0];
-    //var tabsPositionY;
-    $(window).on('scroll', function (e) {
-        $page.toggleClass('scroll', $(window).scrollTop() > 600)
+    $('body').on('scroll', function (e) {
+        $page.toggleClass('scroll', $page[0].getBoundingClientRect().top < -337)
     });
 }
 
