@@ -66,6 +66,23 @@ page('/competitions/:competition', function () {
     $page.empty().append(views.competition({}));
 });
 
+page('/equipes', function () {
+    $page.empty().append(views.equipes({}));
+});
+
+page('/equipes/:equipe', function () {
+    $page.empty().append(views.equipe({}));
+});
+
+page('/joueurs', function () {
+    $page.empty().append(views.joueurs({}));
+});
+
+page('/joueurs/:joueur', function () {
+    $page.empty().append(views.joueur({}));
+});
+
+
 $page.on('click', '.tabs .sectionNavbar a', function () {
     var $a = $(this);
     var $tabs = $a.closest('.tabs');
