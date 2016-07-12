@@ -2,7 +2,7 @@
     <div class="compositionWrapper">
         <div class="team home">
             {{#each home.positions}}
-                <h4>Ligne</h4>
+                <h4>{{lookup home.lines @index}}</h4>
                 <div class="line">
                     {{#each this}}
                         {{> teamPlayer}}
@@ -12,7 +12,7 @@
         </div>
         <div class="team away">
             {{#each away.positions}}
-                <h4>Ligne</h4>
+                <h4>{{getCompoLineLabel ../away @index}}</h4>
                 <div class="line">
                     {{#each this}}
                         {{> teamPlayer}}

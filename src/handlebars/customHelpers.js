@@ -32,12 +32,22 @@ Handlebars.registerHelper('each_competition', function (dateObject, date, option
 });
 
 Handlebars.registerHelper('relativeDate', function (date, options) {
-    var diff = moment(new Date()).diff(moment(date, 'YYYY-MM-DD'), 'days');
-    if (Math.abs(diff) > 2) {
-        return moment(date, 'YYYY-MM-DD').format('dddd D MMMM');
-    }
+    var diff = moment(new Date().toJSON().slice(0, 10)).diff(moment(date, 'YYYY-MM-DD'), 'days');
 
-    return moment(date, 'YYYY-MM-DD').fromNow();
+    switch (diff) {
+        case 1:
+            return 'hier';
+        case 2:
+            return 'avant-hier';
+        case 0:
+            return 'aujourd\'hui';
+        case -1:
+            return 'demain';
+        case -2:
+            return 'après-demain';
+        default :
+            return moment(date, 'YYYY-MM-DD').format('dddd D MMMM');
+    }
 });
 
 Handlebars.registerHelper('penaltyShooter', function (playerId, options) {
@@ -76,4 +86,8 @@ Handlebars.registerHelper('ifEquals', function (a, b, opts) {
     }
 });
 
+Handlebars.registerHelper('getCompoLineLabel', function (team, index, opts) {
+    console.info(team.lines);
+    return team.lines[team.lines.length - 1 - index].Label;
+});
 module.exports = Handlebars;

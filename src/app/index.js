@@ -35,13 +35,14 @@ page('/', function () {
     $.getJSON('/data/scoreboard.json', function (data) {
         console.info('scoreboardData', data);
         var scoreboard = processScoreboardData(data, {
-            displayedDays: 5,
+            displayedDays: 6,
             pastMatchesOffset: sessionStorage.getItem('pastMatchesOffset') || 0
         });
         console.info('scoreboardDataProcessed', scoreboard);
         $page.empty().append(views.scoreboard(scoreboard));
         $page.find('.sectionNavbar .current:eq(0)').click();
         updateActiveTabs();
+        updateScoreboardNavbars();
     });
 });
 
@@ -87,6 +88,13 @@ function unbindMatchScroll() {
     $('body').off('scroll');
 }
 
+function updateScoreboardNavbars(){
+    $('.sectionNavbar').each(function(){
+        var $this = $(this);
+        $this.find('button.prev').toggle($this.find('a.prev').length > 0);
+        $this.find('button.next').toggle($this.find('a.next').length > 0);
+    })
+}
 function paginateDatesHandler(state) {
     var inverse = 'next';
     if (state === 'next') {

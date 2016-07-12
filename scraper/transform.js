@@ -106,6 +106,7 @@ module.exports = function (options) {
             playersFromStats[player.Id] = player;
         });
 
+
         var teamDetail = {
             id: match[team].TeamId,
             players: match[team].TeamCompo.map(function (player) {
@@ -118,6 +119,7 @@ module.exports = function (options) {
                     faceshot: (playersFromStats[player.Id]) ? playersFromStats[player.Id].Faceshot : null
                 }
             }),
+            lines: teamFromStats.Positions,
             name: match[team].TeamName,
             goals: match[team].TeamScore,
             penaltyShootoutGoals: match[team].TeamTabScore
