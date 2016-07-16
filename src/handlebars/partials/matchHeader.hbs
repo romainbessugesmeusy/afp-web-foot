@@ -1,8 +1,10 @@
 <header>
-    <a class="competition" href="/competition/{{competition.id}}">
-        {{competition.name}}
-        <img src="/data/events/{{competition.id}}.png" alt="{{competition.name}}">
-    </a>
+    <div class="competitionWrapper">
+        <a class="competition" href="/competition/{{competition.id}}">
+            {{competition.name}}
+            <img src="/data/events/{{competition.id}}.png" alt="{{competition.name}}">
+        </a>
+    </div>
     {{#ifEquals status "EMENC"}}
         <div class="status">
             MATCH EN COURS
@@ -35,7 +37,7 @@
                     <span class="penaltyShootout away">{{away.penaltyShootoutGoals}}</span>
                 {{/if}}
             </div>
-            </div>
+        </div>
     </div>
     <div class="summary">
         <div class="team home">
