@@ -22,8 +22,12 @@ module.exports = function (options) {
             delete obj.goals;
         }
 
-        if (obj.cards.yellow + obj.cards.red === 0) {
-            delete obj.cards;
+        if(obj.cards.yellow === 0){
+            delete obj.cards.yellow;
+        }
+
+        if(obj.cards.red === 0){
+            delete obj.cards.red;
         }
 
         return obj;
