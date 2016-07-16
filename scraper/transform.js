@@ -91,7 +91,7 @@ module.exports = function (options) {
                 team = t;
             }
         });
-        return null;
+        return team;
     }
 
 
