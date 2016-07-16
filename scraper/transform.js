@@ -91,10 +91,7 @@ module.exports = function (options) {
                 team = t;
             }
         });
-        if (team === null) {
-            throw new Error('Undefined Team');
-        }
-        return team;
+        return null;
     }
 
 
@@ -102,14 +99,6 @@ module.exports = function (options) {
         if (typeof match[team] === 'undefined' || match[team].TeamId === 0) {
             return {};
         }
-
-        var teamFromStats = getTeamFromEventStats(evenement, match[team].TeamId);
-        var playersFromStats = {};
-
-        teamFromStats.Staff.forEach(function (player) {
-            playersFromStats[player.Id] = player;
-        });
-
         var teamDetail = {
             id: match[team].TeamId,
             name: match[team].TeamName,
@@ -117,11 +106,26 @@ module.exports = function (options) {
             penaltyShootoutGoals: match[team].TeamTabScore
         };
 
-        extend(teamDetail, getTeamStaff(match, teamFromStats.Staff, match[team]));
-
         if (teamDetail.penaltyShootoutGoals < 0 || teamDetail.penaltyShootoutGoals === null) {
             delete teamDetail.penaltyShootoutGoals;
         }
+
+        var teamFromStats = getTeamFromEventStats(evenement, match[team].TeamId);
+
+        if(teamFromStats === null){
+            return teamDetail;
+        }
+
+        var playersFromStats = {};
+
+        teamFromStats.Staff.forEach(function (player) {
+            playersFromStats[player.Id] = player;
+        });
+
+
+        extend(teamDetail, getTeamStaff(match, teamFromStats.Staff, match[team]));
+
+
         return teamDetail;
     }
 
