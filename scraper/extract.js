@@ -9,7 +9,6 @@ var XmlStream = require('xml-stream');
 module.exports = function (options) {
 
     var fileExists = function (filename, existCb, notExistCb) {
-
         fs.stat(filename, function (err) {
             if (err != null && err.code === 'ENOENT') {
                 return notExistCb();
@@ -22,8 +21,9 @@ module.exports = function (options) {
 
         var uri = (resource.indexOf('http') !== 0) ? apiUri(resource) : resource;
 
-        fileExists(filename, callback, function () {
-
+        fileExists(filename, function () {
+            callback(null, true)
+        }, function () {
             var req = request(uri);
             req.pause();
             req.on('error', function (err) {
@@ -43,6 +43,7 @@ module.exports = function (options) {
             });
         })
     };
+
 
     var uriParams = function (resource, params) {
         return resource.replace(/:\w+/g, function (param) {
@@ -69,6 +70,7 @@ module.exports = function (options) {
                 try {
                     jsonData = JSON.parse(body);
                 } catch (err) {
+                    console.error(err);
                     return callback(err);
                 }
 
@@ -120,26 +122,39 @@ module.exports = function (options) {
 
 
     function parseCommentFile(filename, cb) {
+        var comments = [];
         var stream = fs.createReadStream(filename);
-        stream.on('error', function () {
-            cb([]);
-        });
+        var cbCalled = false;
+
+        var end = function (err) {
+            if (err && err.code !== 'ENOENT') {
+                console.warn(err.message);
+            }
+            if (!cbCalled) {
+                cb(comments);
+                cbCalled = true;
+            }
+        };
+
+        stream.on('error', end);
         stream.on('readable', function () {
             try {
                 var xml = new XmlStream(stream, 'utf8');
                 xml.preserve('comments', false);
                 xml.collect('comment');
+                xml.on('error', end);
+                xml.on('end', end);
                 xml.on('endElement: comments', function (item) {
-                    cb(item.$children.map(function (comment) {
+                    comments = item.$children.map(function (comment) {
                         return {
                             props: comment.$,
                             text: comment.$text
                         }
-                    }));
+                    });
+                    end();
                 });
             } catch (err) {
-                console.error(err);
-                cb([]);
+                end(err);
             }
         });
     }
@@ -159,6 +174,7 @@ module.exports = function (options) {
             });
         }
     }
+
 
     function getPhaseMatches(evenement, phase) {
         return function (matchesPhaseCb) {
@@ -193,7 +209,7 @@ module.exports = function (options) {
         return function (phaseEquipesCb) {
             fetch('xcequipes/:lang/:evt/:phase', {evt: evenement.id, phase: phase.PhaseId}, function (err, equipes) {
                 phase.Equipes = equipes.Equipes;
-                async.parallel([getTeamsLogo(phase)], phaseEquipesCb)
+                getTeamsLogo(phase)(phaseEquipesCb);
             })
         }
     }
@@ -214,16 +230,12 @@ module.exports = function (options) {
     }
 
     function getFaceshot(player, cb) {
-        download(
-            uriParams('aaheadshot/:id', {id: player.Id}),
-            path.join(__dirname, '../dist/data/players', player.Id + '.jpg'),
-            function (err) {
-                if (!err) {
-                    player.Faceshot = true;
-                }
-                cb();
-            }
-        );
+        var uri = uriParams('aaheadshot/:id', {id: player.Id});
+        var filename = path.join(__dirname, '../dist/data/players', player.Id + '.jpg');
+        download(uri, filename, function (err) {
+            if (!err) player.Faceshot = true;
+            cb();
+        });
     }
 
     function getPlayersFaceshots(equipe) {
@@ -250,12 +262,9 @@ module.exports = function (options) {
                 }
 
                 download(uri, path.join(__dirname, '../dist/data/teams', equipe.Id + '.png'), function (err) {
-                        if (!err) {
-                            equipe.logo = true;
-                        }
-                        cb();
-                    }
-                );
+                    if (!err) equipe.logo = true;
+                    cb();
+                });
 
             }, eachEquipeCb);
         }
@@ -268,7 +277,7 @@ module.exports = function (options) {
                 id: equipe.TeamId
             }, function (err, teamStaff) {
                 extend(equipe, teamStaff);
-                async.parallel([getPlayersFaceshots(equipe)], eachEquipeCb);
+                getPlayersFaceshots(equipe)(eachEquipeCb);
             });
         }
     }
@@ -278,7 +287,7 @@ module.exports = function (options) {
             fetch('xcstatistiques/:lang/:id', {id: evenement.id}, function (err, stats) {
                 evenement.statistiques = stats.Statistiques;
                 async.forEach(evenement.statistiques, function (equipe, eachEquipeDone) {
-                    async.parallel([getEquipeStaff(evenement, equipe)], eachEquipeDone);
+                    getEquipeStaff(evenement, equipe)(eachEquipeDone);
                 }, evenementStatCb);
             });
         }
@@ -286,6 +295,7 @@ module.exports = function (options) {
 
     return function extract(cb) {
         var evenements = [];
+        console.info('EXTRACT', new Date());
         async.forEach(options.evts, function eachEvenement(evtId, eachEvenementDone) {
             var evenement = {id: evtId};
             evenements.push(evenement);
@@ -295,6 +305,7 @@ module.exports = function (options) {
                 getEvenementStatistiques(evenement)
             ], eachEvenementDone);
         }, function () {
+            console.info('EXTRACT FINISHED', new Date());
             cb(evenements);
         });
     }

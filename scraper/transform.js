@@ -226,6 +226,7 @@ module.exports = function (options) {
         return ret;
     }
 
+
     function getMatches(matchesFileArray, evenements) {
         return function (eachMatchCb) {
             eachMatches(evenements, function (evenement, phase, match) {
@@ -249,7 +250,12 @@ module.exports = function (options) {
                             name: arbitre.LomgName || arbitre.LongName
                         }
                     }),
-                    stadium: match.Stadium.Id,
+                    stadium: {
+                        id: match.Stadium.Id,
+                        name: match.Stadium.Name,
+                        city: match.Stadium.CityName,
+                        country: match.Stadium.CountryIso
+                    },
                     home: getTeamDetail(evenement, phase, match, 'Home'),
                     away: getTeamDetail(evenement, phase, match, 'Away'),
                     penaltyShootouts: getPenaltyShootouts(match),
@@ -354,6 +360,7 @@ module.exports = function (options) {
 
     return function transform(transformCb) {
         return function (evenements) {
+            console.info('TRANSFORM START', new Date());
             var files = {
                 scoreboard: {
                     dates: {},
@@ -366,6 +373,7 @@ module.exports = function (options) {
                 getEvenementsScoreboard(files.scoreboard.competitions, evenements),
                 getMatches(files.matches, evenements)
             ], function () {
+                console.info('TRANSFORM END', new Date());
                 transformCb(files);
             });
         }

@@ -1,8 +1,8 @@
 <header>
-    <div class="competition">
+    <a class="competition" href="/competition/{{competition.id}}">
         {{competition.name}}
         <img src="/data/events/{{competition.id}}.png" alt="{{competition.name}}">
-    </div>
+    </a>
     {{#ifEquals status "EMENC"}}
         <div class="status">
             MATCH EN COURS

@@ -5,18 +5,27 @@
     background-size cover
     background-position bottom
     padding-top 5rem
+    perspective 1000px
 
   .competition
+    transition transform .2s linear, box-shadow .3s linear
+    transform-origin bottom
+    display block
+    box-sizing border-box
     text-align center
-    box-shadow 0 0 10px rgba(black, .2)
+    box-shadow 0 0 10px rgba(black, .5)
     margin 0 auto
     width 200px
     min-width 200px
     padding 2rem
     border-radius 8px 8px 0 0
     background white
+    &:hover
+      transform rotateX(-10deg)
+      box-shadow 0 0 20px rgba(black, .9)
     img
       max-width 100%
+
 
   .status
     background #E6153B
@@ -133,6 +142,7 @@
 @import '../partials/matchFeed.styl'
 @import '../partials/matchCompo.styl'
 @import "../partials/penaltyShootouts.styl"
+@import "../partials/matchInfos.styl"
 
 @media only screen and (max-width: 500px)
 

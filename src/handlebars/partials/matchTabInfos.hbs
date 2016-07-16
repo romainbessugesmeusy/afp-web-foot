@@ -1,12 +1,28 @@
 <div class="tab" id="infos">
     <div class="infosWrapper">
-        <h4>Arbitres</h4>
-        <ul>
-            {{#each referees}}
-                <li>{{name}} {{country}} {{role}}</li>
-            {{/each}}
-        </ul>
-        <h4>Stade</h4>
+        {{#if referees}}
+            <div class="referees">
+                <h3>Arbitres</h3>
+                <div class="refereesWrapper">
+                    {{#each referees}}
+                        <div class="referee">
+                            <p class="name">{{name}}</p>
+                            <p class="country"><img src="/img/flags/flags_un/48/{{country}}.png" alt="{{country}}"></p>
+                            <p class="role">{{role}}</p>
+                        </div>
+                    {{/each}}
+                </div>
+            </div>
+        {{/if}}
+        <div class="stadium">
+            <h3>Stade</h3>
+            <div class="stadiumFile">
+                <p class="name">{{stadium.name}}</p>
+                <p class="city">{{stadium.city}}</p>
+                <p class="country"><img src="/img/flags/flags_un/48/{{stadium.country}}.png" alt="{{stadium.country}}">
+                </p>
+            </div>
+        </div>
 
     </div>
 </div>
