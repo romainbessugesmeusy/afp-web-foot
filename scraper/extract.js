@@ -4,7 +4,6 @@ var path = require('path');
 var async = require('async');
 var extend = require('extend');
 var xml2js = require('xml2js');
-var xmlConvJson=require('xml-conv-json');
 
 module.exports = function (options) {
 
