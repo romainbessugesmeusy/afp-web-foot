@@ -1,4 +1,10 @@
 <div class="tab feed active" id="evenements">
+    <button id="toggleComments"
+            data-state="on"
+            data-message-on="Masquer les commentaires"
+            data-message-off="Afficher les commentaires">
+        Masquer les commentaires
+    </button>
     <div class="eventsWrapper">
         {{#each events}}
             <div class="row {{side}}">

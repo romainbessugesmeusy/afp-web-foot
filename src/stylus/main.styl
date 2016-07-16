@@ -55,32 +55,50 @@ body > header
   background white
   h1
     padding 2rem
+    padding-bottom 4rem
     background white
+    img
+      max-width 100%
   nav
-    max-width 1000px
     margin 0 auto
-    margin-top 2rem
     padding-bottom 1rem
     background white
+    width 100%
     ul
+      margin 0 auto
+      max-width 1000px
       display flex
       flex-wrap wrap
       justify-content space-around
       a
-        margin-top 1rem
-        font-size 1.4rem
+        margin-top 1em
+        font-size 1.4em
         text-decoration none
         display inline-block
-        padding-bottom .2rem
+        padding-bottom .2em
         border-bottom 3px solid black
         color black
         text-transform uppercase
+        &:hover
+          color white
+
         &.scoreboard
           border-color #D0021B
+          &:hover
+            background rgba(#D0021B, .5)
         &.competitions
           border-color #F8E71C
         &.teams
           border-color #7ED321
+
+body.scroll > header nav
+  position fixed
+  top 0
+  z-index 1000
+  font-size .7rem
+  box-shadow 0 1px 4px rgba(black, .2)
+  a
+    border-bottom-width 2px
 
 @import "views/scoreboard.styl"
 @import "views/match.styl"

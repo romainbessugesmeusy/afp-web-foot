@@ -4,6 +4,7 @@ var path = require('path');
 var async = require('async');
 var extend = require('extend');
 var xml2js = require('xml2js');
+var xmlConvJson=require('xml-conv-json');
 
 module.exports = function (options) {
 
@@ -122,7 +123,7 @@ module.exports = function (options) {
             var parser = new xml2js.Parser({trim: true, attrkey: 'props', charkey: 'text'});
             var filename = path.join(
                 __dirname,
-                '../dist/data/comments/' + getEvenementMetaData(evenement, 'EDFTP') + '/fr/comments/commentslive-fr-' + match.Id + '.xml'
+                '../dist/data/comments/' + getEvenementMetaData(evenement, 'EDFTP') + '/xml/fr/comments/commentslive-fr-' + match.Id + '.xml'
             );
 
             fileExists(filename, function () {

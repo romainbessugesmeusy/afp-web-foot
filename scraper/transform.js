@@ -106,24 +106,14 @@ module.exports = function (options) {
             playersFromStats[player.Id] = player;
         });
 
-
         var teamDetail = {
             id: match[team].TeamId,
-            players: match[team].TeamCompo.map(function (player) {
-                return {
-                    id: player.Id,
-                    number: player.Bib,
-                    position: player.Index + ',' + player.Line,
-                    name: player.ShortName || player.LomgName,
-                    role: player.PositionCode,
-                    faceshot: (playersFromStats[player.Id]) ? playersFromStats[player.Id].Faceshot : null
-                }
-            }),
-            lines: getTeamLines(match[team]),
             name: match[team].TeamName,
             goals: match[team].TeamScore,
             penaltyShootoutGoals: match[team].TeamTabScore
         };
+
+        extend(teamDetail, getTeamStaff(match, teamFromStats.Staff, match[team]));
 
         if (teamDetail.penaltyShootoutGoals < 0 || teamDetail.penaltyShootoutGoals === null) {
             delete teamDetail.penaltyShootoutGoals;
@@ -131,12 +121,66 @@ module.exports = function (options) {
         return teamDetail;
     }
 
-    function getTeamLines(team) {
-        var lines = [];
-        team.TeamCompo.forEach(function(player){
-            //if(typeof lines[player])
+    function getTeamStaff(match, staff, team) {
+        var ret = {
+            staff: [],
+            players: [],
+            subs: []
+        };
+        var playersInCompo = {};
+        team.TeamCompo.forEach(function (player) {
+            playersInCompo[player.Id] = player;
         });
-        return lines;
+
+        function transformPlayerInfo(teamMember) {
+            return {
+                id: teamMember.Id,
+                number: teamMember.Bib,
+                name: teamMember.NomCourt,
+                fullname: teamMember.NomLong,
+                position: teamMember.PositionCode,
+                faceshot: teamMember.Faceshot
+            }
+        }
+
+        function transformStaffInfo(member){
+            return {
+                id: member.Id,
+                name: member.NomCourt,
+                fullname: member.NomLong,
+                position: member.PositionCode,
+                faceshot: member.Faceshot,
+                birthCountry: member.PaysNaissanceIso,
+                birthDate: member.DateDeNaissance,
+                representedCountry: member.PaysRepresenteIso,
+                data: member
+            }
+        }
+
+        staff.forEach(function (member) {
+            if (typeof playersInCompo[member.Id] === 'undefined' || playersInCompo[member.Id].Line === 0) {
+                if (member.PositionCode !== 'PSENT') {
+                    ret.subs.push(transformPlayerInfo(member))
+                } else {
+                    ret.staff.push(transformStaffInfo(member));
+                }
+            } else {
+                var player = transformPlayerInfo(member);
+                var playerInCompo = playersInCompo[member.Id];
+                if (typeof ret.players[playerInCompo.Line] === 'undefined') {
+                    ret.players[playerInCompo.Line] = {
+                        line: playerInCompo.PositionCode,
+                        players: []
+                    }
+                }
+                ret.players[playerInCompo.Line].players.push(player)
+            }
+        });
+
+        ret.players.shift();
+        ret.players.reverse();
+        return ret;
+
     }
 
     function getEvenementMetaData(evenement, dataCode) {
@@ -286,10 +330,11 @@ module.exports = function (options) {
                         comments: commentsAfterMatch
                     });
                 }
+
                 data.events.sort(function (a, b) {
                     var aTime = parseFloat(String(a.time).replace('+', '.'));
                     var bTime = parseFloat(String(b.time).replace('+', '.'));
-                    return aTime - bTime;
+                    return bTime - aTime;
                 });
 
                 data.raw = match;

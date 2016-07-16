@@ -27,6 +27,9 @@ gulp.task('javascript', function () {
         debug: true
     });
 
+    b.ignore('canvas');
+
+
     return b.bundle()
         .pipe(source('app.js'))
         .pipe(buffer())

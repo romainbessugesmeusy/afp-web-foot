@@ -1,0 +1,38 @@
+<h3>Composition de départ</h3>
+<div class="lines">
+    {{#each players}}
+        <div class="line">
+            <h4>{{line}}</h4>
+            {{#each players}}
+                {{> teamPlayer}}
+            {{/each}}
+        </div>
+    {{/each}}
+</div>
+<h3>Remplaçants</h3>
+<div class="subs">
+    {{#group subs by="position"}}
+        <div class="position">
+            <h5>{{value}}</h5>
+            <div class="players">
+                {{#each items}}
+                    {{> teamSub}}
+                {{/each}}
+            </div>
+        </div>
+    {{/group}}
+</div>
+<h3>Staff</h3>
+<div class="staff">
+    {{#each staff}}
+        <div class="member">
+            <p class="name">{{fullname}}</p>
+            <p class="age">{{age birthDate 'YYYYMMDD'}}</p>
+            {{#if faceshot}}
+                <div class="faceshot">
+                    <img src="/data/players/{{id}}.jpg" width="150" height="200" alt="{{name}}">
+                </div>
+            {{/if}}
+        </div>
+    {{/each}}
+</div>

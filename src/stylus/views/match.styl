@@ -6,7 +6,6 @@
     background-position bottom
     padding-top 5rem
 
-
   .competition
     text-align center
     box-shadow 0 0 10px rgba(black, .2)
@@ -27,6 +26,41 @@
     font-size 1.5rem
     font-weight 100
 
+  .summaryMobile
+    display none
+
+  .summary
+    height 200px
+    background white
+    position relative
+    display flex
+    .team
+      padding 1em
+      flex 1
+
+    .fixed
+      display none
+
+    .normal
+      display block
+
+    h3
+      font-weight 200
+      font-size 2em
+      padding-bottom 0
+      text-transform uppercase
+    .logo
+      //outline 1px blue solid
+      height 9em
+      img
+        max-height 100%
+        filter: drop-shadow(0 5px 10px rgba(black, .3));
+
+    .home
+      text-align right
+    .away
+      text-align left
+
   .timeAndScore
     transition box-shadow linear .2s
     box-shadow 0 0 10px rgba(black, .2)
@@ -35,237 +69,100 @@
     background linear-gradient(#000, #666666)
     margin 0 auto
     width 200px
-    height 200px
-    padding 1rem
+    height 100%
+    padding 1em
     color white
     .time
-      font-size 2rem
+      font-size 2em
       font-weight 600
       text-shadow 0 1px 2px black
-      margin-bottom .5rem
-    .score span
-      background white
-      display inline-block
-      margin 1rem
-      font-size 2rem
-      color black
-      border-radius 4px
-      box-shadow 0 1px 3px black
-      padding .6rem .5rem .4rem .5rem
+      margin-bottom .5em
 
-    .penaltyShootoutScore
-      display flex
-      //outline 1px solid yellow
-      justify-content space-between
+    .score
+      font-size 2em
       span
-        border 1px solid #555
+        background white
+        display inline-block
+        color black
         border-radius 4px
-        box-shadow inset 0 2px 4px #222
-        text-shadow 0 1px 2px black
-        font-weight bold
-        background #444
-        display block
-        width 40px
-        height 50px
-        line-height 50px
-        font-size 1.2rem
-        top 0
-        margin 0
-  .summary
-    height 200px
-    background white
-    position relative
-    h3
-      font-weight 200
-      font-size 2rem
-      padding 1rem
-      padding-bottom 0
-      text-transform uppercase
-    .team
-      position absolute
-    .logo
-      //outline 1px blue solid
-      height 120px
-      img
-        max-height 120px
-        filter: drop-shadow(0 5px 10px rgba(black, .3));
+        box-shadow 0 1px 3px black
+        padding .4em
+        margin .1em
 
-    .home
-      right 50%
-      margin-right 100px
-    .away
-      left 50%
-      margin-left 100px
-
-  .tab.feed
-    box-shadow inset 0 10px 30px rgba(black, .5)
-    overflow: hidden; // added for pseudo-element
-    position: relative; // added for pseudo-element
-    padding 1rem
-    min-height 800px
-    &::before
-      content ' '
-      position fixed // instead of background-attachment
-      width 100%
-      height 100%
-      top 0
-      left 0
-      background-color white
-      background url('/img/grass-light.jpg') no-repeat center center
-      background-size cover
-      will-change transform // creates a new paint layer
-      z-index -1
-
-    .row.away
-      text-align left
-
-    .row.home
-      text-align right
-
-    .event
-      margin-top 1.5rem
-      background white
-      box-shadow 0 5px 10px rgba(black, .6)
-      display inline-block
-      padding 1rem
-      p
-        display inline-flex
-        align-items center
-        width 100%
-      .players
-        flex 1
-        margin 0 1rem
-        font-size 1.2rem
-        font-weight 400
-      .time
-        font-weight 600
-        font-size 1.6rem
-        color #444
-
-      &.home
-        margin-right 48%
-        p
-          flex-direction row-reverse
-
-        .time
-          margin-left 1rem
-
-      &.away
-        margin-left 48%
-        .time
-          margin-right 1rem
-
-      &.both
-        width 500px
-        position relative
-        > p
-          text-align center
-          display block
-        .comment
-          max-width 100%
-
-      .comment
-        text-align left
-        line-height 1.5rem
-        p
-          padding .5rem
-        img
-          width 100%
-
-
-    .home .comment,
-    .away .comment
-      background white
-      border 1px solid #DDD
-      margin-top .5rem
-      max-width 400px
-
-    .group
-
-      display inline-block
-      background #FFF
-      box-shadow 0 5px 15px rgba(black, .8)
-      padding 2rem
-      max-width 650px
-      text-align justify
-
-      .comment
-        margin-bottom 1rem
-        line-height 1.5em
-        font-size .9rem
-        &:first-child
-          font-size 1.2rem
-        &:last-child
-          margin-bottom 0
-        img
-          margin-top 1rem
-          width 100%
-
-#composition .compositionWrapper
-  display flex
-
-  .line
-    display flex
-    justify-content center
-    align-content flex-start
-    flex-wrap wrap
-    border-bottom 1px solid #EFEFEF
-    margin-bottom 1rem
-  .team
-    flex 1
-    padding 3rem 0
-  .home
-    border-right 1px solid #EEE
-
-figure
-  position relative
-  figcaption
-    position absolute
-    bottom 5px
-    right 5px
-    color white
-    text-shadow 1px 1px 0 #000
-    font-size .9rem
-
-
-.penaltyShootoutsWrapper
-  display flex
-  .team
-    padding 1rem
-    flex 1
-    display flex
-    flex-wrap wrap
-    justify-content center
-    &.home
-      border-right 1px solid #ddd
-  .shootout
-    margin-bottom 50px
-
-    .shotNumber
-      color white
-      font-weight 600
-      border-radius 100px
-      background #7ED321
-      display block
-      height 40px
-      width 40px
-      line-height 40px
-      text-align center
-      text-shadow 1px 1px 2px rgba(black, .4)
-      margin 0 auto
-
-    &.missed .shotNumber
-      background #E6153B
-
+        &.penaltyShootout
+          border 1px solid #555
+          box-shadow inset 0 2px 4px #222
+          text-shadow 0 1px 2px black
+          background #444
+          color white
 
 .scroll #liveMatch
+  .fixed
+    display block
+  .normal
+    display none
   .summary
     position fixed
     width 100%
-    top 0
+    top 50px
     left 0
     z-index 100
+    height 100px
     box-shadow 0 10px 40px rgba(black, .5)
+    font-size .7rem
+    .score
+      font-size 2em
+    .team
+      display flex
+      align-items center
+      h3
+        flex 1
+        margin 0 1rem
+      &.away
+        flex-direction row-reverse
+
+    .logo
+      height 100px
+
   .summaryPlaceholder
     height 200px
     background white
+
+
+
+@import '../partials/matchFeed.styl'
+@import '../partials/matchCompo.styl'
+@import "../partials/penaltyShootouts.styl"
+
+@media only screen and (max-width: 500px)
+
+  .tab.feed
+    font-size .8rem
+    .event
+      min-width auto
+      width auto
+      &.both
+        width 100%
+
+  #liveMatch > header > .summary,
+  .scroll #liveMatch > header > .summary
+    display none
+
+  #liveMatch .summaryMobile
+    display block
+    .row
+      background white
+      display flex
+      .team
+        text-align center
+        padding 1rem
+        flex 1
+        .logo
+          width 100px
+          display inline-block
+          img
+            width 100%
+
+    .timeAndScore
+      width 100%
+

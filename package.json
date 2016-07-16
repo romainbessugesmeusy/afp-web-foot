@@ -7,6 +7,7 @@
   "dependencies": {
     "async": "^2.0.0-rc.6",
     "browserify": "^13.0.1",
+    "color-thief": "^2.2.2",
     "extend": "^3.0.0",
     "gulp": "^*",
     "gulp-autoprefixer": "*",
@@ -19,6 +20,7 @@
     "gulp-util": "^3.0.7",
     "gulp-wrap": "*",
     "handlebars": "*",
+    "handlebars-group-by": "*",
     "handlebars-helpers": "*",
     "jquery": "*",
     "merge-stream": "^1.0.0",
@@ -27,7 +29,7 @@
     "request": "^2.72.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "xml2js": "^0.4.17",
-    "handlebars-group-by": "*"
+    "xml-conv-json": "^1.0.2",
+    "xml2js": "^0.4.17"
   }
 }

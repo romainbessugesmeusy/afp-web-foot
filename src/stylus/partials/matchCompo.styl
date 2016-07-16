@@ -1,0 +1,91 @@
+
+.compositionWrapper
+  display flex
+  flex-wrap wrap
+
+  h3
+    padding .5rem
+    font-size .9rem
+    text-transform uppercase
+    background #EEE
+    background-size cover
+    background-position 0 40%
+    color #999
+    border-bottom 1px solid #DDD
+
+
+  .team
+    flex 1
+    padding-bottom 300px
+    min-width 300px
+  .line
+    h4
+      position absolute
+      line-height 100%
+      color #999
+      top 1rem
+
+  .line
+    position relative
+    display flex
+    justify-content center
+    align-content flex-start
+    flex-wrap wrap
+    border-bottom 1px solid #EFEFEF
+  .home
+    border-right 1px solid #EEE
+    h4
+      right 2rem
+  .away
+    h4
+      left 2rem
+
+  .subs
+    display flex
+    flex-wrap wrap
+    .position
+      flex 1
+      outline 1px solid #EEE
+      padding-bottom 1rem
+      min-width 220px
+    h5
+      padding 1rem
+      font-size .7rem
+      color #999
+      text-align left
+
+  .sub
+    text-align left
+    padding .2rem 1rem
+    .faceshot
+      display none
+    .name
+      flex 1
+      color black
+      text-decoration none
+      &:hover
+        text-decoration: underline
+    .number
+      display inline-block
+      background #bbb
+      color white
+      border-radius 20px
+      font-size .7rem
+      font-weight 600
+      padding .3rem
+      text-shadow 0 1px 1px #666
+
+  .staff
+    display flex
+    p
+      padding .5rem 0
+    .member
+      border 1px solid #eee
+      border-radius 4px
+      padding 1rem
+      margin 1rem
+      text-align left
+    .name
+      font-weight 500
+    .faceshot img
+      box-shadow 0 3px 10px rgba(black, .2)

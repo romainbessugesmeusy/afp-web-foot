@@ -1,7 +1,6 @@
 var Handlebars = require('handlebars');
 var moment = require('moment');
 var constants = require('../app/constants');
-//var helpers = require('handlebars-helpers')('comparison', {handlebars: Handlebars});
 var groupBy = require('handlebars-group-by');
 
 groupBy.register(Handlebars);
@@ -87,6 +86,33 @@ Handlebars.registerHelper('ifEquals', function (a, b, opts) {
 });
 
 Handlebars.registerHelper('getCompoLineLabel', function (team, index, opts) {
-    return 'TODO'
+    if (typeof team.lines === 'undefined') {
+        return '';
+    }
+
+    if (typeof team.lines[index] === 'undefined') {
+        return '';
+    }
+
+    return team.lines[index];
 });
+//
+//Handlebars.registerHelper('getPlayer', function (team, playerId, opts) {
+//    var player = {};
+//    $(team.players).each(function (i, line) {
+//        $(line).each(function (j, p) {
+//            if (p.id === playerId) {
+//                player = p;
+//            }
+//        });
+//    });
+//    return player;
+//});
+Handlebars.registerHelper('age', function (date, format) {
+    if (date) {
+        return Math.abs(moment(date, format).diff(moment(), 'years')) + ' ans';
+    }
+    return ''
+});
+
 module.exports = Handlebars;

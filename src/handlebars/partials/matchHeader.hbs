@@ -4,16 +4,69 @@
         <img src="/data/events/{{competition.id}}.png" alt="{{competition.name}}">
     </div>
     {{#ifEquals status "EMENC"}}
-    <div class="status">
-        MATCH EN COURS
-    </div>
+        <div class="status">
+            MATCH EN COURS
+        </div>
     {{/ifEquals}}
     <div class="summaryPlaceholder"></div>
+    <div class="summaryMobile">
+        <div class="row">
+            <div class="team home"><h3>{{home.name}}</h3>
+                <div class="logo">
+                    <img src="/data/teams/{{home.id}}.png" alt="{{home.name}}">
+                </div>
+            </div>
+            <div class="team away">
+                <h3>{{away.name}}</h3>
+                <div class="logo">
+                    <img src="/data/teams/{{away.id}}.png" alt="{{away.name}}">
+                </div>
+            </div>
+        </div>
+        <div class="timeAndScore fontFigures {{#if penaltyShootouts}}withPenaltyShootouts{{/if}}">
+            <div class="time">{{matchTime this}}</div>
+            <div class="score fixed">
+                {{#if penaltyShootouts}}
+                    <span class="penaltyShootout home">{{home.penaltyShootoutGoals}}</span>
+                {{/if}}
+                <span class="home">{{home.goals}}</span>
+                <span class="away">{{away.goals}}</span>
+                {{#if penaltyShootouts}}
+                    <span class="penaltyShootout away">{{away.penaltyShootoutGoals}}</span>
+                {{/if}}
+            </div>
+            </div>
+    </div>
     <div class="summary">
         <div class="team home">
             <h3>{{home.name}}</h3>
             <div class="logo">
                 <img src="/data/teams/{{home.id}}.png" alt="{{home.name}}">
+            </div>
+        </div>
+        <div class="timeAndScore fontFigures {{#if penaltyShootouts}}withPenaltyShootouts{{/if}}">
+            <div class="time">{{matchTime this}}</div>
+            <div class="score fixed">
+                {{#if penaltyShootouts}}
+                    <span class="penaltyShootout home">{{home.penaltyShootoutGoals}}</span>
+                {{/if}}
+                <span class="home">{{home.goals}}</span>
+                <span class="away">{{away.goals}}</span>
+                {{#if penaltyShootouts}}
+                    <span class="penaltyShootout away">{{away.penaltyShootoutGoals}}</span>
+                {{/if}}
+            </div>
+            <div class="score normal">
+
+                <span class="home">{{home.goals}}</span>
+                <span class="away">{{away.goals}}</span>
+
+                {{#if penaltyShootouts}}
+                    <div class="penaltyShootouts">
+                        <span class="penaltyShootout home">{{home.penaltyShootoutGoals}}</span>
+                        <span class="penaltyShootout away">{{away.penaltyShootoutGoals}}</span>
+                    </div>
+                {{/if}}
             </div>
         </div>
         <div class="team away">
@@ -22,18 +75,6 @@
                 <img src="/data/teams/{{away.id}}.png" alt="{{away.name}}">
             </div>
         </div>
-        <div class="timeAndScore fontFigures {{#if penaltyShootouts}}withPenaltyShootouts{{/if}}">
-            <div class="time">{{matchTime this}}</div>
-            <div class="score">
-                <span class="home">{{home.goals}}</span>
-                <span class="away">{{away.goals}}</span>
-            </div>
-            {{#if penaltyShootouts}}
-                <div class="penaltyShootoutScore">
-                    <span class="home">{{home.penaltyShootoutGoals}}</span>
-                    <span class="away">{{away.penaltyShootoutGoals}}</span>
-                </div>
-            {{/if}}
-        </div>
+
     </div>
 </header>

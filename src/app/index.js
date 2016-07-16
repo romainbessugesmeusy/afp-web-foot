@@ -15,6 +15,9 @@ var views = require('../gen/views');
 // DOM
 var $page = $('#page');
 
+var ColorThief = require('color-thief');
+
+
 // Data Processors
 var processScoreboardData = require('./processScoreboardData');
 var processMatchData = require('./processMatchData');
@@ -49,14 +52,34 @@ page('/', function () {
 page('/matches/:matchId', function (ctx) {
     unbindMatchScroll();
     $.getJSON('/data/matches/' + ctx.params.matchId + '.json', function (data) {
-        console.info('matchData', data);
         var match = processMatchData(data);
-        console.info('matchDataProcessed', match);
         $page.empty().append(views.match(match));
+        //getTeamColors();
         bindMatchScroll();
         updateActiveTabs();
     });
 });
+
+function getTeamColors() {
+    var thief = new ColorThief();
+    var $match = $('#liveMatch');
+    var toRGB = function (arr) {
+        return 'rgb(' + arr.join(',') + ')';
+    };
+    $(['home', 'away']).each(function (i, side) {
+        $match.find('> header .' + side + ' .logo img').eq(0).on('load', function () {
+            var paletteArray = thief.getPalette(this, 3);
+            console.info(this, side, JSON.stringify(paletteArray));
+            paletteArray.forEach(function (c) {
+                console.log('%c ' + toRGB(c), 'background:' + toRGB(c));
+            });
+            $match.find('.compositionWrapper .' + side + ' h3').css({
+                background: 'rgb(' + paletteArray[0].join(',') + ')',
+                color: 'white'
+            });
+        });
+    });
+}
 
 page('/competitions', function () {
     $page.empty().append(views.competitions({}));
@@ -79,8 +102,9 @@ $page.on('click', '.tabs .sectionNavbar a', function () {
 });
 
 function bindMatchScroll() {
-    $('body').on('scroll', function () {
-        $page.toggleClass('scroll', $page[0].getBoundingClientRect().top < -337)
+    var $body = $('body');
+    $body.on('scroll', function () {
+        $body.toggleClass('scroll', $page[0].getBoundingClientRect().top < -337)
     });
 }
 
@@ -88,8 +112,8 @@ function unbindMatchScroll() {
     $('body').off('scroll');
 }
 
-function updateScoreboardNavbars(){
-    $('.sectionNavbar').each(function(){
+function updateScoreboardNavbars() {
+    $('.sectionNavbar').each(function () {
         var $this = $(this);
         $this.find('button.prev').toggle($this.find('a.prev').length > 0);
         $this.find('button.next').toggle($this.find('a.next').length > 0);
@@ -124,4 +148,14 @@ function paginateDatesHandler(state) {
 
 $page.on('click', '.sectionNavbar button.prev', paginateDatesHandler('prev'));
 $page.on('click', '.sectionNavbar button.next', paginateDatesHandler('next'));
+$page.on('click', '#toggleComments', function () {
+    var $btn = $(this);
+    var state = $btn.attr('data-state');
+    $page.find('.group').toggle(state === 'off');
+    $page.find('.event.both').toggle(state === 'off');
+    $page.find('.event .comment').toggle(state === 'off');
+    var newState = state === 'on' ? 'off' : 'on';
+    $btn.text($btn.attr('data-message-' + newState));
+    $btn.attr('data-state', newState);
+});
 page();
