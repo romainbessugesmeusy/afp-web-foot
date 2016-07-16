@@ -1,13 +1,34 @@
 <div class="liveMatchScoreboard">
-    <div class="time">
-        {{time}}90'
+    <header>
+        <div class="home cards">
+            <span class="card yellow">2</span>
+            <span class="card red">1</span>
+        </div>
+        <div class="time">48'</div>
+        <div class="away cards">
+            <span class="card yellow">1</span>
+            <span class="card red">2</span>
+        </div>
+    </header>
+    <div class="content">
+        <div class="team home">
+            <p><img src="/data/teams/1037.png" alt="Dundalk F.C." class="logo"></p>
+            <p><span class="name">Dundalk F.C.</span></p>
+        </div>
+        <div class="score fontFigures">
+            <p class="goals">
+                <span class="home">3</span>
+                <span class="away">3</span>
+            </p>
+            <p class="penaltyShootouts">
+                <span class="home">8</span>
+                <span class="away">7</span>
+            </p>
+            <p><a href="/matches/" class="button">LIVE</a></p>
+        </div>
+        <div class="team away">
+            <p><img src="/data/teams/1124.png" alt="Celtic F.C." class="logo"></p>
+            <p><span class="name">Celtic F.C.</span></p>
+        </div>
     </div>
-    <div class="scoreSeparator"></div>
-    <div class="home team">
-        {{> liveMatchTeam team=home}}
-    </div>
-    <div class="away team">
-        {{> liveMatchTeam team=away}}
-    </div>
-    <a href="/matches/23{{id}}" class="button">LIVE</a>
 </div>

@@ -1,28 +1,23 @@
 
 .liveMatchScoreboard
-  $liveMatchWidth = 300
 
   background #FFF
   border-radius 4px
-  min-width $liveMatchWidth px
-  max-width 600px
-  height unit($liveMatchWidth * 0.25, px)
   box-shadow 0 10px 15px rgba(black, .6)
   margin 2rem
   position relative
   text-align center
+  display block
   flex 1
 
   .team
     position absolute
     top 0
-    width unit($liveMatchWidth / 2.3, px)
 
   .logoAndName
     text-align center
 
   .logoWrapper
-    width unit($liveMatchWidth * 0.15, px)
     overflow hidden
     max-height 90px
     margin 0 auto

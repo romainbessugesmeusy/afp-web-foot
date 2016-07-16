@@ -6,10 +6,11 @@ html
 
 body
   height 100%
-  overflow auto
+  overflow-y scroll
+  overflow-x hidden
   font-family 'Lato', "Gill Sans", Helvetica, Arial, sans-serif
   font-weight 200
-
+  -webkit-overflow-scrolling touch
 
 .fontFigures
   font-family "Avenir Next", Helvetica, sans-serif
@@ -102,7 +103,6 @@ body.scroll > header nav
 
 @import "views/scoreboard.styl"
 @import "views/match.styl"
-@import "partials/liveMatchScoreboard.styl"
 @import "partials/sectionNavbar.styl"
 @import "partials/condensedMatch.styl"
 @import "partials/teamPlayer.styl"
