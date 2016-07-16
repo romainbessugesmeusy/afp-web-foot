@@ -54,6 +54,7 @@ page('/matches/:matchId', function (ctx) {
     $.getJSON('/data/matches/' + ctx.params.matchId + '.json', function (data) {
         var match = processMatchData(data);
         $page.empty().append(views.match(match));
+        console.info('matchDataProcessed', match);
         //getTeamColors();
         bindMatchScroll();
         updateActiveTabs();

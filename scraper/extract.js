@@ -3,7 +3,8 @@ var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var extend = require('extend');
-var xml2js = require('xml2js');
+var XmlStream = require('xml-stream');
+
 
 module.exports = function (options) {
 
@@ -26,7 +27,7 @@ module.exports = function (options) {
             var req = request(uri);
             req.pause();
             req.on('error', function (err) {
-                console.error('Error downloading ',uri);
+                console.error('Error downloading ', uri);
                 console.error(err);
                 callback(err);
             });
@@ -117,28 +118,45 @@ module.exports = function (options) {
         return value;
     }
 
+
+    function parseCommentFile(filename, cb) {
+        var stream = fs.createReadStream(filename);
+        stream.on('error', function () {
+            cb([]);
+        });
+        stream.on('readable', function () {
+            try {
+                var xml = new XmlStream(stream, 'utf8');
+                xml.preserve('comments', false);
+                xml.collect('comment');
+                xml.on('endElement: comments', function (item) {
+                    cb(item.$children.map(function (comment) {
+                        return {
+                            props: comment.$,
+                            text: comment.$text
+                        }
+                    }));
+                });
+            } catch (err) {
+                console.error(err);
+                cb([]);
+            }
+        });
+    }
+
     function getMatchComments(evenement, match) {
         return function (matchCommentCb) {
-            var parser = new xml2js.Parser({trim: true, attrkey: 'props', charkey: 'text'});
             var filename = path.join(
                 __dirname,
                 '../dist/data/comments/' + getEvenementMetaData(evenement, 'EDFTP') + '/xml/fr/comments/commentslive-fr-' + match.Id + '.xml'
             );
 
-            fileExists(filename, function () {
-                fs.readFile(filename, 'utf8', function (err, data) {
-                    parser.parseString(data, function (err, result) {
-                        if (err) {
-                            console.error('Error Parsing', filename);
-                            console.error(err);
-                        } else {
-                            //console.info('parsing comments form match', match.Id);
-                            match.Comments = result.comments.comment;
-                        }
-                        matchCommentCb();
-                    });
-                });
-            }, matchCommentCb);
+            parseCommentFile(filename, function (comments) {
+                if (comments) {
+                    match.Comments = comments;
+                }
+                matchCommentCb();
+            });
         }
     }
 
