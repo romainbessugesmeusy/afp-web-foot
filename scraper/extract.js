@@ -3,107 +3,14 @@ var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var extend = require('extend');
-var XmlStream = require('xml-stream');
 var moment = require('moment');
+var parseCommentFile = require('./lib/parseCommentFile');
+var downloadFile = require('./lib/downloadFile');
+var fileExists = require('./lib/fileExists');
 
 module.exports = function (options) {
 
-    var fileExists = function (filename, existCb, notExistCb) {
-        fs.stat(filename, function (err) {
-            if (err != null && err.code === 'ENOENT') {
-                return notExistCb();
-            }
-            existCb();
-        });
-    };
-
-    var download = function (resource, filename, callback) {
-
-        var uri = (resource.indexOf('http') !== 0) ? apiUri(resource) : resource;
-
-        fileExists(filename, function () {
-            callback(null, true)
-        }, function () {
-            var req = request(uri);
-            req.pause();
-            req.on('error', function (err) {
-                console.error('Error downloading ', uri);
-                console.error(err);
-                callback(err);
-            });
-            req.on('response', function (res) {
-                if (res.statusCode === 200) {
-                    req.pipe(fs.createWriteStream(filename));
-                    req.resume();
-                } else {
-                    callback({statusCode: res.statusCode})
-                }
-            }).on('close', function () {
-                callback(null, true);
-            });
-        })
-    };
-
-
-    var uriParams = function (resource, params) {
-        return resource.replace(/:\w+/g, function (param) {
-            return params[param.substring(1)] || options[param.substring(1)];
-        });
-    };
-
-    var apiUri = function (resource) {
-        return options.root + resource;
-    };
-
-    var unlinkAndFetchRemote = function (filename, resource, params, callback, invalidateFn) {
-        console.info('invalidating:', filename);
-        fs.unlink(filename, function () {
-            fetch(resource, params, callback, invalidateFn);
-        });
-    };
-
-    var fetch = function (resource, params, callback, invalidateFn) {
-        resource = uriParams(resource, params);
-        var cacheFilename = path.join(__dirname, '../dist/data/cache/' + resource.replace(/\//g, '_') + '.json');
-        fileExists(cacheFilename, function () {
-            fs.readFile(cacheFilename, 'utf8', function (readFileError, data) {
-                if (readFileError) {
-                    console.error(readFileError);
-                    return unlinkAndFetchRemote(cacheFilename, resource, params, callback, invalidateFn);
-                }
-                var json;
-                try {
-                    json = JSON.parse(data);
-                    if (typeof invalidateFn !== 'function' || invalidateFn(json) === false) {
-                        return callback(null, json);
-                    } else {
-                        console.warn('data invalidated');
-                        return unlinkAndFetchRemote(cacheFilename, resource, params, callback);
-                    }
-                } catch (jsonParseError) {
-                    console.error(jsonParseError);
-                    unlinkAndFetchRemote(cacheFilename, resource, params, callback, invalidateFn);
-                }
-
-            });
-        }, function () {
-            console.info('downloading:', resource);
-            request(apiUri(resource), function (error, response, body) {
-                var jsonData;
-                try {
-                    jsonData = JSON.parse(body);
-                } catch (err) {
-                    console.error(err);
-                    return callback(err);
-                }
-
-                fs.writeFile(cacheFilename, body, function (err) {
-                    if (err)  return callback(err, jsonData);
-                    callback(null, jsonData);
-                });
-            });
-        });
-    };
+    var fetch = require('./lib/fetch')(options);
 
     function getEvenementInfos(evenement) {
         return function (evenementInfosCb) {
@@ -143,44 +50,6 @@ module.exports = function (options) {
         return value;
     }
 
-
-    function parseCommentFile(filename, cb) {
-        var comments = [];
-        var stream = fs.createReadStream(filename);
-        var cbCalled = false;
-
-        var end = function (err) {
-            if (err && err.code !== 'ENOENT') {
-                console.warn(err.message);
-            }
-            if (!cbCalled) {
-                cb(comments);
-                cbCalled = true;
-            }
-        };
-
-        stream.on('error', end);
-        stream.on('readable', function () {
-            try {
-                var xml = new XmlStream(stream, 'utf8');
-                xml.preserve('comments', false);
-                xml.collect('comment');
-                xml.on('error', end);
-                xml.on('end', end);
-                xml.on('endElement: comments', function (item) {
-                    comments = item.$children.map(function (comment) {
-                        return {
-                            props: comment.$,
-                            text: comment.$text
-                        }
-                    });
-                    end();
-                });
-            } catch (err) {
-                end(err);
-            }
-        });
-    }
 
     function getMatchComments(evenement, match) {
         return function (matchCommentCb) {
@@ -267,9 +136,9 @@ module.exports = function (options) {
     }
 
     function getFaceshot(player, cb) {
-        var uri = uriParams('aaheadshot/:id', {id: player.Id});
+        var uri = options.root + 'aaheadshot/' + player.Id;
         var filename = path.join(__dirname, '../dist/data/players', player.Id + '.jpg');
-        download(uri, filename, function (err) {
+        downloadFile(uri, filename, function (err) {
             if (!err) player.Faceshot = true;
             cb();
         });
@@ -287,10 +156,10 @@ module.exports = function (options) {
                 var uri;
                 switch (equipe.TeamType) {
                     case 'CECLU':
-                        uri = uriParams('http://bdsports.afp.com/spa-xc/images/team/:id.png', {id: equipe.Id});
+                        uri = 'http://bdsports.afp.com/spa-xc/images/team/' + equipe.Id + '.png';
                         break;
                     case 'CENAT':
-                        uri = uriParams('http://bdsports.afp.com/spa-xc/images/flag.3/64/:iso.png', {iso: equipe.PaysIso});
+                        uri = 'http://bdsports.afp.com/spa-xc/images/flag.3/64/' + equipe.PaysIso + '.png';
                         break;
                     default:
                         console.warn('Unknown team type: ' + equipe.TeamType);
@@ -298,7 +167,7 @@ module.exports = function (options) {
                         return cb();
                 }
 
-                download(uri, path.join(__dirname, '../dist/data/teams', equipe.Id + '.png'), function (err) {
+                downloadFile(uri, path.join(__dirname, '../dist/data/teams', equipe.Id + '.png'), function (err) {
                     if (!err) equipe.logo = true;
                     cb();
                 });

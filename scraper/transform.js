@@ -22,11 +22,11 @@ module.exports = function (options) {
             delete obj.goals;
         }
 
-        if(obj.cards.yellow === 0){
+        if (obj.cards.yellow === 0) {
             delete obj.cards.yellow;
         }
 
-        if(obj.cards.red === 0){
+        if (obj.cards.red === 0) {
             delete obj.cards.red;
         }
 
@@ -112,7 +112,7 @@ module.exports = function (options) {
 
         var teamFromStats = getTeamFromEventStats(evenement, match[team].TeamId);
 
-        if(teamFromStats === null){
+        if (teamFromStats === null) {
             return teamDetail;
         }
 
@@ -151,7 +151,7 @@ module.exports = function (options) {
             }
         }
 
-        function transformStaffInfo(member){
+        function transformStaffInfo(member) {
             return {
                 id: member.Id,
                 name: member.NomCourt,
@@ -166,7 +166,7 @@ module.exports = function (options) {
         }
 
         staff.forEach(function (member) {
-            if (typeof playersInCompo[member.Id] === 'undefined' || playersInCompo[member.Id].Line === 0) {
+            if (typeof playersInCompo[member.Id] === 'undefined' || playersInCompo[member.Id].Line === 0) {
                 if (member.PositionCode !== 'PSENT') {
                     ret.subs.push(transformPlayerInfo(member))
                 } else {
@@ -234,6 +234,9 @@ module.exports = function (options) {
     function getMatches(matchesFileArray, evenements) {
         return function (eachMatchCb) {
             eachMatches(evenements, function (evenement, phase, match) {
+                match.Arbitres = match.Arbitres || [];
+                match.Events = match.Events || [];
+
                 var data = {
                     id: match.Id,
                     status: match.StatusCode,
@@ -292,6 +295,8 @@ module.exports = function (options) {
                 var commentIsMappedToExistingEvent;
 
                 var beforeKickoff = true;
+
+                data.hasComments = match.Comments.length > 0;
 
                 if (Array.isArray(match.Comments)) {
                     match.Comments.forEach(function (comment) {
