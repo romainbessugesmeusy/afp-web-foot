@@ -14,10 +14,13 @@
             <nav class="sectionNavbar">
                 <div class="wrapper">
                     <button class="prev">⇽</button>
-                    {{#each upcomingDateList}}
-                        <a class="{{className}}"
-                           href="#upcomingMatches-date-{{date}}">{{relativeDate date}}</a>
-                    {{/each}}
+                    <p>
+                        {{#each upcomingDateList}}
+                            <a class="{{className}}" href="#" data-param="upcomingDate" data-value="{{date}}">
+                                {{relativeDate date}}
+                            </a>
+                        {{/each}}
+                    </p>
                     <button class="next">⇾</button>
                 </div>
             </nav>
@@ -42,15 +45,18 @@
             <nav class="sectionNavbar">
                 <div class="wrapper">
                     <button class="prev">⇽</button>
-                    {{#each pastDateList}}
-                        <a class="{{className}}" href="#pastMatches-date-{{date}}">{{relativeDate date}}</a>
-                    {{/each}}
+                    <p>
+                        {{#each pastDateList}}
+                            <a class="{{className}}" href="#" data-param="pastDate"
+                               data-value="{{date}}">{{relativeDate date}}</a>
+                        {{/each}}
+                    </p>
                     <button class="next">⇾</button>
                 </div>
             </nav>
             <div class="competitions">
                 {{#each pastDateList}}
-                    <div class="tab date {{#if @first}}active{{/if}}" id="pastMatches-date-{{date}}">
+                    <div class="tab date" id="pastMatches-date-{{date}}">
                         <div class="wrapper">
                             {{#each_competition @root.pastMatches date}}
                                 {{> competitionPastMatches }}

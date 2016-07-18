@@ -2,12 +2,10 @@
     {{> matchHeader }}
     <div class="tabs" id="matchTabs">
         <nav class="sectionNavbar light">
-            <a href="#evenements" class="active">Événements</a>
-            {{#if penaltyShootouts}}
-                <a href="#tirs-au-but">Tirs au but</a>
-            {{/if}}
-            <a href="#composition">Composition</a>
-            <a href="#infos">Infos</a>
+            {{#if hasEvents}}<a href="/matches/{{id}}/evenements" class="active" data-target="events">Événements</a>{{/if}}
+            {{#if penaltyShootouts}}<a href="/matches/{{id}}/tirs-au-but" data-target="penaltyShootouts">Tirs au but</a>{{/if}}
+            {{#if hasPlayers}}<a href="/matches/{{id}}/composition" data-target="composition">Composition</a>{{/if}}
+            {{#if hasInfos}}<a href="/matches/{{id}}/infos" data-target="infos">Infos</a>{{/if}}
         </nav>
         {{> matchTabEvents}}
         {{> matchTabCompo}}

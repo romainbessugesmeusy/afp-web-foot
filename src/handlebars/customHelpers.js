@@ -45,7 +45,7 @@ Handlebars.registerHelper('relativeDate', function (date, options) {
         case -2:
             return 'après-demain';
         default :
-            return moment(date, 'YYYY-MM-DD').format('dddd D MMMM');
+            return moment(date, 'YYYY-MM-DD').format('dddd D MMM');
     }
 });
 
