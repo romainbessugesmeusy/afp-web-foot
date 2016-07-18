@@ -4,7 +4,7 @@ var path = require('path');
 var async = require('async');
 var extend = require('extend');
 var XmlStream = require('xml-stream');
-
+var moment = require('moment');
 
 module.exports = function (options) {
 
@@ -55,16 +55,39 @@ module.exports = function (options) {
         return options.root + resource;
     };
 
-    var fetch = function (resource, params, callback) {
+    var unlinkAndFetchRemote = function (filename, resource, params, callback, invalidateFn) {
+        console.info('invalidating:', filename);
+        fs.unlink(filename, function () {
+            fetch(resource, params, callback, invalidateFn);
+        });
+    };
 
+    var fetch = function (resource, params, callback, invalidateFn) {
         resource = uriParams(resource, params);
         var cacheFilename = path.join(__dirname, '../dist/data/cache/' + resource.replace(/\//g, '_') + '.json');
         fileExists(cacheFilename, function () {
-            fs.readFile(cacheFilename, 'utf8', function (err, data) {
-                if (err) return callback(err);
-                callback(null, JSON.parse(data));
+            fs.readFile(cacheFilename, 'utf8', function (readFileError, data) {
+                if (readFileError) {
+                    console.error(readFileError);
+                    return unlinkAndFetchRemote(cacheFilename, resource, params, callback, invalidateFn);
+                }
+                var json;
+                try {
+                    json = JSON.parse(data);
+                    if (typeof invalidateFn !== 'function' || invalidateFn(json) === false) {
+                        return callback(null, json);
+                    } else {
+                        console.warn('data invalidated');
+                        return unlinkAndFetchRemote(cacheFilename, resource, params, callback);
+                    }
+                } catch (jsonParseError) {
+                    console.error(jsonParseError);
+                    unlinkAndFetchRemote(cacheFilename, resource, params, callback, invalidateFn);
+                }
+
             });
         }, function () {
+            console.info('downloading:', resource);
             request(apiUri(resource), function (error, response, body) {
                 var jsonData;
                 try {
@@ -106,7 +129,7 @@ module.exports = function (options) {
                 match.Events = matchDetail.Events;
                 match.Tabs = matchDetail.Tabs;
                 eachMatchCb();
-            });
+            }, isMatchOutdated);
         }
     }
 
@@ -189,8 +212,22 @@ module.exports = function (options) {
                         getMatchComments(evenement, match)
                     ], eachMatchCb)
                 }, matchesPhaseCb);
+            }, function (matches) {
+                var invalidate = false;
+
+                matches.Matches.forEach(function (match) {
+                    if (isMatchOutdated(match)) {
+                        invalidate = true;
+                    }
+                });
+
+                return invalidate;
             });
         }
+    }
+
+    function isMatchOutdated(match) {
+        return (moment(match.Date).diff(new Date()) < 0 && match.StatusCode === 'EMNCO');
     }
 
     function getPhaseTopScorers(evenement, phase) {
