@@ -50,19 +50,20 @@ Handlebars.registerHelper('relativeDate', function (date, options) {
 });
 
 Handlebars.registerHelper('penaltyShooter', function (playerId, options) {
-    var player = {};
-    options.data.root.home.players.forEach(function (p) {
-        if (p.id === playerId) {
-            player = p;
-        }
-    });
-    options.data.root.away.players.forEach(function (p) {
-        if (p.id === playerId) {
-            player = p;
-        }
-    });
-
+    var player = options.data.root.playerHash[playerId];
     return new Handlebars.SafeString(Handlebars.partials['teamPlayer'](player, options));
+});
+
+Handlebars.registerHelper('matchPlayerName', function (playerId, options) {
+    var player = options.data.root.playerHash[playerId];
+    return player ? player.name : '';
+});
+
+Handlebars.registerHelper('joinScorerGoals', function(goals){
+    var strings = goals.map(function(g){
+        return g.penalty ? g.time + ' <strong>P</strong>' : g.time;
+    });
+    return new Handlebars.SafeString('(' + strings.join(', ') + ')');
 });
 
 Handlebars.registerHelper('matchTime', function (match, options) {

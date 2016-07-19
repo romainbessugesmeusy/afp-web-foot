@@ -42,6 +42,7 @@
     <div class="summary">
         <div class="team home">
             <h3>{{home.name}}</h3>
+            {{> matchScorers home}}
             <div class="logo">
                 <img src="/data/teams/{{home.id}}.png" alt="{{home.name}}">
             </div>
@@ -73,6 +74,7 @@
         </div>
         <div class="team away">
             <h3>{{away.name}}</h3>
+            {{> matchScorers away}}
             <div class="logo">
                 <img src="/data/teams/{{away.id}}.png" alt="{{away.name}}">
             </div>

@@ -3,6 +3,9 @@
 // deps
 var $ = require('jquery');
 var page = require('page');
+var io = require('socket.io-client');
+
+window.io = io;
 
 // templates and partials
 // expose the light runtime for browser
@@ -149,6 +152,7 @@ page('/matches/:matchId/*', function (ctx, next) {
 
     $.getJSON('/data/matches/' + ctx.params.matchId + '.json', function (data) {
         var match = processMatchData(data);
+        console.info('processedMatchData', match);
         appCtx.currentMatchId = ctx.params.matchId;
         $pages.match.empty().append(views.match(match));
         next()

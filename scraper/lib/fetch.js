@@ -51,10 +51,16 @@ module.exports = function (options) {
         }, function () {
             console.info('downloading:', uri);
             request(apiUri(uri), function (error, response, body) {
+                if (error) {
+                    console.error(error);
+                    return callback(error);
+                }
                 try {
                     json = JSON.parse(body);
                 } catch (err) {
-                    console.error(err);
+                    console.error(err.message);
+                    console.info(apiUri(uri), body);
+                    console.dir(response);
                     return callback(err);
                 }
 

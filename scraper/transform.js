@@ -110,6 +110,20 @@ module.exports = function (options) {
             delete teamDetail.penaltyShootoutGoals;
         }
 
+        if(teamDetail.goals > 0){
+            teamDetail.scorers = [];
+            match.Events.forEach(function(event){
+                if(event.TeamId === teamDetail.id && (event.TypeEvtCode === 'VTBUT' || event.TypeEvtCode === 'VTPEN')){
+                    teamDetail.scorers.push({
+                        time: event.Minute,
+                        player: event.PlayerId1,
+                        penalty: event.TypeEvtCode === 'VTPEN'
+                    })
+                }
+            });
+            teamDetail.scorers.reverse()
+        }
+
         var teamFromStats = getTeamFromEventStats(evenement, match[team].TeamId);
 
         if (teamFromStats === null) {
@@ -122,19 +136,31 @@ module.exports = function (options) {
             playersFromStats[player.Id] = player;
         });
 
-
         extend(teamDetail, getTeamStaff(match, teamFromStats.Staff, match[team]));
-
 
         return teamDetail;
     }
 
     function getTeamStaff(match, staff, team) {
+
+        var playerEvents=  {};
+        var playerEventTypes = ['VTJAU', 'VTBUT', 'VTROU'];
+
+        match.Events.forEach(function(event){
+            if(playerEventTypes.indexOf(event.TypeEvtCode) > -1){
+                if(typeof playerEvents[event.PlayerId1] === 'undefined'){
+                    playerEvents[event.PlayerId1] = [];
+                }
+                playerEvents[event.PlayerId1].push({type: event.TypeEvtCode, minute: event.Minute});
+            }
+        });
+
         var ret = {
             staff: [],
             players: [],
             subs: []
         };
+
         var playersInCompo = {};
         team.TeamCompo.forEach(function (player) {
             playersInCompo[player.Id] = player;
@@ -147,7 +173,8 @@ module.exports = function (options) {
                 name: teamMember.NomCourt,
                 fullname: teamMember.NomLong,
                 position: teamMember.PositionCode,
-                faceshot: teamMember.Faceshot
+                faceshot: teamMember.Faceshot,
+                events: playerEvents[teamMember.Id]
             }
         }
 
