@@ -1,13 +1,7 @@
 var $ = require('jquery');
-var defaults = {
-    displayedDays: 5,
-    upcomingMatchesOffset: 0,
-    pastMatchesOffset: 0
-};
+var sortByDate = require('./sortByDate');
 
 module.exports = function (data, options) {
-
-    options = $.extend({}, defaults, options);
 
     var scoreboard = {
         competitions: data.competitions,
@@ -68,51 +62,16 @@ module.exports = function (data, options) {
         scoreboard.pastMatches[date] = matchesByDateAndCompetition[date];
     });
 
-    function sortByDate(asc) {
-        return function (a, b) {
-            var arrayValuesToInt = function (part) {
-                return parseInt(part)
-            };
-            var pa = a.split('-').map(arrayValuesToInt);
-            var pb = b.split('-').map(arrayValuesToInt);
-            var up = (asc) ? pa : pb;
-            var low = (asc) ? pb : pa;
-
-            if (up[0] !== low[0]) {
-                return up[0] - low[0]
-            }
-
-            if (up[1] !== low[1]) {
-                return up[1] - low[1];
-            }
-
-            if (up[2] !== low[2]) {
-                return up[2] - low[2];
-            }
-
-            return 0;
-        }
-    }
 
     scoreboard.pastDateList.sort(sortByDate(false));
-    scoreboard.pastDateList = scoreboard.pastDateList.map(wrapDates(options.pastMatchesOffset, options.displayedDays));
+    scoreboard.pastDateList = scoreboard.pastDateList.map(wrapDates);
     scoreboard.pastDateList.reverse();
     scoreboard.upcomingDateList.sort(sortByDate(true));
-    scoreboard.upcomingDateList = scoreboard.upcomingDateList.map(wrapDates(options.upcomingMatchesOffset, options.displayedDays));
+    scoreboard.upcomingDateList = scoreboard.upcomingDateList.map(wrapDates);
     return scoreboard;
 };
 
 
-function wrapDates(offset, displayedDays){
-    return function(date, index){
-        var obj = {date: date};
-        if (index < offset ) {
-            obj.className = 'prev';
-        } else if (index >= offset + displayedDays) {
-            obj.className = 'next';
-        } else {
-            obj.className = 'current';
-        }
-        return obj;
-    }
+function wrapDates(date, index) {
+    return {date: date};
 }

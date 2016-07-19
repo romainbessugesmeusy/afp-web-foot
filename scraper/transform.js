@@ -400,12 +400,213 @@ function transformScoreboardData(evenements, write) {
     }
 }
 
+function getCompetitions(evenements, write) {
+    return function (competitionCb) {
+        evenements.forEach(function (evenement) {
+            //{ id: 4571,
+            //    Id: 4571,
+            //    Label: 'Euro 2016',
+            //    GenderCode: 'M',
+            //    DisciplineCode: 'FB',
+            //    DisciplineNom: 'Football',
+            //    DateDeb: '2016-02-10T00:00:00',
+            //    DateFin: '2016-07-10T00:00:00',
+            //    CountryIso: 'FRA',
+            //    CountryName: 'France',
+            //    TypeEvenement: 'TECOM',
+            //    IsScorer: true,
+            //    IsSquad: true,
+            //    TopScorersPhase: '',
+            //    ExtData:
+            //    [ { Id: 4571,
+            //        DataTypeCode: 'EDEVT',
+            //        DataType: 'Données étendues d\'événement',
+            //        ExtDataCode: 'ED_TZ',
+            //        ExtData: 'TimeZone',
+            //        Val: 2 },
+            //        { Id: 4571,
+            //            DataTypeCode: 'EDEVT',
+            //            DataType: 'Données étendues d\'événement',
+            //            ExtDataCode: 'EDSLE',
+            //            ExtData: 'Staff lié à l\'événement',
+            //            Val: 1,
+            //            ValTxt: '-1',
+            //            ValFmt: 0 },
+            //        { Id: 4571,
+            //            DataTypeCode: 'EDEVT',
+            //            DataType: 'Données étendues d\'événement',
+            //            ExtDataCode: 'EDEVS',
+            //            ExtData: 'Evénement sélectionné',
+            //            Val2: 47,
+            //            ValTxt: '2147561768',
+            //            ValFmt: 0 },
+            //        { Id: 4571,
+            //            DataTypeCode: 'EDEVT',
+            //            DataType: 'Données étendues d\'événement',
+            //            ExtDataCode: 'EDFTP',
+            //            ExtData: 'Répertoire de Livraison FTPClients',
+            //            Pos: -1,
+            //            ValTxt: 'EURO' } ],
+            //        phases:
+            //    [ { PhaseId: 2902,
+            //        PhaseCompetCode: 'TPFIN',
+            //        PhaseCompet: 'Finale',
+            //        TypePhaseCode: 'PH1PT',
+            //        TypePhase: 'Prolongation ou tirs au but',
+            //        IsClass: false,
+            //        IsChampion: true,
+            //        IsJournee: false,
+            //        IsCurrent: false,
+            //        Groupes: [Object],
+            //        matches: [Object],
+            //        Equipes: [Object],
+            //        TopScorers: [Object] },
+            //        { PhaseId: 2901,
+            //            PhaseCompetCode: 'TPSFI',
+            //            PhaseCompet: 'Demi-finale',
+            //            TypePhaseCode: 'PH1PT',
+            //            TypePhase: 'Prolongation ou tirs au but',
+            //            IsClass: false,
+            //            IsChampion: false,
+            //            IsJournee: false,
+            //            IsCurrent: false,
+            //            Groupes: [Object],
+            //            matches: [Object],
+            //            Equipes: [Object],
+            //            TopScorers: [Object] },
+            //        { PhaseId: 2900,
+            //            PhaseCompetCode: 'TPQFI',
+            //            PhaseCompet: 'Quart de finale',
+            //            TypePhaseCode: 'PH1PT',
+            //            TypePhase: 'Prolongation ou tirs au but',
+            //            IsClass: false,
+            //            IsChampion: false,
+            //            IsJournee: false,
+            //            IsCurrent: false,
+            //            Groupes: [Object],
+            //            matches: [Object],
+            //            TopScorers: [Object],
+            //            Equipes: [Object] },
+            //        { PhaseId: 2899,
+            //            PhaseCompetCode: 'TP8FI',
+            //            PhaseCompet: '8e de finale',
+            //            TypePhaseCode: 'PH1PT',
+            //            TypePhase: 'Prolongation ou tirs au but',
+            //            IsClass: false,
+            //            IsChampion: false,
+            //            IsJournee: false,
+            //            IsCurrent: false,
+            //            Groupes: [Object],
+            //            matches: [Object],
+            //            Equipes: [Object],
+            //            TopScorers: [Object] },
+            //        { PhaseId: 2898,
+            //            PhaseCompetCode: 'TPTR1',
+            //            PhaseCompet: '1er tour',
+            //            TypePhaseCode: 'PHPOU',
+            //            TypePhase: 'Phase de poule match unique',
+            //            IsClass: true,
+            //            IsChampion: false,
+            //            IsJournee: true,
+            //            IsCurrent: false,
+            //            Groupes: [Object],
+            //            TopScorers: [Object],
+            //            Equipes: [Object],
+            //            matches: [Object] } ],
+            //        statistiques:
+            //    [ { TeamId: 2066,
+            //        TeamNom: 'Albanie',
+            //        TeamPaysIso: 'ALB',
+            //        TeamPaysNom: 'Albanie',
+            //        J: 3,
+            //        G: 1,
+            //        N: 0,
+            //        P: 2,
+            //        Bp: 1,
+            //        Bc: 3,
+            //        Jaune: 9,
+            //        Rouge: 1,
+            //        TotalSpe: 33805,
+            //        MoySpe: 11268,
+            //        Positions: [Object],
+            //        Staff: [Object] },
+            //        { TeamId: 2128,
+            //            TeamNom: 'Allemagne',
+            //            TeamPaysIso: 'DEU',
+            //            TeamPaysNom: 'Allemagne',
+            //            J: 6,
+            //            G: 3,
+            //            N: 2,
+            //            P: 1,
+            //            Bp: 7,
+            //            Bc: 3,
+            //            Jaune: 11,
+            //            Rouge: 0,
+            //            TotalSpe: 263837,
+            //            MoySpe: 43972,
+            //            Positions: [Object],
+            //            Staff: [Object] },
+            //        { TeamId: 2303,
+            //            TeamNom: 'Angleterre',
+            //            TeamPaysIso: 'XNG',
+            //            TeamPaysNom: 'Angleterre',
+            //            J: 4,
+            //            G: 1,
+            //            N: 2,
+            //            P: 1,
+            //            Bp: 4,
+            //            Bc: 4,
+            //            Jaune: 3,
+            //            Rouge: 0,
+            //            TotalSpe: 130277,
+            //            MoySpe: 32569,
+            //            Positions: [Object],
+            //            Staff: [Object] }, ] }
+            var competition = {
+                id: evenement.id,
+                label: evenement.Label,
+                country: evenement.CountryIso
+            };
+
+            competition.teams = evenement.statistiques.map(function (equipe) {
+                return {
+                    name: equipe.TeamNom,
+                    country: equipe.TeamPaysIso,
+                    id: equipe.TeamId
+                };
+            });
+
+            write('competitions/' + competition.id, competition);
+        });
+        competitionCb();
+    }
+}
+
+function getTeams(evenements, write) {
+    return function(teamsCb){
+        evenements.forEach(function(evt){
+             evt.statistiques.forEach(function(equipe){
+                 var team = {
+                     name: equipe.TeamNom,
+                     country: equipe.TeamPaysIso,
+                     id: equipe.TeamId
+                 };
+
+                 write('teams/' + team.id, team);
+             });
+        });
+        teamsCb();
+    }
+}
+
 module.exports = function transform(write) {
     return function (evenements) {
         console.info('TRANSFORM START', new Date());
         async.parallel([
             transformScoreboardData(evenements, write),
-            getMatches(evenements, write)
+            getMatches(evenements, write),
+            getCompetitions(evenements, write),
+            getTeams(evenements, write)
         ], function () {
             console.info('TRANSFORM END', new Date());
         });
