@@ -172,7 +172,7 @@ function activateMatchTab(id) {
 }
 
 page('/matches/:matchId/evenements', activateMatchTab('events'));
-page('/matches/:matchId/tirs-au-but', activateMatchTab('penaltyShootout'));
+page('/matches/:matchId/tirs-au-but', activateMatchTab('penaltyShootouts'));
 page('/matches/:matchId/composition', activateMatchTab('composition'));
 page('/matches/:matchId/infos', activateMatchTab('infos'));
 
