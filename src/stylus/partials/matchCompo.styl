@@ -15,7 +15,8 @@
 
 
   .team
-    flex 1
+    flex 1 auto
+    max-width 50%
     padding-bottom 300px
     min-width 300px
   .line
@@ -44,7 +45,7 @@
     display flex
     flex-wrap wrap
     .position
-      flex 1
+      flex 1 auto
       outline 1px solid #EEE
       padding-bottom 1rem
       min-width 220px
@@ -97,3 +98,9 @@
       font-weight 500
     .faceshot img
       box-shadow 0 3px 10px rgba(black, .2)
+
+
+@media only screen and (max-width: 750px)
+
+  .compositionWrapper .team
+    max-width 100%

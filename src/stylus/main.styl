@@ -62,9 +62,10 @@ body > header
       max-width 100%
   nav
     margin 0 auto
-    padding-bottom 1rem
+    padding-bottom 1em
     background white
     width 100%
+    font-size 1em
     ul
       margin 0 auto
       max-width 1000px
@@ -73,33 +74,44 @@ body > header
       justify-content space-around
       a
         margin-top 1em
-        font-size 1.4em
+        font-size 1.2em
         text-decoration none
         display inline-block
-        padding-bottom .2em
-        border-bottom 3px solid black
+        padding .2em
+        border-bottom 2px solid black
         color black
         text-transform uppercase
         &:hover
           color white
-
         &.scoreboard
           border-color #D0021B
           &:hover
-            background rgba(#D0021B, .5)
+            background-color #D0021B
         &.competitions
           border-color #F8E71C
+          &:hover
+            background-color #F8E71C
         &.teams
           border-color #7ED321
+          &:hover
+            background-color #7ED321
 
 body.scroll > header nav
   position fixed
   top 0
   z-index 1000
-  font-size .7rem
+  font-size .6rem
   box-shadow 0 1px 4px rgba(black, .2)
   a
     border-bottom-width 2px
+  ul
+    max-width 600px
+
+
+@media only screen and (max-width: 500px)
+  body > header > nav
+    font-size .6rem
+
 
 @import "views/scoreboard.styl"
 @import "views/match.styl"

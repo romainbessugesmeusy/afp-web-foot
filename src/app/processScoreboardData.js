@@ -96,6 +96,7 @@ module.exports = function (data, options) {
 
     scoreboard.pastDateList.sort(sortByDate(false));
     scoreboard.pastDateList = scoreboard.pastDateList.map(wrapDates(options.pastMatchesOffset, options.displayedDays));
+    scoreboard.pastDateList.reverse();
     scoreboard.upcomingDateList.sort(sortByDate(true));
     scoreboard.upcomingDateList = scoreboard.upcomingDateList.map(wrapDates(options.upcomingMatchesOffset, options.displayedDays));
     return scoreboard;

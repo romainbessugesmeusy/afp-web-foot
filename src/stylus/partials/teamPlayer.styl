@@ -4,6 +4,9 @@
   padding 1rem
   width 100px
   font-size .9rem
+  transition transform linear .1s
+  &:hover
+    transform scale3d(1.1, 1.1, 1.1)
 
   a
     text-decoration none
@@ -40,11 +43,12 @@
   display none
   padding .5rem
   background white
-  box-shadow 0 3px 10px rgba(black, .5)
+  box-shadow 0 6px 15px rgba(black, .3)
   left 50%
   top -250px
   margin-left -75px
   text-align center
+  border-radius 4px
   p.name
     padding .5em
   p.age

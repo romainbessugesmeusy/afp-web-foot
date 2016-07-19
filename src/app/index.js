@@ -44,6 +44,9 @@ var appCtx = {
     }
 };
 
+
+window.appCtx  = appCtx;
+
 // Data Processors
 var processScoreboardData = require('./processScoreboardData');
 var processMatchData = require('./processMatchData');
@@ -90,7 +93,7 @@ var handleDateParams = function (ctx, next) {
 
     // take the first links to get the defaults
     params.upcomingDate = params.upcomingDate || $('a[data-param="upcomingDate"]:eq(0)').attr('data-value');
-    params.pastDate = params.pastDate || $('a[data-param="pastDate"]:eq(0)').attr('data-value');
+    params.pastDate = params.pastDate || $('a[data-param="pastDate"]:last-child').attr('data-value');
 
 
     var $upcomingMatchesTabs = $('#upcomingMatchesTabs');
@@ -119,13 +122,18 @@ var handleDateParams = function (ctx, next) {
             paginateNavbar($pastMatchesTabs.find('.sectionNavbar'))
         }
 
+        $('.sectionNavbar').each(function () {
+            var $this = $(this);
+            $this.find('button.prev').toggleClass('hidden', $this.find('a.prev').length === 0);
+            $this.find('button.next').toggleClass('hidden', $this.find('a.next').length === 0);
+        })
+
         next();
     });
 
 };
 
 page('/', function (ctx, next) {
-
     // scoreboard data already processed, next
     // when live data will be there, we'll need to test a 'lastRefreshDate' value
     if (appCtx.data.scoreboard) {
@@ -133,7 +141,6 @@ page('/', function (ctx, next) {
     }
 
     $.getJSON('/data/scoreboard.json', function (data) {
-        console.info('scoreboardData', data);
         appCtx.data.scoreboard = processScoreboardData(data, {
             displayedDays: 6,
             pastMatchesOffset: sessionStorage.getItem('pastMatchesOffset') || 0 // this looks unnecessary now
@@ -144,6 +151,12 @@ page('/', function (ctx, next) {
     });
 
 }, handleDateParams, unbindMatchScroll, showPage($pages.scoreboard));
+
+page.exit('/', function(ctx, next){
+    delete appCtx.scoreboard.upcomingDate;
+    delete appCtx.scoreboard.pastDate;
+    next();
+});
 
 page('/matches/:matchId/*', function (ctx, next) {
     if (appCtx.data.match.id === parseInt(ctx.params.matchId)) {
@@ -167,7 +180,7 @@ function activateMatchTab(id) {
             $('.tab').removeClass('active');
             $('a[data-target="' + id + '"]').addClass('active');
             $('#' + id).addClass('active');
-        })
+        });
     }
 }
 
@@ -198,13 +211,6 @@ function unbindMatchScroll(ctx, next) {
     next();
 }
 
-function updateScoreboardNavbars() {
-    $('.sectionNavbar').each(function () {
-        var $this = $(this);
-        $this.find('button.prev').toggle($this.find('a.prev').length > 0);
-        $this.find('button.next').toggle($this.find('a.next').length > 0);
-    })
-}
 function nextDateClickHandler(event) {
     var $navbar = $(event.target).closest('.sectionNavbar');
     var linkSelector = 'a.current + a.next';
