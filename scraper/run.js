@@ -6,8 +6,7 @@ var options = {
 };
 
 var extract = require('./extract')(options);
-var transform = require('./transform')(options);
-var load = require('./load')(options);
+var transform = require('./transform');
+var write = require('./writer');
 
-
-extract(transform(load));
+extract(transform(write));
