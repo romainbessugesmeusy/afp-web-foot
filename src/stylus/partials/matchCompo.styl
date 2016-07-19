@@ -55,10 +55,18 @@
       text-align left
 
   .sub
+    position relative
     text-align left
     padding .2rem 1rem
     .faceshot
       display none
+      left 0
+      top -270px
+      margin-left 0
+
+    &:hover
+      .faceshot
+        display block
     .name
       flex 1
       color black
