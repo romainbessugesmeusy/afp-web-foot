@@ -15,12 +15,12 @@ var sourcemaps = require('gulp-sourcemaps');
 var merge = require('merge-stream');
 var path = require('path');
 
-function onError(err){
+function onError(err) {
     console.log(err);
     this.emit('end');
 }
 
-gulp.task('javascript', function () {
+gulp.task('javascript', ['handlebars'], function () {
     // set up the browserify instance on a task basis
     var b = browserify({
         entries: 'src/app/index.js',
@@ -55,9 +55,8 @@ gulp.task('stylus', function () {
         .on('error', onError);
 });
 
-gulp.task('handlebars', function() {
-    // Load templates from the templates/ folder relative to where gulp was executed
-    gulp.src('src/handlebars/views/**/*.hbs')
+gulp.task('hbsViews', function () {
+    return gulp.src('src/handlebars/views/**/*.hbs')
         .on('error', onError)
         // Compile each Handlebars template source file to a template function
         .pipe(gulpHandlebars({handlebars: require('./src/handlebars/customHelpers')}))
@@ -67,7 +66,7 @@ gulp.task('handlebars', function() {
         .pipe(declare({
             root: 'exports',
             noRedeclare: true, // Avoid duplicate declarations
-            processName: function(filePath) {
+            processName: function (filePath) {
                 // Allow nesting based on path using gulp-declare's processNameByPath()
                 // You can remove this option completely if you aren't using nested folders
                 // Drop the templates/ folder from the namespace path by removing it from the filePath
@@ -80,13 +79,15 @@ gulp.task('handlebars', function() {
         .pipe(wrap('var Handlebars = require("../handlebars/customHelpers");\n <%= contents %>'))
         // WRite the output into the templates folder
         .pipe(gulp.dest('src/gen'));
+});
 
-    var partials = gulp.src(['src/handlebars/partials/**/*.hbs'])
+gulp.task('hbsPartials', function () {
+    return gulp.src(['src/handlebars/partials/**/*.hbs'])
         .on('error', onError)
         .pipe(gulpHandlebars({handlebars: require('handlebars')}))
         .pipe(wrap('Handlebars.registerPartial(<%= processPartialName(file.relative) %>, Handlebars.template(<%= contents %>));', {}, {
             imports: {
-                processPartialName: function(fileName) {
+                processPartialName: function (fileName) {
                     // Strip the extension and the underscore
                     // Escape the output with JSON.stringify
                     return JSON.stringify(path.basename(fileName, '.js'));
@@ -98,12 +99,13 @@ gulp.task('handlebars', function() {
         .pipe(gulp.dest('src/gen'));
 });
 
+gulp.task('handlebars', ['hbsViews', 'hbsPartials']);
 
 gulp.task('watch', function () {
     gulp.watch(['./src/app/**/*.js'], ['javascript']);
     gulp.watch(['./src/stylus/**/*.styl'], ['stylus']);
-    gulp.watch(['./src/handlebars/**/*.hbs'], ['handlebars', 'javascript']);
-    gulp.watch(['./src/handlebars/customHelpers.js'], ['handlebars', 'javascript']);
+    gulp.watch(['./src/handlebars/**/*.hbs'], ['javascript']);
+    gulp.watch(['./src/handlebars/customHelpers.js'], ['javascript']);
 });
 
-gulp.task('default', ['javascript', 'handlebars', 'stylus', 'watch']);
+gulp.task('default', ['javascript', 'stylus', 'watch']);

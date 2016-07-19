@@ -166,15 +166,16 @@ module.exports = function (options) {
             playersInCompo[player.Id] = player;
         });
 
-        function transformPlayerInfo(teamMember) {
+        function transformPlayerInfo(member) {
             return {
-                id: teamMember.Id,
-                number: teamMember.Bib,
-                name: teamMember.NomCourt,
-                fullname: teamMember.NomLong,
-                position: teamMember.PositionCode,
-                faceshot: teamMember.Faceshot,
-                events: playerEvents[teamMember.Id]
+                id: member.Id,
+                number: member.Bib,
+                name: member.NomCourt,
+                fullname: member.NomLong,
+                position: member.PositionCode,
+                faceshot: member.Faceshot,
+                birthDate: member.DateDeNaissance,
+                events: playerEvents[member.Id]
             }
         }
 
