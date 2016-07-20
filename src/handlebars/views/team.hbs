@@ -22,7 +22,7 @@
         <h2>Matches</h2>
         <div class="competitionWrapper">
             {{#each competitions}}
-                <div class="competition pastMatches">
+                <article class="competition pastMatches">
                     {{> scoreboardCompetitionHeader }}
                     <div class="matchesWrapper">
                         {{#each matches}}
@@ -33,7 +33,7 @@
                             {{/ifEquals}}
                         {{/each}}
                     </div>
-                </div>
+                </article>
             {{/each}}
         </div>
     </div>
