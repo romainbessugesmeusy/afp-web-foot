@@ -8,5 +8,33 @@
                 <h1>{{name}}</h1>
             </div>
         </header>
+        <div class="players">
+            <h2>Effectif</h2>
+            {{#group staff by="position"}}
+                <h3>{{value}}</h3>
+                {{#each items}}
+                    {{> teamPlayer}}
+                {{/each}}
+            {{/group}}
+        </div>
+    </div>
+    <div class="matches">
+        <h2>Matches</h2>
+        <div class="competitionWrapper">
+            {{#each competitions}}
+                <div class="competition pastMatches">
+                    {{> scoreboardCompetitionHeader }}
+                    <div class="matchesWrapper">
+                        {{#each matches}}
+                            {{#ifEquals status "EMNCO"}}
+                                {{> upcomingMatch }}
+                            {{else}}
+                                {{> pastMatch }}
+                            {{/ifEquals}}
+                        {{/each}}
+                    </div>
+                </div>
+            {{/each}}
+        </div>
     </div>
 </div>

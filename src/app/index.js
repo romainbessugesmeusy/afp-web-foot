@@ -79,14 +79,14 @@ page.exit('/', function (ctx, next) {
 // INDIVIDUAL MATCH
 //
 page('/matches/:matchId/*', function (ctx, next) {
-    if (appCtx.data.match.id === parseInt(ctx.params.matchId)) {
+    if (appCtx.currentMatchId === parseInt(ctx.params.matchId)) {
         return next();
     }
 
     $.getJSON('/data/matches/' + ctx.params.matchId + '.json', function (data) {
         var match = processMatchData(data);
         console.info('processedMatchData', match);
-        appCtx.currentMatchId = ctx.params.matchId;
+        appCtx.currentMatchId = parseInt(ctx.params.matchId);
         $pages.match.empty().append(views.match(match));
         next()
     });

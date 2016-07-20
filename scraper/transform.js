@@ -583,18 +583,90 @@ function getCompetitions(evenements, write) {
 }
 
 function getTeams(evenements, write) {
-    return function(teamsCb){
-        evenements.forEach(function(evt){
-             evt.statistiques.forEach(function(equipe){
-                 var team = {
-                     name: equipe.TeamNom,
-                     country: equipe.TeamPaysIso,
-                     id: equipe.TeamId
-                 };
+    return function (teamsCb) {
+        var matchesByTeamId = {};
+        var teams = {};
 
-                 write('teams/' + team.id, team);
-             });
+        evenements.forEach(function (evt) {
+            evt.phases.forEach(function(phase){
+               phase.matches.forEach(function(match){
+                   if(typeof matchesByTeamId[match.Home.TeamId] === 'undefined'){
+                       matchesByTeamId[match.Home.TeamId] = [];
+                   }
+                   matchesByTeamId[match.Home.TeamId].push(match);
+                   if(typeof matchesByTeamId[match.Away.TeamId] === 'undefined'){
+                       matchesByTeamId[match.Away.TeamId] = [];
+                   }
+                   matchesByTeamId[match.Away.TeamId].push(match);
+               });
+            });
+            evt.statistiques.forEach(function (equipe) {
+
+
+                if(typeof teams[equipe.TeamId] === 'undefined'){
+                    teams[equipe.TeamId] = {
+                        name: equipe.TeamNom,
+                        country: equipe.TeamPaysIso,
+                        id: equipe.TeamId,
+                        staff: [],
+                        competitions: []
+                    };
+                }
+
+                var team = teams[equipe.TeamId];
+                var competition = {
+                    id: evt.Id,
+                    label: evt.Label,
+                    matches: []
+                };
+
+
+                team.competitions.push(competition);
+
+                if (Array.isArray(matchesByTeamId[team.id])){
+                    competition.matches = matchesByTeamId[team.id].map(function(match){
+                       return {
+                           id: match.Id,
+                           groupId: match.GroupId,
+                           date: match.Date,
+                           status: match.StatusCode,
+                           home: extractScoreboardTeamInfo(match.Home),
+                           away: extractScoreboardTeamInfo(match.Away)
+                       }
+                    });
+                }
+
+                //if (team.id === 4656) {
+                //    console.info(matchesByTeamId[team.id]);
+                //}
+
+                var teamStaff = equipe.Staff.map(function(member){
+                   return {
+                       id: member.Id,
+                       fullname: member.NomLong,
+                       name: member.NomCourt,
+                       position: member.PositionCode,
+                       number: member.Bib,
+                       height: member.Taille,
+                       weight: member.Poids,
+                       birthDate: member.DateDeNaissance,
+                       country: member.PaysRepresenteIso,
+                       birthCountry: member.PaysNaissanceIso,
+                       faceshot: member.Faceshot
+                   }
+                });
+
+                team.staff = teamStaff; // todo ask AFP
+            });
         });
+
+        var teamId;
+        for(teamId in teams){
+            if(teams.hasOwnProperty(teamId)){
+                write('teams/' + teamId, teams[teamId]);
+            }
+        }
+
         teamsCb();
     }
 }
