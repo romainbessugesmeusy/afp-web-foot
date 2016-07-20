@@ -10,7 +10,7 @@ module.exports = function (data) {
 
     ['home', 'away'].forEach(function (side) {
         data[side].players.forEach(function (line) {
-            if (Array.isArray(line)) {
+            if (line && Array.isArray(line.players)) {
                 line.players.forEach(function (player) {
                     data.playerHash[player.id] = player;
                 });

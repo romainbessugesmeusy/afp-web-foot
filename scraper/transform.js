@@ -89,6 +89,7 @@ function getTeamFromEventStats(evenement, teamId) {
             team = t;
         }
     });
+
     return team;
 }
 
@@ -122,17 +123,12 @@ function getTeamDetail(evenement, phase, match, team) {
         teamDetail.scorers.reverse()
     }
 
+
     var teamFromStats = getTeamFromEventStats(evenement, match[team].TeamId);
 
     if (teamFromStats === null) {
         return teamDetail;
     }
-
-    var playersFromStats = {};
-
-    teamFromStats.Staff.forEach(function (player) {
-        playersFromStats[player.Id] = player;
-    });
 
     extend(teamDetail, getTeamStaff(match, teamFromStats.Staff, match[team]));
 
@@ -143,7 +139,6 @@ function getTeamStaff(match, staff, team) {
 
     var playerEvents = {};
     var playerEventTypes = ['VTJAU', 'VTBUT', 'VTROU'];
-
     match.Events.forEach(function (event) {
         if (playerEventTypes.indexOf(event.TypeEvtCode) > -1) {
             if (typeof playerEvents[event.PlayerId1] === 'undefined') {
@@ -191,7 +186,20 @@ function getTeamStaff(match, staff, team) {
         }
     }
 
+    function transformPlayerInfoFromCompo(player){
+        return {
+            id: player.Id,
+            name: player.ShortName,
+            fullname: player.LomgName || player.LongName,
+            number: player.Bib,
+            position: player.PositionCode,
+            events: []
+        }
+    }
+    var foundPlayerIdsInStaff = [];
+
     staff.forEach(function (member) {
+        foundPlayerIdsInStaff.push(member.Id);
         if (typeof playersInCompo[member.Id] === 'undefined' || playersInCompo[member.Id].Line === 0) {
             if (member.PositionCode !== 'PSENT') {
                 ret.subs.push(transformPlayerInfo(member))
@@ -211,6 +219,25 @@ function getTeamStaff(match, staff, team) {
         }
     });
 
+    team.TeamCompo.forEach(function (teamPlayer) {
+        if (foundPlayerIdsInStaff.indexOf(teamPlayer.Id) === -1) {
+            if (teamPlayer.Line === 0) {
+                if (teamPlayer.PositionCode !== 'PSENT') {
+                    ret.subs.push(transformPlayerInfoFromCompo(teamPlayer));
+                } else {
+                    ret.staff.push(transformPlayerInfoFromCompo(teamPlayer));
+                }
+            } else {
+                if (typeof ret.players[teamPlayer.Line] === 'undefined') {
+                    ret.players[teamPlayer.Line] = {
+                        line: teamPlayer.PositionCode,
+                        players: []
+                    }
+                }
+                ret.players[teamPlayer.Line].players.push(transformPlayerInfoFromCompo(teamPlayer))
+            }
+        }
+    });
     ret.players.shift();
     ret.players.reverse();
     return ret;

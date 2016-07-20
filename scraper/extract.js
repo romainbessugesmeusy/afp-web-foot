@@ -184,6 +184,11 @@ module.exports = function (options) {
             }, function (err, teamStaff) {
                 extend(equipe, teamStaff);
                 getPlayersFaceshots(equipe)(eachEquipeCb);
+            }, function (cachedStaff) {
+                if (cachedStaff.Staff.length === 0) {
+                    console.warn('team', equipe.TeamId, 'has no staff for event', evenement.id);
+                }
+                return false;
             });
         }
     }

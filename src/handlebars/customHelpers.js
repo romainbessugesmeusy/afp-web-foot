@@ -8,7 +8,6 @@ groupBy.register(Handlebars);
 require('moment/locale/fr');
 
 moment.locale('fr');
-console.info(moment.locale());
 
 Handlebars.registerHelper('each_competition', function (dateObject, date, options) {
     if (typeof dateObject === 'undefined') {
@@ -56,7 +55,7 @@ Handlebars.registerHelper('penaltyShooter', function (playerId, options) {
 
 Handlebars.registerHelper('matchPlayerName', function (playerId, options) {
     var player = options.data.root.playerHash[playerId];
-    return player ? player.name : '';
+    return player ? player.name : playerId;
 });
 
 Handlebars.registerHelper('joinScorerGoals', function(goals){

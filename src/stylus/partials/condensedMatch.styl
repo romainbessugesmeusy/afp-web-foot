@@ -5,9 +5,16 @@
   text-align center
   position relative
   text-decoration none
+  max-width 600px
 
   &:hover
     background #EEE
+
+  .home, .away
+    flex 1
+    display flex
+    .name
+      flex 1
 
   .home
     flex 1
@@ -46,17 +53,21 @@
       color #DDD
 
 
-  .cards .card
-    height 20px
-    width 12px
-    font-size .8rem
-    color white
-    display inline-block
-    text-align center
-    line-height 22px
-    &.yellow
-      background #D2C738
-    &.red
-      background #D0021B
-    &:empty
-      display none
+  .cards
+
+    margin 0 1em
+
+    .card
+      height 20px
+      width 12px
+      font-size .8rem
+      color white
+      display inline-block
+      text-align center
+      line-height 22px
+      &.yellow
+        background #D2C738
+      &.red
+        background #D0021B
+      &:empty
+        display none
