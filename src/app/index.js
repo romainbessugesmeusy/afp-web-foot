@@ -103,7 +103,12 @@ page('/matches/:matchId/infos', activateMatchTab('infos'));
 //
 // COMPETITIONS DASHBOARD
 //
-page('/competitions', function () {
+page('/competitions', function (ctx, next) {
+    $.getJSON('/data/competitions.json', function (data) {
+        console.info('competitionsData', data);
+        $pages.competitions.empty().append(views.competitions(data));
+        next();
+    });
 
 }, showPage($pages.competitions));
 
