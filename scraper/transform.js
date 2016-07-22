@@ -186,7 +186,7 @@ function getTeamStaff(match, staff, team) {
         }
     }
 
-    function transformPlayerInfoFromCompo(player){
+    function transformPlayerInfoFromCompo(player) {
         return {
             id: player.Id,
             name: player.ShortName,
@@ -196,6 +196,7 @@ function getTeamStaff(match, staff, team) {
             events: []
         }
     }
+
     var foundPlayerIdsInStaff = [];
 
     staff.forEach(function (member) {
@@ -342,66 +343,134 @@ function getMatches(evenements, write) {
                  raw: match*/
             };
 
-            var commentsBeforeKickoff = [];
             var commentEvents = [];
-            var commentsAfterMatch = [];
-            var commentIsMappedToExistingEvent;
-
-            var beforeKickoff = true;
 
             data.hasComments = match.Comments.length > 0;
 
+            var groups = [{start: 0, comments: []}];
+            var groupIndex = 0;
+            var lastCommentTime;
+            var inGroup = true;
+
+
+            function commentIsDuringPlay(comment, debug) {
+                var isHourAndMinutes = (comment.props.time.indexOf(':') > -1);
+                var time = parseFloat(String(comment.props.time).replace('+', '.'));
+                //if (debug) {
+                //    console.info(comment.props.time, isHourAndMinutes, time, (!isNaN(time) && !isHourAndMinutes && time !== 0))
+                //}
+                return (!isNaN(time) && !isHourAndMinutes && time !== 0);
+            }
+
+            function mapCommentToEvent(comment) {
+                var mapped = false;
+                data.events.forEach(function (evt) {
+                    if (evt.time === comment.props.time && comment.props.event == evt.type) {
+                        evt.comment = comment;
+                        mapped = true;
+                    }
+                });
+                return mapped;
+            }
+
             if (Array.isArray(match.Comments)) {
-                match.Comments.forEach(function (comment) {
 
-                    commentIsMappedToExistingEvent = false;
-                    data.events.forEach(function (event) {
-                        if (comment.props.time == event.time && comment.props.event == event.type) {
-                            commentIsMappedToExistingEvent = true;
-                            event.comment = comment;
+                if (match.Id === 159002) {
+                    data.comments = match.Comments;
+                }
+
+                var nextComment;
+
+                match.Comments.forEach(function (comment, i) {
+
+                    nextComment = match.Comments[i + 1];
+
+                    if (commentIsDuringPlay(comment, lastCommentTime, (match.Id === 159002))) {
+                        if (inGroup && parseInt(comment.props.time) < 20) {
+                            groupIndex++;
                         }
-                    });
-
-                    var isHourAndMinutes = (comment.props.time.indexOf(':') > -1);
-                    var time = parseFloat(String(comment.props.time).replace('+', '.'));
-
-                    if (commentIsMappedToExistingEvent === false) {
-                        if (time === 0 || isNaN(time) || isHourAndMinutes) {
-                            if (beforeKickoff) {
-                                commentsBeforeKickoff.push(comment);
-                            } else {
-                                commentsAfterMatch.push(comment);
-                            }
-                        } else {
-                            beforeKickoff = false;
+                        inGroup = false;
+                        lastCommentTime = comment.props.time;
+                        if (match.Id === 159002) {
+                            console.info('lastCommentTime', comment.props.time)
+                        }
+                        if (!mapCommentToEvent(comment)) {
                             commentEvents.push({
                                 time: comment.props.time,
                                 comment: comment,
-                                side: 'both'
+                                side: 'both',
+                                type: comment.props.event
                             });
                         }
+                    } else {
+                        inGroup = true;
+                        if (typeof groups[groupIndex] === 'undefined') {
+                            if (match.Id === 159002) {
+                                console.info('newGroup')
+                            }
+
+                            groups[groupIndex] = {
+                                start: lastCommentTime,
+                                comments: []
+                            }
+                        }
+
+                        groups[groupIndex].comments.push(comment);
                     }
                 });
+
+                if (match.Id === 159002) {
+                    console.info(groups);
+                }
+
+                data.commentGroups = groups;
+
+
+                //commentEvents.push({
+                //    time: comment.props.time,
+                //    comment: comment,
+                //    side: 'both',
+                //    type: comment.props.event
+                //});
             }
 
             data.events = data.events.concat(commentEvents);
+            /*
+             if (commentsBeforeKickoff.length) {
+             data.events.push({
+             time: '-1000',
+             group: 'pre',
+             side: 'both',
+             comments: commentsBeforeKickoff
+             });
+             }
+             if (commentsAfterMatch.length) {
+             data.events.push({
+             time: '1000',
+             group: 'post',
+             side: 'both',
+             comments: commentsAfterMatch
+             });
+             }*/
 
-            if (commentsBeforeKickoff.length) {
-                data.events.push({
-                    time: '-1000',
-                    group: 'pre',
-                    side: 'both',
-                    comments: commentsBeforeKickoff
-                });
-            }
-            if (commentsAfterMatch.length) {
-                data.events.push({
-                    time: '1000',
-                    group: 'post',
-                    side: 'both',
-                    comments: commentsAfterMatch
-                });
-            }
+            var secondPeriodStartIndex = -1;
+            var firstPeriodFinishIndex = -1;
+
+            data.events.forEach(function (evt, i) {
+                if (evt.type === 'VTD2M') {
+                    secondPeriodStartIndex = i;
+                }
+
+                if (evt.type === 'VTF1M') {
+                    firstPeriodFinishIndex = i;
+                }
+            });
+
+            //if (commentsDuringHalfTime.length) {
+            //    console.info(commentsDuringHalfTime.length, match.Id, firstPeriodFinishIndex, secondPeriodStartIndex);
+            //}
+
+            //data.commentsDuringHalfTime = commentsDuringHalfTime;
 
             data.events.sort(function (a, b) {
                 var aTime = parseFloat(String(a.time).replace('+', '.'));
@@ -437,6 +506,42 @@ function getCompetitions(evenements, write) {
                 label: evenement.Label,
                 country: evenement.CountryIso
             };
+
+            competition.phases = evenement.phases.map(function (phase) {
+                var p = {
+                    format: phase.PhaseCompetCode,
+                    type: phase.TypePhaseCode
+                };
+
+                // saison régulière
+                if (p.format === "TPSAR") {
+                    var props = {};
+                    phase.Groupes[0].Classement.Colonnes.forEach(function (colonne) {
+                        props[colonne.DataTypeId] = colonne.DataTypeCode;
+                    });
+
+                    if (typeof phase.Groupes[0].Classement.Classements[0] === 'undefined') {
+                        console.info('no ranking for evt', evenement.Label);
+                        return;
+                    }
+
+                    p.rankings = phase.Groupes[0].Classement.Classements[0].Classement.map(function (team) {
+                        var teamRanking = {
+                            teamId: team.TeamId
+                        };
+
+                        team.Colonnes.forEach(function (col) {
+                            teamRanking[props[col.DataTypeId]] = col.Value;
+                        });
+
+                        return teamRanking
+                    });
+                }
+
+                return p;
+            });
+
+            competition.rawPhases = evenement.phases;
 
             competitionList.push({
                 id: evenement.id,

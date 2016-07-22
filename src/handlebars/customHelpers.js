@@ -58,8 +58,8 @@ Handlebars.registerHelper('matchPlayerName', function (playerId, options) {
     return player ? player.name : playerId;
 });
 
-Handlebars.registerHelper('joinScorerGoals', function(goals){
-    var strings = goals.map(function(g){
+Handlebars.registerHelper('joinScorerGoals', function (goals) {
+    var strings = goals.map(function (g) {
         return g.penalty ? g.time + ' <strong>P</strong>' : g.time;
     });
     return new Handlebars.SafeString('(' + strings.join(', ') + ')');
@@ -113,6 +113,18 @@ Handlebars.registerHelper('age', function (date, format) {
         return Math.abs(moment(date, format).diff(moment(), 'years')) + ' ans';
     }
     return ''
+});
+
+Handlebars.registerHelper('teamCondensed', function (teamId, options) {
+    var team = null;
+
+    options.data.root.teams.forEach(function (t) {
+        if (t.id === parseInt(teamId)) {
+            team = t;
+        }
+    });
+    var ret = '<a href="/teams/'+team.id+'"><img src="/data/teams/' + team.id + '.png"/><span class="name">' + team.name + '</span></a>';
+    return new Handlebars.SafeString(ret);
 });
 
 module.exports = Handlebars;

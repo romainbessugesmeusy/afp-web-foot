@@ -120,6 +120,20 @@ module.exports = function (options) {
         }
     }
 
+    function getClassementGroupes(evenement, phase) {
+        return function (classementGroupesCb) {
+            async.forEach(phase.Groupes, function (groupe, cb) {
+                fetch('xcclassementgroupe/:lang/:evenementId/:groupeId', {
+                    evenementId: evenement.id,
+                    groupeId: groupe.GroupeId
+                }, function (err, classement) {
+                    groupe.Classement = classement;
+                    cb();
+                });
+            }, classementGroupesCb);
+        }
+    }
+
     function getPhases(evenement) {
         return function (eachPhasesCb) {
             fetch('xcphases/:lang/:id', {id: evenement.id}, function (err, phasesJson) {
@@ -128,7 +142,8 @@ module.exports = function (options) {
                     async.parallel([
                         getPhaseMatches(evenement, phase),
                         getPhaseTopScorers(evenement, phase),
-                        getPhaseEquipes(evenement, phase)
+                        getPhaseEquipes(evenement, phase),
+                        getClassementGroupes(evenement, phase)
                     ], eachPhaseDone);
                 }, eachPhasesCb);
             });
@@ -186,7 +201,7 @@ module.exports = function (options) {
                 getPlayersFaceshots(equipe)(eachEquipeCb);
             }, function (cachedStaff) {
                 if (cachedStaff.Staff.length === 0) {
-                    console.warn('team', equipe.TeamId, 'has no staff for event', evenement.id);
+                    //console.warn('team', equipe.TeamId, 'has no staff for event', evenement.id);
                 }
                 return false;
             });
