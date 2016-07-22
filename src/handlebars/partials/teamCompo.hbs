@@ -2,7 +2,6 @@
 <div class="lines">
     {{#each players}}
         <div class="line">
-            <h4>{{line}}</h4>
             {{#each players}}
                 {{> teamPlayer}}
             {{/each}}
@@ -13,7 +12,7 @@
 <div class="subs">
     {{#group subs by="position"}}
         <div class="position">
-            <h5>{{value}}</h5>
+            <h5>{{t value 'const'}}</h5>
             <div class="players">
                 {{#each items}}
                     {{> teamSub}}

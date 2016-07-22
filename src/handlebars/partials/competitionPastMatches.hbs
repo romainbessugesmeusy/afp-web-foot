@@ -3,7 +3,7 @@
     <div class="matchesWrapper">
         <ul>
             {{#group matches by="phase"}}
-                <li class="phase">{{value}}</li>
+                <li class="phase">{{t value 'const'}}</li>
                 {{#each items}}
                     <li>{{> pastMatch this}}</li>
                 {{/each}}

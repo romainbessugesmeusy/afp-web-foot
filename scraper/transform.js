@@ -1,5 +1,6 @@
 var async = require('async');
 var extend = require('extend');
+var moment = require('moment');
 
 
 function extractScoreboardTeamInfo(team) {
@@ -504,14 +505,33 @@ function getCompetitions(evenements, write) {
             var competition = {
                 id: evenement.id,
                 label: evenement.Label,
-                country: evenement.CountryIso
+                country: evenement.CountryIso,
+                gender: evenement.GenderCode,
+                startDate: evenement.DateDeb,
+                endDate: evenement.DateFin,
+                type: evenement.TypeEvenement,
+                matches: []
             };
+
 
             competition.phases = evenement.phases.map(function (phase) {
                 var p = {
                     format: phase.PhaseCompetCode,
                     type: phase.TypePhaseCode
                 };
+
+                phase.matches.forEach(function (match) {
+                    competition.matches.push({
+                        id: match.Id,
+                        date: match.Date,
+                        competition: evenement.id,
+                        phase: phase.PhaseCompetCode,
+                        group: match.GroupId,
+                        status: match.StatusCode,
+                        home: extractScoreboardTeamInfo(match.Home),
+                        away: extractScoreboardTeamInfo(match.Away)
+                    });
+                });
 
                 // saison régulière
                 if (p.format === "TPSAR") {

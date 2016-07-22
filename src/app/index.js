@@ -27,6 +27,10 @@ var appCtx = window.appCtx = {
         upcomingDate: null,
         pastDate: null
     },
+    competition: {
+        month: null,
+        country: null
+    },
     data: {
         scoreboard: null,
         match: {},
@@ -116,14 +120,45 @@ page('/competitions', function (ctx, next) {
 // INDIVIDUAL COMPETITION
 //
 page('/competitions/:competitionId', function (ctx, next) {
+
+    if (appCtx.currentCompetitionId === parseInt(ctx.params.competitionId)) {
+        return next();
+    }
+
     $.getJSON('/data/competitions/' + ctx.params.competitionId + '.json', function (data) {
         var competition = processCompetitionData(data);
         console.info('processedCompetitionData', competition);
         $pages.competition.empty().append(views.competition(competition));
+        appCtx.currentCompetitionId = competition.id;
         next();
     });
-}, showPage($pages.competition));
+}, handleCompetitionParams, showPage($pages.competition));
 
+var deparam = require('./deparam');
+
+function handleCompetitionParams(ctx, next) {
+    // Warning ! window.location.search isn't populated as it should
+    // /?pastDate=2016-07-01&upcomingDate=2016-07-04
+    var params = (ctx.querystring) ? deparam(ctx.querystring) : {};
+
+    // take the first links to get the defaults
+    params.month = params.month || $('a[data-param="month"]:eq(0)').attr('data-value');
+    params.country = params.country || $('a[data-param="country"]:eq(0)').attr('data-value');
+
+    // in the same rendering frame
+    // we activate the tab and link for both
+    window.requestAnimationFrame(function () {
+        if (appCtx.competition.month !== params.month) {
+            $('a[data-param="month"]').removeClass('active');
+            $('.calendarWrapper').find('.month').removeClass('active');
+            $('a[data-param="month"][data-value="' + params.month + '"]').addClass('active').removeClass('prev next');
+            $('.month[data-month="' + params.month + '"]').addClass('active');
+            // store in order to preserve browser repaints
+            appCtx.competition.month = params.month;
+        }
+        next();
+    });
+}
 //
 // INDIVIDUAL TEAM
 //

@@ -2,6 +2,9 @@ var Handlebars = require('handlebars');
 var moment = require('moment');
 var constants = require('../app/constants');
 var groupBy = require('handlebars-group-by');
+var translations = require('../../dist/data/locale/fr.json');
+
+console.info(translations);
 
 groupBy.register(Handlebars);
 
@@ -29,8 +32,10 @@ Handlebars.registerHelper('each_competition', function (dateObject, date, option
     return ret;
 });
 
-Handlebars.registerHelper('relativeDate', function (date, options) {
-    var diff = moment(new Date().toJSON().slice(0, 10)).diff(moment(date, 'YYYY-MM-DD'), 'days');
+Handlebars.registerHelper('relativeDate', function (date, format) {
+    var now = moment(new Date().toJSON().slice(0, 10));
+    date = moment(date, 'YYYY-MM-DD');
+    var diff = now.diff(date, 'days');
 
     switch (diff) {
         case 1:
@@ -44,7 +49,10 @@ Handlebars.registerHelper('relativeDate', function (date, options) {
         case -2:
             return 'après-demain';
         default :
-            return moment(date, 'YYYY-MM-DD').format('dddd D MMM');
+            if(typeof format !== 'string'){
+                format = date.year() === now.year() ? 'dddd D MMM' : 'dddd D MMMM YYYY';
+            }
+            return moment(date, 'YYYY-MM-DD').format(format);
     }
 });
 
@@ -125,6 +133,14 @@ Handlebars.registerHelper('teamCondensed', function (teamId, options) {
     });
     var ret = '<a href="/teams/'+team.id+'"><img src="/data/teams/' + team.id + '.png"/><span class="name">' + team.name + '</span></a>';
     return new Handlebars.SafeString(ret);
+});
+
+Handlebars.registerHelper('t', function(name, domainOrCount){
+    if(typeof domainOrCount === 'string'){
+        name = domainOrCount + '.' + name;
+    }
+
+    return (typeof translations[name] !== 'undefined') ? translations[name] : name;
 });
 
 module.exports = Handlebars;

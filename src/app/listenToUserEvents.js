@@ -20,7 +20,28 @@ module.exports = function listenToUserEvents(appCtx) {
             params.upcomingDate = appCtx.scoreboard.upcomingDate;
         }
 
-        page('/?' + $.param(params));
+        page('?' + $.param(params));
+        return false;
+    });
+    $page.on('click', '#competition .sectionNavbar a', function () {
+        var pathname = window.location.pathname;
+        if (pathname.substr(-1) === '/') {
+            pathname = pathname.substr(0, pathname.length - 1);
+        }
+        var data = $(this).data();
+        var params = {};
+
+        params[data.param] = data.value;
+
+        if (appCtx.competition.month && data.param !== 'month') {
+            params.month = appCtx.competition.month;
+        }
+
+        if (appCtx.competition.country && data.param !== 'country') {
+            params.country = appCtx.scoreboard.country;
+        }
+
+        page(pathname + '/?' + $.param(params));
         return false;
     });
 
