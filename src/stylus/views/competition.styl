@@ -73,6 +73,7 @@
     flex-wrap wrap
     max-width 1200px
     margin 0 auto
+    padding 1em
     aside
       margin 1em
       padding 1em
@@ -121,14 +122,26 @@ h3 em
   justify-content center
 
 .day
-  width 380px
-  border 1px solid #EEE
-  margin 1em
-  border-radius 8px
+  min-width 380px
+  max-width 480px
+  flex 1
+  border 1px solid #DDD
+  background white
+  margin .5em
+  border-radius 4px
 ul
   padding .5em
 h5
   text-align center
   color #999
-  padding .5em
+  padding 1em
 
+.calendar
+  margin-top 2em
+  padding 40px 0
+  background #F1F1F1
+  h2
+    margin-top 0
+
+.calendarWrapper
+  padding-top .5em
