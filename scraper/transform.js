@@ -561,7 +561,6 @@ function getCompetitions(evenements, write) {
                 return p;
             });
 
-            competition.rawPhases = evenement.phases;
 
             competitionList.push({
                 id: evenement.id,
