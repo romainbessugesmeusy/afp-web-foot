@@ -18,7 +18,7 @@
                         {{/each}}
                     </div>
                 {{else}}
-                    <div class="event {{side}}">
+                    <div class="event {{side}} {{#if comment}}withComment{{/if}}">
                         <p>
                             <span class="time fontFigures">{{time}}'</span>
                                 <span class="players">
@@ -27,8 +27,7 @@
                                     {{/each}}
                                 </span>
                             {{#if type}}
-                                <img class="type"
-                                     src="http://bdsports.afp.com/spa-xc/images/events/{{type}}.png"/>
+                                <img class="type" src="/img/icons/{{type}}.png" height="60"/>
                             {{/if}}
                         </p>
                         {{#with comment }}

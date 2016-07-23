@@ -25,11 +25,17 @@
     text-align right
 
   .event
+    position relative
     margin-top 1.5em
     background white
     box-shadow 0 5px 10px rgba(black, .6)
     display inline-block
     padding 1em
+    img.type
+      position absolute
+      top 0
+      height 3.5em
+
     p
       display inline-flex
       align-items center
@@ -46,6 +52,11 @@
 
     &.home
       margin-right 48%
+      padding-left 50px
+      &.withComment
+        padding-left 1em
+      img.type
+        left 0
       p
         flex-direction row-reverse
 
@@ -54,12 +65,19 @@
 
     &.away
       margin-left 48%
+      padding-right 50px
+      &.withComment
+        padding-right 1em
+      img.type
+        right 0
       .time
         margin-right 1em
 
     &.both
       width 500px
       position relative
+      img.type
+        right 0
       > p
         text-align center
         display block
@@ -79,7 +97,7 @@
   .away .comment
     background white
     border 1px solid #DDD
-    margin-top .5rem
+    margin-top 1rem
     max-width 400px
 
   .group
