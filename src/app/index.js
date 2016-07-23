@@ -135,26 +135,30 @@ page('/competitions/:competitionId', function (ctx, next) {
 }, handleCompetitionParams, showPage($pages.competition));
 
 var deparam = require('./deparam');
+var moment = require('moment');
 
 function handleCompetitionParams(ctx, next) {
-    // Warning ! window.location.search isn't populated as it should
-    // /?pastDate=2016-07-01&upcomingDate=2016-07-04
     var params = (ctx.querystring) ? deparam(ctx.querystring) : {};
+    var $aDayOfCompetition = $('a[data-param="dayOfCompetition"].nearest');
 
     // take the first links to get the defaults
-    params.month = params.month || $('a[data-param="month"]:eq(0)').attr('data-value');
+    params.dayOfCompetition = params.dayOfCompetition || $aDayOfCompetition.attr('data-value');
     params.country = params.country || $('a[data-param="country"]:eq(0)').attr('data-value');
 
     // in the same rendering frame
     // we activate the tab and link for both
     window.requestAnimationFrame(function () {
-        if (appCtx.competition.month !== params.month) {
-            $('a[data-param="month"]').removeClass('active');
-            $('.calendarWrapper').find('.month').removeClass('active');
-            $('a[data-param="month"][data-value="' + params.month + '"]').addClass('active').removeClass('prev next');
-            $('.month[data-month="' + params.month + '"]').addClass('active');
+        if (appCtx.competition.dayOfCompetition !== params.dayOfCompetition) {
+            $('a[data-param="dayOfCompetition"]').removeClass('active');
+            $('.calendarWrapper').find('.daysWrapper').removeClass('active');
+
+            $('a[data-param="dayOfCompetition"][data-value="' + params.dayOfCompetition + '"]')
+                .addClass('active')
+                .removeClass('prev next');
+
+            $('.daysWrapper[data-day="' + params.dayOfCompetition + '"]').addClass('active');
             // store in order to preserve browser repaints
-            appCtx.competition.month = params.month;
+            appCtx.competition.dayOfCompetition = params.dayOfCompetition;
         }
         next();
     });

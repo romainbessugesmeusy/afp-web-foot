@@ -4,6 +4,12 @@ var page = require('page');
 module.exports = function listenToUserEvents(appCtx) {
 
     var $page = $('#page');
+
+    //jquery mobile
+    //$page.on('swipeleft', '.daysWrapper', function(){
+    //    console.info('days swipe');
+    //});
+
     $page.on('click', '.sectionNavbar button.prev', prevDateClickHandler);
     $page.on('click', '.sectionNavbar button.next', nextDateClickHandler);
     $page.on('click', '#scoreboard .sectionNavbar a', function () {

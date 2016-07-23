@@ -528,6 +528,7 @@ function getCompetitions(evenements, write) {
                         phase: phase.PhaseCompetCode,
                         group: match.GroupId,
                         status: match.StatusCode,
+                        dayOfCompetition: match.Journee,
                         home: extractScoreboardTeamInfo(match.Home),
                         away: extractScoreboardTeamInfo(match.Away)
                     });
