@@ -3,7 +3,7 @@ var sortByDate = require('./sortByDate');
 var setMatchWinner = require('./setMatchWinner');
 
 module.exports = function (data, options) {
-
+    var startDate = new Date();
     var scoreboard = {
         competitions: data.competitions,
         upcomingDateList: [],
@@ -15,14 +15,17 @@ module.exports = function (data, options) {
     var nowDate = now.substr(0, 10);
     var nowTime = now.substr(11, 5);
 
+
     var matchesByDateAndCompetition = {};
 
     $.each(data.dates, function (date, matches) {
 
-        if (date >= nowDate) {
+        if (date > nowDate) {
             scoreboard.upcomingDateList.push(date);
         } else if (date < nowDate) {
             scoreboard.pastDateList.push(date);
+        } else {
+            scoreboard.todaysMatches = matches;
         }
 
         if (typeof matchesByDateAndCompetition[date] === 'undefined') {
@@ -58,6 +61,10 @@ module.exports = function (data, options) {
     scoreboard.pastDateList.reverse();
     scoreboard.upcomingDateList.sort(sortByDate(true));
     scoreboard.upcomingDateList = scoreboard.upcomingDateList.map(wrapDates);
+    scoreboard.dates = data.dates;
+
+    console.info('processed scoreboard data in', new Date() - startDate, 'ms', scoreboard);
+
     return scoreboard;
 };
 

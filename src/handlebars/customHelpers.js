@@ -49,7 +49,7 @@ Handlebars.registerHelper('relativeDate', function (date, format) {
         case -2:
             return 'après-demain';
         default :
-            if(typeof format !== 'string'){
+            if (typeof format !== 'string') {
                 format = date.year() === now.year() ? 'dddd D MMM' : 'dddd D MMMM YYYY';
             }
             return moment(date, 'YYYY-MM-DD').format(format);
@@ -131,16 +131,24 @@ Handlebars.registerHelper('teamCondensed', function (teamId, options) {
             team = t;
         }
     });
-    var ret = '<a href="/teams/'+team.id+'"><img src="/data/teams/' + team.id + '.png"/><span class="name">' + team.name + '</span></a>';
+    var ret = '<a href="/teams/' + team.id + '"><img src="/data/teams/' + team.id + '.png"/><span class="name">' + team.name + '</span></a>';
     return new Handlebars.SafeString(ret);
 });
 
-Handlebars.registerHelper('t', function(name, domainOrCount){
-    if(typeof domainOrCount === 'string'){
+Handlebars.registerHelper('t', function (name, domainOrCount) {
+    if (typeof domainOrCount === 'string') {
         name = domainOrCount + '.' + name;
     }
 
     return (typeof translations[name] !== 'undefined') ? translations[name] : name;
+});
+
+Handlebars.registerHelper('countryBlock', function (code) {
+    var countryName = Handlebars.Utils.escapeExpression(translations['country.' + code]);
+    var flag = '<img class="flag" src="http://bds.afp.localhost:8080/img/flags/flags_un/48/' + code + '.png" alt="' + countryName + '"/>';
+    var name = '<span class="countryName">' + countryName + '</span>';
+    var ret = '<div class="country block">' + flag + name + '</div>';
+    return new Handlebars.SafeString(ret);
 });
 
 module.exports = Handlebars;

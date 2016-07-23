@@ -1,8 +1,43 @@
 var $ = require('jquery');
 var paginateNavbar = require('./paginateNavbar');
 var deparam = require('./deparam');
+var views = require('../gen/views');
 
-module.exports = function(appCtx){
+module.exports = function (appCtx) {
+
+    function getPastMatchesForDate(date) {
+        var competitionsThisDay = appCtx.data.scoreboard.pastMatches[date];
+        var viewParams = {
+            date: date,
+            competitions: []
+        };
+
+        $.each(competitionsThisDay, function (competitionId, matches) {
+            viewParams.competitions.push({
+                competition: appCtx.data.scoreboard.competitions[competitionId],
+                matches: matches
+            })
+        });
+
+        return views.scoreboardPastMatches(viewParams);
+    }
+
+    function getUpcomingMatchesForDate(date) {
+        var competitionsThisDay = appCtx.data.scoreboard.upcomingMatches[date];
+        var viewParams = {
+            date: date,
+            competitions: []
+        };
+
+        $.each(competitionsThisDay, function (competitionId, matches) {
+            viewParams.competitions.push({
+                competition: appCtx.data.scoreboard.competitions[competitionId],
+                matches: matches
+            })
+        });
+
+        return views.scoreboardUpcomingMatches(viewParams);
+    }
 
     return function (ctx, next) {
 
@@ -17,9 +52,15 @@ module.exports = function(appCtx){
         var $upcomingMatchesTabs = $('#upcomingMatchesTabs');
         var $pastMatchesTabs = $('#pastMatchesTabs');
 
+        var pastMatchesMarkup = getPastMatchesForDate(params.pastDate);
+        var upcomingMatchesMarkup = getUpcomingMatchesForDate(params.upcomingDate);
+
         // in the same rendering frame
         // we activate the tab and link for both
         window.requestAnimationFrame(function () {
+
+            $pastMatchesTabs.find('> .competitions').get(0).innerHTML = pastMatchesMarkup;
+            $upcomingMatchesTabs.find('> .competitions').get(0).innerHTML = upcomingMatchesMarkup;
 
             if (appCtx.scoreboard.upcomingDate !== params.upcomingDate) {
                 $('a[data-param="upcomingDate"]').removeClass('active');
@@ -50,4 +91,4 @@ module.exports = function(appCtx){
         });
 
     };
-}
+};

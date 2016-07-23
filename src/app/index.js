@@ -52,7 +52,22 @@ var handleDateParams = require('./handleDateParams')(appCtx);
 var listenToUserEvents = require('./listenToUserEvents')(appCtx);
 var showPage = require('./showPage')(appCtx);
 
+var _timer;
+var _message;
+var _started;
+var b = function (message) {
+    if (_started) {
+        bs();
+    }
+    _timer = new Date();
+    _message = message;
+    _started = true;
+};
 
+var bs = function () {
+    _started = false;
+    console.log(_message, new Date() - _timer, 'ms');
+};
 //
 // SCOREBOARD
 //
@@ -62,11 +77,15 @@ page('/', function (ctx, next) {
     if (appCtx.data.scoreboard) {
         return next();
     }
-
+    b('scoreboard getJSON');
     $.getJSON('/data/scoreboard.json', function (data) {
+        b('scoreboard process');
         appCtx.data.scoreboard = processScoreboardData(data);
-        console.info('scoreboardDataProcessed', appCtx.data.scoreboard);
-        $pages.scoreboard.empty().append(views.scoreboard(appCtx.data.scoreboard));
+        b('scoreboard markup');
+        var markup = views.scoreboard(appCtx.data.scoreboard);
+        b('scoreboard append');
+        $pages.scoreboard.get(0).innerHTML = markup;
+        bs();
         next();
     });
 
@@ -87,11 +106,16 @@ page('/matches/:matchId/*', function (ctx, next) {
         return next();
     }
 
+    b('match getJSON');
     $.getJSON('/data/matches/' + ctx.params.matchId + '.json', function (data) {
+        b('match process');
         var match = processMatchData(data);
-        console.info('processedMatchData', match);
         appCtx.currentMatchId = parseInt(ctx.params.matchId);
-        $pages.match.empty().append(views.match(match));
+        b('match markup');
+        var markup = views.match(match);
+        b('match append');
+        $pages.match.get(0).innerHTML = markup;
+        bs();
         next()
     });
 }, pageScroll.bind, showPage($pages.match, true));
@@ -108,9 +132,10 @@ page('/matches/:matchId/infos', activateMatchTab('infos'));
 // COMPETITIONS DASHBOARD
 //
 page('/competitions', function (ctx, next) {
+
     $.getJSON('/data/competitions.json', function (data) {
         console.info('competitionsData', data);
-        $pages.competitions.empty().append(views.competitions(data));
+        $pages.competitions.get('0').innerHTML = views.competitions(data);
         next();
     });
 
@@ -125,10 +150,15 @@ page('/competitions/:competitionId', function (ctx, next) {
         return next();
     }
 
+    b('competition getJSON');
     $.getJSON('/data/competitions/' + ctx.params.competitionId + '.json', function (data) {
+        b('competition process');
         var competition = processCompetitionData(data);
-        console.info('processedCompetitionData', competition);
-        $pages.competition.empty().append(views.competition(competition));
+        b('competition markup');
+        var markup = views.competition(competition);
+        b('competition append');
+        $pages.competition.get(0).innerHTML = views.competition(competition);
+        bs();
         appCtx.currentCompetitionId = competition.id;
         next();
     });

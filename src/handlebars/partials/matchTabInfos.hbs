@@ -7,8 +7,8 @@
                     {{#each referees}}
                         <div class="referee">
                             <p class="name">{{name}}</p>
-                            <p class="country"><img src="/img/flags/flags_un/48/{{country}}.png" alt="{{country}}"></p>
-                            <p class="role">{{role}}</p>
+                            {{countryBlock country}}
+                            <p class="role">{{t role 'const'}}</p>
                         </div>
                     {{/each}}
                 </div>
@@ -19,8 +19,7 @@
             <div class="stadiumFile">
                 <p class="name">{{stadium.name}}</p>
                 <p class="city">{{stadium.city}}</p>
-                <p class="country"><img src="/img/flags/flags_un/48/{{stadium.country}}.png" alt="{{stadium.country}}">
-                </p>
+                {{countryBlock stadium.country}}
             </div>
         </div>
 
