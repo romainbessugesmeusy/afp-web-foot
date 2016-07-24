@@ -95,13 +95,18 @@
     header .time
       background linear-gradient(#c35050,#fd0b0b)
       border-color #970000
-      animation glowingTime 1s infinite
+      animation glowingTime 2s infinite
 
 @keyframes glowingTime
   0%
     background linear-gradient(#c35050,#fd0b0b)
-  100%
+    box-shadow 0 0 10px rgba(255,0,0,0.5)
+  50%
     background linear-gradient(#c35636,#FF0000)
+    box-shadow 0 0 0 rgba(255,0,0,1)
+  100%
+    background linear-gradient(#c35050,#fd0b0b)
+    box-shadow 0 0 10px rgba(255,0,0,0.5)
 
 #todaysMatches
 

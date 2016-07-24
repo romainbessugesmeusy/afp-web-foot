@@ -83,13 +83,11 @@ module.exports = function (options) {
                 }, matchesPhaseCb);
             }, function (matches) {
                 var invalidate = false;
-
                 matches.Matches.forEach(function (match) {
                     if (isMatchOutdated(match)) {
                         invalidate = true;
                     }
                 });
-
                 return invalidate;
             });
         }
@@ -146,6 +144,9 @@ module.exports = function (options) {
                         getClassementGroupes(evenement, phase)
                     ], eachPhaseDone);
                 }, eachPhasesCb);
+            }, function(){
+                var now = new Date();
+                return (new Date(evenement.DateDeb) < now && new Date(evenement.DateFin) > now);
             });
         }
     }

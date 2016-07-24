@@ -505,6 +505,10 @@ function getCompetitions(evenements, write) {
         var competitionList = [];
 
         evenements.forEach(function (evenement) {
+
+            if(evenement.id === 6096){
+                debugger;
+            }
             var competition = {
                 id: evenement.id,
                 label: evenement.Label,
@@ -513,7 +517,8 @@ function getCompetitions(evenements, write) {
                 startDate: evenement.DateDeb,
                 endDate: evenement.DateFin,
                 type: evenement.TypeEvenement,
-                matches: []
+                matches: [],
+                groups: {}
             };
 
 
@@ -522,6 +527,15 @@ function getCompetitions(evenements, write) {
                     format: phase.PhaseCompetCode,
                     type: phase.TypePhaseCode
                 };
+
+                phase.Groupes.forEach(function(group){
+                    competition.groups[group.GroupeId] = {
+                        id: group.GroupeId,
+                        label: group.GroupeLabel,
+                        name: group.GroupeNom,
+                        isClass: group.IsClass
+                    };
+                });
 
                 phase.matches.forEach(function (match) {
                     competition.matches.push({
@@ -546,7 +560,8 @@ function getCompetitions(evenements, write) {
 
                     if (typeof phase.Groupes[0].Classement.Classements[0] === 'undefined') {
                         console.info('no ranking for evt', evenement.Label);
-                        return;
+                        console.info(phase.Groupes)
+                        return p;
                     }
 
                     p.rankings = phase.Groupes[0].Classement.Classements[0].Classement.map(function (team) {
@@ -569,7 +584,11 @@ function getCompetitions(evenements, write) {
             competitionList.push({
                 id: evenement.id,
                 label: evenement.Label,
-                country: evenement.CountryIso
+                country: evenement.CountryIso,
+                gender: evenement.GenderCode,
+                startDate: evenement.DateDeb,
+                endDate: evenement.DateFin,
+                type: evenement.TypeEvenement
             });
 
             competition.teams = evenement.statistiques.map(function (equipe) {
@@ -682,7 +701,7 @@ function getTeams(evenements, write) {
     }
 }
 
-module.exports = function transform(write) {
+module.exports = function transform(write, cb) {
     return function (evenements) {
         console.info('TRANSFORM START', new Date());
         async.parallel([
@@ -692,6 +711,9 @@ module.exports = function transform(write) {
             getTeams(evenements, write)
         ], function () {
             console.info('TRANSFORM END', new Date());
+            if(cb){
+                cb();
+            }
         });
     }
 };

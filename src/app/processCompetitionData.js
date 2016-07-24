@@ -46,5 +46,7 @@ module.exports = function processCompetitionData(data) {
     });
 
     data.groupTeamsByCountry = false; ///(data.teamCountries.length > 1);
+
+    console.info('processedCompetitionData', data);
     return data;
 };

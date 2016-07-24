@@ -1,0 +1,39 @@
+<div class="calendar">
+    <h2>Calendrier</h2>
+    <nav class="sectionNavbar light">
+        <div class="wrapper">
+            <p>
+                {{#each phases}}
+                    <a href="#" data-param="phase" data-value="{{format}}">{{t format 'const'}}</a>
+                {{/each}}
+            </p>
+        </div>
+    </nav>
+    <div class="calendarWrapper">
+        {{#group matches by='phase'}}
+            <div class="phase wrapper" data-phase="{{value}}">
+                <div class="groups">
+                    {{#group items by='group'}}
+                        <div class="group">
+                            {{#with (lookup @root.groups value)}}
+                                {{#if name}}
+                                    <h5>{{name}}</h5>
+                                {{/if}}
+                            {{/with}}
+
+                            <ul class="matches">
+                                {{#each items}}
+                                    {{#ifEquals status 'EMNCO'}}
+                                        {{> upcomingMatch }}
+                                    {{else}}
+                                        {{> pastMatch }}
+                                    {{/ifEquals}}
+                                {{/each}}
+                            </ul>
+                        </div>
+                    {{/group}}
+                </div>
+            </div>
+        {{/group}}
+    </div>
+</div>

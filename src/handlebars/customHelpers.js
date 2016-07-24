@@ -160,7 +160,40 @@ Handlebars.registerHelper('matchTime', function (match, options) {
     }
     return match.minute ? match.minute : match.time;
 });
+
 Handlebars.registerHelper('competitionName', function (competitionId, options) {
     return options.data.root.competitions[competitionId].label
 });
+
+Handlebars.registerHelper('switch', function (value, options) {
+    this._switch_value_ = value;
+    this._switch_break_ = false;
+    var html = options.fn(this);
+    delete this._switch_break_;
+    delete this._switch_value_;
+    return html;
+});
+
+Handlebars.registerHelper('case', function (value, options) {
+    var args = Array.prototype.slice.call(arguments);
+    var options = args.pop();
+
+    if (this._switch_break_ || args.indexOf(this._switch_value_) === -1) {
+        return '';
+    } else {
+        if (options.hash.break === true) {
+            this._switch_break_ = true;
+        }
+        return options.fn(this);
+    }
+});
+
+Handlebars.registerHelper('default', function (options) {
+    if (!this._switch_break_) {
+        return options.fn(this);
+    }
+});
+/*
+
+ */
 module.exports = Handlebars;

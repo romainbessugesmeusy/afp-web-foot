@@ -59,43 +59,10 @@
                 </div>
             </div>
         </header>
-        <div class="calendar">
-            <h2>Calendrier</h2>
-            <nav class="sectionNavbar light">
-                <div class="wrapper">
-                    <p>
-                        {{#each daysOfCompetition}}
-                            <a href="#" class="{{#if nearest}}nearest{{/if}}"data-param="dayOfCompetition" data-value="{{value}}">
-                                {{value}}
-                            </a>
-                        {{/each}}
-                    </p>
-                </div>
-            </nav>
-
-            <div class="calendarWrapper">
-                {{#group matches by='dayOfCompetition'}}
-                    <div class="daysWrapper" data-day="{{value}}">
-                        <div class="days">
-                            {{#group items by='day'}}
-                                <div class="day">
-                                    <h5>{{relativeDate value}}</h5>
-                                    <ul class="matches">
-                                        {{#each items}}
-                                            {{#ifEquals status 'EMNCO'}}
-                                                {{> upcomingMatch }}
-                                            {{else}}
-                                                {{> pastMatch }}
-                                            {{/ifEquals}}
-                                        {{/each}}
-                                    </ul>
-                                </div>
-                            {{/group}}
-                        </div>
-                    </div>
-                {{/group}}
-            </div>
-        </div>
+        {{#switch type}}
+            {{#case "TECOM"}}{{> cupCalendar }}{{/case}}
+            {{#case "TESIM"}}{{> championshipCalendar }}{{/case}}
+        {{/switch}}
         <div class="teams">
             <h2>Les équipes</h2>
             {{#if groupTeamsByCountry}}

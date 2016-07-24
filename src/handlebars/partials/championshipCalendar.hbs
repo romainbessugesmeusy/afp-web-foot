@@ -1,0 +1,39 @@
+<div class="calendar">
+    <h2>Calendrier</h2>
+    <nav class="sectionNavbar light">
+        <div class="wrapper">
+            <p>
+                {{#each daysOfCompetition}}
+                    <a href="#" class="{{#if nearest}}nearest{{/if}}" data-param="day"
+                       data-value="{{value}}">
+                        {{value}}
+                    </a>
+                {{/each}}
+            </p>
+        </div>
+    </nav>
+    <div class="calendarWrapper">
+        {{#group matches by='dayOfCompetition'}}
+            <div class="days wrapper" data-day="{{value}}">
+                <div class="groups days">
+                    {{#group items by='day'}}
+                        <div class="day group">
+                            <h5>{{relativeDate value}}</h5>
+                            <ul class="matches">
+                                {{#each items}}
+                                    <li>
+                                        {{#ifEquals status 'EMNCO'}}
+                                            {{> upcomingMatch }}
+                                        {{else}}
+                                            {{> pastMatch }}
+                                        {{/ifEquals}}
+                                    </li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                    {{/group}}
+                </div>
+            </div>
+        {{/group}}
+    </div>
+</div>

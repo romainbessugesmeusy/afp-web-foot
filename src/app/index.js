@@ -28,6 +28,7 @@ var appCtx = window.appCtx = {
         pastDate: null
     },
     competition: {
+        day: null,
         month: null,
         country: null
     },
@@ -44,6 +45,7 @@ var appCtx = window.appCtx = {
 var processScoreboardData = require('./processScoreboardData');
 var processMatchData = require('./processMatchData');
 var processCompetitionData = require('./processCompetitionData');
+var processCompetitionsData = require('./processCompetitionsData');
 var processTeamData = require('./processTeamData');
 var activateMatchTab = require('./activateMatchTab');
 var pageScroll = require('./pageScroll');
@@ -135,9 +137,14 @@ page('/matches/:matchId/infos', activateMatchTab('infos'));
 //
 page('/competitions', function (ctx, next) {
 
+    b('competitions getJSON');
     $.getJSON('/data/competitions.json', function (data) {
-        console.info('competitionsData', data);
-        $pages.competitions.get('0').innerHTML = views.competitions(data);
+        b('competitions process');
+        var competitions = processCompetitionsData(data);
+        b('competitions markup');
+        var markup = views.competitions(data);
+        b('competitions append');
+        $pages.competitions.get('0').innerHTML = markup;
         next();
     });
 
@@ -171,26 +178,31 @@ var moment = require('moment');
 
 function handleCompetitionParams(ctx, next) {
     var params = (ctx.querystring) ? deparam(ctx.querystring) : {};
-    var $aDayOfCompetition = $('a[data-param="dayOfCompetition"].nearest');
+    var $aDayOfCompetition = $('a[data-param="day"].nearest');
 
     // take the first links to get the defaults
-    params.dayOfCompetition = params.dayOfCompetition || $aDayOfCompetition.attr('data-value');
+    params.day = params.day || $aDayOfCompetition.attr('data-value');
+    params.phase = params.phase || 'TPFIN';
     params.country = params.country || $('a[data-param="country"]:eq(0)').attr('data-value');
 
     // in the same rendering frame
     // we activate the tab and link for both
     window.requestAnimationFrame(function () {
-        if (appCtx.competition.dayOfCompetition !== params.dayOfCompetition) {
-            $('a[data-param="dayOfCompetition"]').removeClass('active');
-            $('.calendarWrapper').find('.daysWrapper').removeClass('active');
-
-            $('a[data-param="dayOfCompetition"][data-value="' + params.dayOfCompetition + '"]')
-                .addClass('active')
-                .removeClass('prev next');
-
-            $('.daysWrapper[data-day="' + params.dayOfCompetition + '"]').addClass('active');
+        if (appCtx.competition.phase !== params.phase) {
+            $('a[data-param="phase"]').removeClass('active');
+            $('.calendarWrapper').find('.wrapper').removeClass('active');
+            $('a[data-param="phase"][data-value="' + params.phase + '"]').addClass('active')
+            $('.wrapper[data-phase="' + params.phase + '"]').addClass('active');
             // store in order to preserve browser repaints
-            appCtx.competition.dayOfCompetition = params.dayOfCompetition;
+            appCtx.competition.phase = params.phase;
+        }
+        if (appCtx.competition.day !== params.day) {
+            $('a[data-param="day"]').removeClass('active');
+            $('.calendarWrapper').find('.wrapper').removeClass('active');
+            $('a[data-param="day"][data-value="' + params.day + '"]').addClass('active');
+            $('.wrapper[data-day="' + params.day + '"]').addClass('active');
+            // store in order to preserve browser repaints
+            appCtx.competition.day = params.day;
         }
         next();
     });

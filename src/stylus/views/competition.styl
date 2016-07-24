@@ -109,28 +109,29 @@ h3 em
   font-weight 200
   color #666
 
-.daysWrapper
-  margin-bottom 2em
-  display none
+.calendarWrapper
+  .wrapper
+    margin-bottom 2em
+    display none
+    &.active
+      display block
 
-  &.active
-    display block
+  .groups
+    display flex
+    flex-wrap wrap
+    justify-content center
 
-.days
-  display flex
-  flex-wrap wrap
-  justify-content center
-
-.day
-  min-width 380px
-  max-width 480px
-  flex 1
-  border 1px solid #DDD
-  background white
-  margin .5em
-  border-radius 4px
-ul
-  padding .5em
+  .group
+    min-width 380px
+    max-width 480px
+    flex 1
+    border 1px solid #DDD
+    background white
+    margin .5em
+    border-radius 4px
+  ul
+    padding .5em
+    list-style-type none
 h5
   text-align center
   color #999
