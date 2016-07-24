@@ -3,6 +3,7 @@
 
 .liveMatchScoreboard
   background white
+  overflow hidden
   border-radius 4px
   box-shadow 0 5px 10px rgba(black, .8)
   margin 2em
@@ -24,7 +25,10 @@
     flex 1
     text-align center
 
-
+  .versus
+    font-size 2em
+    font-weight 900
+    font-style italic
   .content
     display flex
     align-items center
@@ -60,10 +64,12 @@
       width 1.2em
   .cards
     padding .5em
+    margin-bottom -20px
 
   .card
     text-align center
-    display inline-block
+    display block
+    float left
     line-height 27px
     margin 1px
     height 27px
@@ -75,9 +81,44 @@
       background #D2C738
     &.red
       background #D0021B
+    &:empty
+      opacity 0
+      &:before
+        content: ' '
+  footer
+    background #EEE
+    padding .5em
+    font-size .7em
+    text-align center
 
-#liveMatches
-  .matches
+  &.EMENC
+    header .time
+      background linear-gradient(#c35050,#fd0b0b)
+      border-color #970000
+      animation glowingTime 1s infinite
+
+@keyframes glowingTime
+  0%
+    background linear-gradient(#c35050,#fd0b0b)
+  100%
+    background linear-gradient(#c35636,#FF0000)
+
+#todaysMatches
+
+  .competition > header
+    h3
+      color white
+      font-weight 600
+      text-shadow 1px 1px 1px black
+    img
+      max-height 200px
+  .competition
+    padding-top 1em
+    h5
+      font-weight 200
+      color black
+      text-transform uppercase
+  .matches.highlighted
     box-shadow inset 0 -5px 50px rgba(black, .6)
     background linear-gradient(rgba(#284300, .9), rgba(#284300, 0)), url('/img/grass-light.jpg')
     display flex
@@ -85,6 +126,16 @@
     justify-content center
     align-items center
     border-bottom 1px solid black
+
+  .matches.other
+    padding 1em
+    display flex
+    flex-wrap wrap
+    justify-content center
+    li
+      width 380px
+      margin 0 auto
+      list-style-type none
 
 .competitions
   .wrapper

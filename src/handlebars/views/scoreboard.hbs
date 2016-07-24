@@ -1,10 +1,28 @@
-<section id="liveMatches">
+<section id="todaysMatches">
     <h2>Matches du jour</h2>
-    <div class="matches">
-        {{> liveMatch }}
-        {{> liveMatch }}
-        {{> liveMatch }}
-        {{> liveMatch }}
+    <div class="highlighted matches">
+        {{#each todaysMatches.highlight}}
+            {{> liveMatch }}
+        {{/each}}
+    </div>
+    <div class="other matches">
+        {{#group todaysMatches.normal by='competition'}}
+            <div class="competition">
+                <h5>{{competitionName value}}</h5>
+                <ul>
+                    {{#each items}}
+                        <li>
+                            {{#ifEquals status 'EMNCO'}}
+                                {{> upcomingMatch }}
+                            {{else}}
+                                {{> pastMatch }}
+                            {{/ifEquals}}
+                        </li>
+                    {{/each}}
+                </ul>
+            </div>
+        {{/group}}
+
     </div>
 </section>
 {{#if upcomingDateList.length}}

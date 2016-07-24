@@ -1,34 +1,54 @@
-<div class="liveMatchScoreboard">
+<div class="liveMatchScoreboard {{status}}">
     <header>
         <div class="home cards">
-            <span class="card yellow">2</span>
-            <span class="card red">1</span>
+            <span class="card yellow">{{home.cards.yellow}}</span>
+            <span class="card red">{{home.cards.red}}</span>
         </div>
-        <div class="time">48'</div>
+        <div class="time">
+            {{matchTime this}}
+        </div>
         <div class="away cards">
-            <span class="card yellow">1</span>
-            <span class="card red">2</span>
+            <span class="card yellow">{{away.cards.yellow}}</span>
+            <span class="card red">{{away.cards.red}}</span>
         </div>
     </header>
     <div class="content">
         <div class="team home">
-            <p><img src="/data/teams/1037.png" alt="Dundalk F.C." class="logo"></p>
-            <p><span class="name">Dundalk F.C.</span></p>
+            <a href="/teams/{{home.id}}">
+                <p><img src="/data/teams/{{home.id}}.png" alt="{{home.name}}" class="logo"></p>
+                <p><span class="name">{{home.name}}</span></p>
+            </a>
         </div>
         <div class="score fontFigures">
-            <p class="goals">
-                <span class="home">3</span>
-                <span class="away">3</span>
-            </p>
-            <p class="penaltyShootouts">
+
+            {{#ifEquals status 'EMNCO'}}
+                <p class="versus">VS</p>
+            {{else}}
+                <p class="goals">
+                    <span class="home">{{home.goals}}</span>
+                    <span class="away">{{away.goals}}</span>
+                </p>
+            {{/ifEquals}}
+            {{!--<p class="penaltyShootouts">
                 <span class="home">8</span>
                 <span class="away">7</span>
-            </p>
-            <p><a href="/matches/" class="button">LIVE</a></p>
+            </p>--}}
+            {{#ifEquals status 'EMENC'}}
+                <p><a href="/matches/{{id}}/" class="button live">LIVE</a></p>
+            {{/ifEquals}}
+            {{#ifEquals status 'EMFIN'}}
+                <p><a href="/matches/{{id}}/" class="button">Résumé</a></p>
+            {{/ifEquals}}
+
         </div>
         <div class="team away">
-            <p><img src="/data/teams/1124.png" alt="Celtic F.C." class="logo"></p>
-            <p><span class="name">Celtic F.C.</span></p>
+            <a href="/teams/{{away.id}}/">
+                <p><img src="/data/teams/{{away.id}}.png" alt="{{away.name}}" class="logo"></p>
+                <p><span class="name">{{away.name}}</span></p>
+            </a>
         </div>
     </div>
+    <footer>
+        <a href="/competitions/{{competition}}">{{competitionName competition}}</a>
+    </footer>
 </div>

@@ -25,13 +25,17 @@
                 <article class="competition pastMatches">
                     {{> scoreboardCompetitionHeader }}
                     <div class="matchesWrapper">
+                        <ul>
                         {{#each matches}}
+                            <li>
                             {{#ifEquals status "EMNCO"}}
                                 {{> upcomingMatch }}
                             {{else}}
                                 {{> pastMatch }}
                             {{/ifEquals}}
+                            </li>
                         {{/each}}
+                        </ul>
                     </div>
                 </article>
             {{/each}}

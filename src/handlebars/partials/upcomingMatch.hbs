@@ -1,9 +1,13 @@
-<div class="upcomingMatch">
-    <span class="home {{#unless home.name}}unknown{{/unless}}">
-        <span class="name">{{home.name}}</span>
-    </span>
+<div class="upcomingMatch" data-id="{{id}}">
+    {{#if home.id}}
+        <a href="/teams/{{home.id}}" class="home">{{home.name}}</a>
+    {{else}}
+        <span class="home unknown"></span>
+    {{/if}}
     <span class="time fontFigures">{{time}}</span>
-    <span class="away {{#unless away.name}}unknown{{/unless}}">
-        <span class="name">{{away.name}}</span>
-    </span>
+    {{#if away.id}}
+        <a href="/teams/{{away.id}}" class="away">{{away.name}}</a>
+    {{else}}
+        <span class="away unknown"></span>
+    {{/if}}
 </div>

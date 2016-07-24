@@ -17,6 +17,7 @@
     flex 1
     display flex
     align-items flex-start
+    display block
     .name
       flex 1
       line-height 20px
@@ -24,13 +25,19 @@
   .home
     flex 1
     text-align right
-    .unknown
+    &.unknown
       text-align right
+      &::after
+        content '■■■■■■■■■■■'
+        color #DDD
   .away
     flex 1
     text-align left
-    .unknown
+    &.unknown
       text-align left
+      &::before
+        content '■■■■■■■■■■■'
+        color #DDD
 
   .time, .goals
     background #C9C9C9
@@ -52,10 +59,6 @@
   .name
     position relative
 
-  .unknown
-    &::before
-      content '■■■■■■■■■■■'
-      color #DDD
 
 
   .cards

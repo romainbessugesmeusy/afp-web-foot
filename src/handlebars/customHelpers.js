@@ -151,4 +151,16 @@ Handlebars.registerHelper('countryBlock', function (code) {
     return new Handlebars.SafeString(ret);
 });
 
+Handlebars.registerHelper('matchTime', function (match, options) {
+    switch (match.status) {
+        case constants.status.paused :
+            return 'MI-TEMPS';
+        case constants.status.finished :
+            return 'TERMINÉ';
+    }
+    return match.minute ? match.minute : match.time;
+});
+Handlebars.registerHelper('competitionName', function (competitionId, options) {
+    return options.data.root.competitions[competitionId].label
+});
 module.exports = Handlebars;

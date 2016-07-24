@@ -96,7 +96,7 @@ module.exports = function (options) {
     }
 
     function isMatchOutdated(match) {
-        return (moment(match.Date).diff(new Date()) < 0 && match.StatusCode === 'EMNCO');
+        return (moment(match.Date).diff(new Date()) < 0 && match.StatusCode !== 'EMFIN');
     }
 
     function getPhaseTopScorers(evenement, phase) {

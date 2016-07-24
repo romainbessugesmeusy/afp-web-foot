@@ -1,6 +1,7 @@
 var $ = require('jquery');
 var sortByDate = require('./sortByDate');
 var setMatchWinner = require('./setMatchWinner');
+var highlightedTeams = [2829, 1819, 2694, 1585];
 
 module.exports = function (data, options) {
     var startDate = new Date();
@@ -25,7 +26,25 @@ module.exports = function (data, options) {
         } else if (date < nowDate) {
             scoreboard.pastDateList.push(date);
         } else {
-            scoreboard.todaysMatches = matches;
+            scoreboard.todaysMatches = {
+                highlight: [],
+                normal: []
+            };
+
+            matches.forEach(function(m){
+                if(highlightedTeams.indexOf(m.home.id) > -1 || highlightedTeams.indexOf(m.away.id) > -1){
+                    scoreboard.todaysMatches.highlight.push(m);
+                } else {
+                    scoreboard.todaysMatches.normal.push(m);
+                }
+            });
+
+            scoreboard.todaysMatches.highlight.sort(function(a,b){
+                return a.time > b.time;
+            })
+            scoreboard.todaysMatches.normal.sort(function(a,b){
+                return a.time > b.time;
+            })
         }
 
         if (typeof matchesByDateAndCompetition[date] === 'undefined') {

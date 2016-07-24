@@ -5,6 +5,7 @@ var moment = require('moment');
 
 function extractScoreboardTeamInfo(team) {
     var obj = {
+        id: team.TeamId,
         name: (team.TeamName === '?') ? null : team.TeamName,
         goals: (team.TeamScore === -1) ? null : team.TeamScore,
         penaltyShootoutScore: team.TeamTabScore,
@@ -60,9 +61,11 @@ function getAllMatchDates(evenements) {
         dates[day].push({
             id: match.Id,
             time: time,
+            minute: match.Minute,
             competition: evenement.id,
             phase: phase.PhaseCompetCode,
             group: match.GroupId,
+            status: match.StatusCode,
             home: extractScoreboardTeamInfo(match.Home),
             away: extractScoreboardTeamInfo(match.Away)
         });
@@ -593,6 +596,7 @@ function getTeams(evenements, write) {
         evenements.forEach(function (evt) {
             evt.phases.forEach(function (phase) {
                 phase.matches.forEach(function (match) {
+                    match.EvenementId = evt.Id;
                     if (typeof matchesByTeamId[match.Home.TeamId] === 'undefined') {
                         matchesByTeamId[match.Home.TeamId] = [];
                     }
@@ -603,8 +607,8 @@ function getTeams(evenements, write) {
                     matchesByTeamId[match.Away.TeamId].push(match);
                 });
             });
-            evt.statistiques.forEach(function (equipe) {
 
+            evt.statistiques.forEach(function (equipe) {
 
                 if (typeof teams[equipe.TeamId] === 'undefined') {
                     teams[equipe.TeamId] = {
@@ -627,14 +631,18 @@ function getTeams(evenements, write) {
                 team.competitions.push(competition);
 
                 if (Array.isArray(matchesByTeamId[team.id])) {
-                    competition.matches = matchesByTeamId[team.id].map(function (match) {
-                        return {
-                            id: match.Id,
-                            groupId: match.GroupId,
-                            date: match.Date,
-                            status: match.StatusCode,
-                            home: extractScoreboardTeamInfo(match.Home),
-                            away: extractScoreboardTeamInfo(match.Away)
+                    competition.matches = [];
+
+                    matchesByTeamId[team.id].forEach(function (match) {
+                        if (evt.id === match.EvenementId) {
+                            competition.matches.push({
+                                id: match.Id,
+                                groupId: match.GroupId,
+                                date: match.Date,
+                                status: match.StatusCode,
+                                home: extractScoreboardTeamInfo(match.Home),
+                                away: extractScoreboardTeamInfo(match.Away)
+                            });
                         }
                     });
                 }

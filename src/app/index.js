@@ -101,6 +101,7 @@ page.exit('/', function (ctx, next) {
 //
 // INDIVIDUAL MATCH
 //
+
 page('/matches/:matchId/*', function (ctx, next) {
     if (appCtx.currentMatchId === parseInt(ctx.params.matchId)) {
         return next();
@@ -123,6 +124,7 @@ page('/matches/:matchId/*', function (ctx, next) {
 //
 // MATCH TABS (called after the individual match route)
 //
+page('/matches/:matchId/', activateMatchTab('events'));
 page('/matches/:matchId/evenements', activateMatchTab('events'));
 page('/matches/:matchId/tirs-au-but', activateMatchTab('penaltyShootouts'));
 page('/matches/:matchId/composition', activateMatchTab('composition'));
