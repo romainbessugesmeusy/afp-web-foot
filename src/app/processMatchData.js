@@ -1,12 +1,15 @@
 var $ = require('jquery');
+var setMatchWinner = require('./setMatchWinner');
+
 
 module.exports = function (data) {
 
     data.hasEvents = (data.events.length > 0);
     data.hasPlayers = (data.home.players.length + data.away.players.length > 0);
     data.hasInfos = (data.stadium || data.referees.length > 0);
-
     data.playerHash = {};
+
+    setMatchWinner(data);
 
     ['home', 'away'].forEach(function (side) {
         data[side].players.forEach(function (line) {
@@ -31,5 +34,7 @@ module.exports = function (data) {
             });
         }
     });
+
+    console.info('processedMatchData', data);
     return data;
 };

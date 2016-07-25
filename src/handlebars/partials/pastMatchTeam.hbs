@@ -1,5 +1,10 @@
-<div class="{{side}}">
-    <span class="goals fontFigures {{#if winner}}winner{{/if}}">{{goals}}</span>
+<div class="{{side}} {{#if penaltyShootoutScore}}withPenaltyShootout{{/if}} {{#if winner}}winner{{/if}}">
+    <span class="goals fontFigures">
+        {{goals}}
+    </span>
+    <span class="penaltyShootout fontFigures">
+        {{penaltyShootoutScore}}
+    </span>
     <span class="name">{{name}}</span>
         <span class="cards fontFigures">
             {{#if cards.yellow}}

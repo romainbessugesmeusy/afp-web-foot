@@ -17,11 +17,14 @@
     flex 1
     display flex
     align-items center
+    width 50%
     .name
       display block
       flex 1
       line-height 20px
       white-space nowrap
+      text-overflow ellipsis
+      overflow hidden
 
   .home
     flex 1
@@ -42,27 +45,53 @@
         content '■■■■■■■■■■■'
         color #DDD
 
-  .time, .goals
+  .time, .goals, .penaltyShootout
     background #AAA
     margin 0 1rem
     padding .2rem
     color white
     //text-shadow 0 1px 1px #222
     font-weight 600
-    font-size .8rem
+    font-size 12px
     display inline-block
     border-radius 4px
 
   .goals
     margin 0 .5rem
-    padding .3rem
-    &.winner
+
+  .winner
+    font-weight 400
+    .goals
       background black
+
+  .penaltyShootout
+    margin 0
+    background #CCC
 
   .name
     position relative
 
+  .penaltyShootout
+    display none
+    color black
 
+  .withPenaltyShootout
+    .penaltyShootout
+      display inline-block
+    &.home
+      .penaltyShootout
+        border-radius 4px 0 0 4px
+        margin-left .5em
+      .goals
+        margin-left 0
+        border-radius 0 4px 4px 0
+    &.away
+      .penaltyShootout
+        border-radius 0 4px 4px 0
+        margin-right .5em
+      .goals
+        margin-right 0
+        border-radius 4px 0 0 4px
 
   .cards
 

@@ -202,11 +202,12 @@ function getTeamStaff(match, staff, team) {
     }
 
     var foundPlayerIdsInStaff = [];
+    var staffPositionCodes = ['PSENT', 'PSADJ', 'PSPRE', 'PSMAN'];
 
     staff.forEach(function (member) {
         foundPlayerIdsInStaff.push(member.Id);
         if (typeof playersInCompo[member.Id] === 'undefined' || playersInCompo[member.Id].Line === 0) {
-            if (member.PositionCode !== 'PSENT') {
+            if (staffPositionCodes.indexOf(member.PositionCode) === -1) {
                 ret.subs.push(transformPlayerInfo(member))
             } else {
                 ret.staff.push(transformStaffInfo(member));
@@ -263,21 +264,18 @@ function getPenaltyShootouts(match) {
     if (!Array.isArray(match.Tabs)) {
         return null;
     }
-    var counter = 0;
     var ret = {home: [], away: []};
 
     match.Tabs.forEach(function (tabEvent) {
         var side = (tabEvent.TeamId === match.Home.TeamId) ? 'home' : 'away';
         var shootout = {
             player: tabEvent.PlayerId,
-            number: Math.floor(counter / 2) + 1
+            number: tabEvent.Order
         };
 
         if (tabEvent.TypeEvtCode === 'VTTAX') {
             shootout.missed = tabEvent.ExtTypeEvtCode;
         }
-
-        counter++;
         ret[side].push(shootout);
     });
 
@@ -506,7 +504,7 @@ function getCompetitions(evenements, write) {
 
         evenements.forEach(function (evenement) {
 
-            if(evenement.id === 6096){
+            if (evenement.id === 6096) {
                 debugger;
             }
             var competition = {
@@ -528,7 +526,7 @@ function getCompetitions(evenements, write) {
                     type: phase.TypePhaseCode
                 };
 
-                phase.Groupes.forEach(function(group){
+                phase.Groupes.forEach(function (group) {
                     competition.groups[group.GroupeId] = {
                         id: group.GroupeId,
                         label: group.GroupeLabel,
@@ -711,7 +709,7 @@ module.exports = function transform(write, cb) {
             getTeams(evenements, write)
         ], function () {
             console.info('TRANSFORM END', new Date());
-            if(cb){
+            if (cb) {
                 cb();
             }
         });

@@ -117,7 +117,7 @@ Handlebars.registerHelper('getCompoLineLabel', function (team, index, opts) {
 //    return player;
 //});
 Handlebars.registerHelper('age', function (date, format) {
-    if (date) {
+    if (date && parseInt(date) !== 0) {
         return Math.abs(moment(date, format).diff(moment(), 'years')) + ' ans';
     }
     return ''

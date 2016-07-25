@@ -42,6 +42,7 @@
     h3
       font-weight 400
       text-transform uppercase
+
   .summary
     height 200px
     background white
@@ -73,6 +74,27 @@
       text-align right
     .away
       text-align left
+
+  .winner
+    h3
+      position relative
+      font-weight 500
+      &:before, &:after
+        content ''
+        background url(/img/winner.png) no-repeat center
+        background-size contain
+        height 40px
+        width 40px
+        display none
+        margin 0 10px
+        position relative
+
+    &.home h3:before
+      display block
+      float right
+    &.away h3:after
+      display block
+      float left
 
   .scorers
     font-size .9em
@@ -117,6 +139,7 @@
           text-shadow 0 1px 2px black
           background #444
           color white
+          font-size .8em
 
 .scroll #liveMatch
   .fixed

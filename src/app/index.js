@@ -3,7 +3,7 @@
 // deps
 var $ = require('jquery');
 var page = require('page');
-var io = require('socket.io-client');
+//var io = require('socket.io-client');
 // templates and partials
 // expose the light runtime for browser
 var handlebars = require('handlebars/runtime');

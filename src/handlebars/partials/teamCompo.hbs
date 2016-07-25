@@ -26,6 +26,7 @@
     {{#each staff}}
         <div class="member">
             <p class="name">{{fullname}}</p>
+            <p class="position"><em>{{t position 'const'}}</em></p>
             <p class="age">{{age birthDate 'YYYYMMDD'}}</p>
             {{#if faceshot}}
                 <div class="faceshot">
