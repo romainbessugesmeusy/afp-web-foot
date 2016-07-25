@@ -1,6 +1,6 @@
 .sectionNavbar
   color white
-  background linear-gradient(#5A5A5A, #151515);
+  background #151515;
   font-size 1rem
   border-top 1px solid black
   border-bottom 1px solid black
@@ -29,14 +29,14 @@
     border 1px solid black
     text-shadow 0 1px 0 black
     &:hover
-      background linear-gradient(#333, #555)
+      background #333
     &:focus
       outline none
     &.hidden
       visibility hidden
   a
     //text-transform uppercase
-    transition background .2s linear, border-color .2s linear
+    transition border-color .2s linear
     padding .3rem .5rem
     margin 4px .5rem
     display inline-block

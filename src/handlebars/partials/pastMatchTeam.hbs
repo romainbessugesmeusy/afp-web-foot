@@ -1,0 +1,12 @@
+<div class="{{side}}">
+    <span class="goals fontFigures {{#if winner}}winner{{/if}}">{{goals}}</span>
+    <span class="name">{{name}}</span>
+        <span class="cards fontFigures">
+            {{#if cards.yellow}}
+                <span class="card yellow">{{cards.yellow}}</span>
+            {{/if}}
+            {{#if cards.red}}
+                <span class="card red">{{cards.red}}</span>
+            {{/if}}
+        </span>
+</div>
