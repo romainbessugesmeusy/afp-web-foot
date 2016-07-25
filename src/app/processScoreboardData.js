@@ -31,20 +31,24 @@ module.exports = function (data, options) {
                 normal: []
             };
 
-            matches.forEach(function(m){
-                if(highlightedTeams.indexOf(m.home.id) > -1 || highlightedTeams.indexOf(m.away.id) > -1){
+            matches.forEach(function (m) {
+                if (highlightedTeams.indexOf(m.home.id) > -1 || highlightedTeams.indexOf(m.away.id) > -1) {
                     scoreboard.todaysMatches.highlight.push(m);
                 } else {
                     scoreboard.todaysMatches.normal.push(m);
                 }
             });
 
-            scoreboard.todaysMatches.highlight.sort(function(a,b){
+            while (scoreboard.todaysMatches.highlight.length < 4 && scoreboard.todaysMatches.normal.length > 0) {
+                scoreboard.todaysMatches.highlight.push(scoreboard.todaysMatches.normal.pop());
+            }
+
+            scoreboard.todaysMatches.highlight.sort(function (a, b) {
                 return a.time > b.time;
-            })
-            scoreboard.todaysMatches.normal.sort(function(a,b){
+            });
+            scoreboard.todaysMatches.normal.sort(function (a, b) {
                 return a.time > b.time;
-            })
+            });
         }
 
         if (typeof matchesByDateAndCompetition[date] === 'undefined') {
