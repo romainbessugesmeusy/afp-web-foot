@@ -81,20 +81,19 @@ module.exports = function (options) {
                         getMatchComments(evenement, match)
                     ], eachMatchCb)
                 }, matchesPhaseCb);
-            }, function (matches) {
-                var invalidate = false;
-                matches.Matches.forEach(function (match) {
-                    if (isMatchOutdated(match)) {
-                        invalidate = true;
-                    }
-                });
-                return invalidate;
+            }, function () {
+                return isEvenementCurrent(evenement);
             });
         }
     }
 
     function isMatchOutdated(match) {
         return (moment(match.Date).diff(new Date()) < 0 && match.StatusCode !== 'EMFIN');
+    }
+
+    function isEvenementCurrent(evenement){
+        var now = new Date();
+        return (new Date(evenement.DateDeb) < now && new Date(evenement.DateFin) > now);
     }
 
     function getPhaseTopScorers(evenement, phase) {
@@ -145,8 +144,7 @@ module.exports = function (options) {
                     ], eachPhaseDone);
                 }, eachPhasesCb);
             }, function(){
-                var now = new Date();
-                return (new Date(evenement.DateDeb) < now && new Date(evenement.DateFin) > now);
+                return isEvenementCurrent(evenement);
             });
         }
     }
