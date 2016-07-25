@@ -145,7 +145,7 @@ Handlebars.registerHelper('t', function (name, domainOrCount) {
 
 Handlebars.registerHelper('countryBlock', function (code) {
     var countryName = Handlebars.Utils.escapeExpression(translations['country.' + code]);
-    var flag = '<img class="flag" src="http://bds.afp.localhost:8080/img/flags/flags_un/48/' + code + '.png" alt="' + countryName + '"/>';
+    var flag = '<img class="flag" src="/img/flags/flags_un/48/' + code + '.png" alt="' + countryName + '"/>';
     var name = '<span class="countryName">' + countryName + '</span>';
     var ret = '<div class="country block">' + flag + name + '</div>';
     return new Handlebars.SafeString(ret);
