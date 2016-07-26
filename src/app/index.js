@@ -187,18 +187,22 @@ function handleCompetitionParams(ctx, next) {
 
     // in the same rendering frame
     // we activate the tab and link for both
+
+    console.info(appCtx.competition, params);
     window.requestAnimationFrame(function () {
+
         if (appCtx.competition.phase !== params.phase) {
             $('a[data-param="phase"]').removeClass('active');
-            $('.calendarWrapper').find('.wrapper').removeClass('active');
+            $('.calendarWrapper').find('.wrapper[data-phase]').removeClass('active');
             $('a[data-param="phase"][data-value="' + params.phase + '"]').addClass('active')
             $('.wrapper[data-phase="' + params.phase + '"]').addClass('active');
             // store in order to preserve browser repaints
             appCtx.competition.phase = params.phase;
         }
+
         if (appCtx.competition.day !== params.day) {
             $('a[data-param="day"]').removeClass('active');
-            $('.calendarWrapper').find('.wrapper').removeClass('active');
+            $('.calendarWrapper').find('.wrapper[data-day]').removeClass('active');
             $('a[data-param="day"][data-value="' + params.day + '"]').addClass('active');
             $('.wrapper[data-day="' + params.day + '"]').addClass('active');
             // store in order to preserve browser repaints

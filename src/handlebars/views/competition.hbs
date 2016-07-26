@@ -10,12 +10,14 @@
                     <dd>{{relativeDate startDate 'dddd D MMMM YYYY'}}</dd>
                     <dt>Fin</dt>
                     <dd>{{relativeDate endDate 'dddd D MMMM YYYY'}}</dd>
-                    <dt>Sexe</dt>
+                    <dt>Genre</dt>
                     <dd>{{t gender 'const'}}</dd>
                 </dl>
             </aside>
             <div class="infos">
                 <h1>{{label}}</h1>
+                <p class="date">Du <span>{{relativeDate startDate 'dddd D MMMM YYYY'}}</span> au <span>{{relativeDate endDate 'dddd D MMMM YYYY'}}</span></p>
+
                 <div class="rankings">
                     {{#each phases}}
                         <div class="phase">
