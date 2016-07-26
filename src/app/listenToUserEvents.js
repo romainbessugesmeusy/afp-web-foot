@@ -12,6 +12,8 @@ module.exports = function listenToUserEvents(appCtx) {
 
     $page.on('click', '.sectionNavbar button.prev', prevDateClickHandler);
     $page.on('click', '.sectionNavbar button.next', nextDateClickHandler);
+    $page.on('click', '.sectionNavbar button.prev-group', prevGroupDateClickHandler);
+    $page.on('click', '.sectionNavbar button.next-group', nextGroupDateClickHandler);
     $page.on('click', '#scoreboard .sectionNavbar a', function () {
         var data = $(this).data();
         var params = {};
@@ -67,12 +69,23 @@ module.exports = function listenToUserEvents(appCtx) {
 
 function nextDateClickHandler(event) {
     var $navbar = $(event.target).closest('.sectionNavbar');
-    var linkSelector = 'a.current + a.next';
+    var linkSelector = 'a.active + a';
     $navbar.find(linkSelector).click();
 }
 
 function prevDateClickHandler(event) {
     var $navbar = $(event.target).closest('.sectionNavbar');
+    var index = $navbar.find('a.active').index() - 1;
+    $navbar.find('a').eq(index).click();
+}
+
+function prevGroupDateClickHandler(event){
+    var $navbar = $(event.target).closest('.sectionNavbar');
     var index = $navbar.find('a.current').index() - 1;
     $navbar.find('a').eq(index).click();
+}
+function nextGroupDateClickHandler(event){
+    var $navbar = $(event.target).closest('.sectionNavbar');
+    var linkSelector = 'a.current + a.next';
+    $navbar.find(linkSelector).click();
 }

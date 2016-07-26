@@ -83,8 +83,8 @@ module.exports = function (appCtx) {
 
             $('.sectionNavbar').each(function () {
                 var $this = $(this);
-                $this.find('button.prev').toggleClass('hidden', $this.find('a.prev').length === 0);
-                $this.find('button.next').toggleClass('hidden', $this.find('a.next').length === 0);
+                $this.find('button.prev, button.prev-group').toggleClass('hidden', $this.find('a.prev').length === 0);
+                $this.find('button.next, button.next-group').toggleClass('hidden', $this.find('a.next').length === 0);
             });
 
             next();

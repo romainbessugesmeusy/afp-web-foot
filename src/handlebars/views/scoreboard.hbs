@@ -31,6 +31,7 @@
         <div class="tabs" id="upcomingMatchesTabs">
             <nav class="sectionNavbar">
                 <div class="wrapper">
+                    <button class="prev-group">⇤</button>
                     <button class="prev">⇽</button>
                     <p>
                         {{#each upcomingDateList}}
@@ -40,21 +41,10 @@
                         {{/each}}
                     </p>
                     <button class="next">⇾</button>
+                    <button class="next-group">⇥</button>
                 </div>
             </nav>
-            <div class="competitions">
-                {{!--
-                {{#each upcomingDateList }}
-                    <div class="tab date" id="upcomingMatches-date-{{date}}">
-                        <div class="wrapper">
-                            {{#each_competition @root.upcomingMatches date}}
-                                {{> competitionUpcomingMatches }}
-                            {{/each_competition}}
-                        </div>
-                    </div>
-                {{/each}}
-                --}}
-            </div>
+            <div class="competitions"></div>
         </div>
     </section>
 {{/if}}
@@ -64,6 +54,7 @@
         <div class="tabs" id="pastMatchesTabs">
             <nav class="sectionNavbar">
                 <div class="wrapper">
+                    <button class="prev-group">⇤</button>
                     <button class="prev">⇽</button>
                     <p>
                         {{#each pastDateList}}
@@ -72,21 +63,10 @@
                         {{/each}}
                     </p>
                     <button class="next">⇾</button>
+                    <button class="next-group">⇥</button>
                 </div>
             </nav>
-            <div class="competitions">
-                {{!--
-                {{#each pastDateList}}
-                    <div class="tab date" id="pastMatches-date-{{date}}">
-                        <div class="wrapper">
-                            {{#each_competition @root.pastMatches date}}
-                                {{> competitionPastMatches }}
-                            {{/each_competition}}
-                        </div>
-                    </div>
-                {{/each}}
-                --}}
-            </div>
+            <div class="competitions"></div>
         </div>
     </section>
 {{/if}}
