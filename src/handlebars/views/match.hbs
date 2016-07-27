@@ -1,9 +1,14 @@
 <div id="liveMatch">
+    <img src="/img/grass-light.jpg" alt="grass" class="feedBackground">
     {{> matchHeader }}
     <div class="tabs" id="matchTabs">
         <nav class="sectionNavbar light">
-            {{#if hasEvents}}<a href="/matches/{{id}}/evenements" class="active" data-target="events">Événements</a>{{/if}}
-            {{#if penaltyShootouts}}<a href="/matches/{{id}}/tirs-au-but" data-target="penaltyShootouts">Tirs au but</a>{{/if}}
+            {{#if hasEvents}}
+                <a href="/matches/{{id}}/evenements" class="active" data-target="events">Événements</a>
+            {{/if}}
+            {{#if penaltyShootouts}}
+                <a href="/matches/{{id}}/tirs-au-but" data-target="penaltyShootouts">Tirs au but</a>
+            {{/if}}
             {{#if hasPlayers}}<a href="/matches/{{id}}/composition" data-target="composition">Composition</a>{{/if}}
             {{#if hasInfos}}<a href="/matches/{{id}}/infos" data-target="infos">Infos</a>{{/if}}
         </nav>
