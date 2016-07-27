@@ -1,14 +1,13 @@
 module.exports = function setMatchWinner(match) {
-    var winner;
 
-    if (typeof match.home.penaltyShootoutScore !== 'undefined') {
-        winner = (match.home.penaltyShootoutScore > match.away.penaltyShootoutScore) ? 'home' : 'away';
-    } else if (typeof match.home.goals !== 'undefined') {
-        winner = (match.home.goals > match.away.goals) ? 'home' : 'away';
+    function compareScore(prop) {
+        if(match.home[prop] > match.away[prop]){
+            match.home.winner = true;
+        } else if(match.home[prop] < match.away[prop]) {
+            match.away.winner = true;
+        }
     }
-
-    if (winner) {
-        match[winner].winner = true;
-    }
+    compareScore('goals');
+    compareScore('penaltyShootoutScore');
     return match;
 };

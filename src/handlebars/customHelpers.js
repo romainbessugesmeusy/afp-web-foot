@@ -33,6 +33,7 @@ Handlebars.registerHelper('each_competition', function (dateObject, date, option
 
 Handlebars.registerHelper('relativeDate', function (date, format) {
     var now = moment(new Date().toJSON().slice(0, 10));
+    format = format || 'dddd D MMM';
     date = moment(date, 'YYYY-MM-DD');
     var diff = now.diff(date, 'days');
 
@@ -49,7 +50,7 @@ Handlebars.registerHelper('relativeDate', function (date, format) {
             return 'après-demain';
         default :
             if (typeof format !== 'string') {
-                format = date.year() === now.year() ? 'dddd D MMM' : 'D M YYYY';
+                format = (date.year() === now.year()) ? 'dddd D MMM' : 'D MMM YYYY';
             }
             return moment(date, 'YYYY-MM-DD').format(format);
     }

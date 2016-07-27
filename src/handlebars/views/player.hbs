@@ -6,10 +6,14 @@
         <dl>
             <dt>Âge</dt>
             <dd>{{age birthDate 'YYYYMMDD'}}</dd>
-            <dt>Taille</dt>
-            <dd>{{height}} m</dd>
-            <dt>Poids</dt>
-            <dd>{{weight}} Kg</dd>
+            {{#if height}}
+                <dt>Taille</dt>
+                <dd>{{height}} m</dd>
+            {{/if}}
+            {{#if weight}}
+                <dt>Poids</dt>
+                <dd>{{weight}} Kg</dd>
+            {{/if}}
             {{#ifEquals birthCountry representCountry}}
                 <dt>Pays</dt>
                 <dd>{{countryBlock birthCountry}}</dd>
