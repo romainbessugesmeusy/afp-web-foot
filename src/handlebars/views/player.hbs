@@ -1,0 +1,38 @@
+<header>
+    <aside>
+        <div class="logo">
+            <img src="/data/players/{{id}}.jpg" alt="{{name}}" width="200">
+        </div>
+        <dl>
+            <dt>Âge</dt>
+            <dd>{{age birthDate 'YYYYMMDD'}}</dd>
+            <dt>Taille</dt>
+            <dd>{{height}} m</dd>
+            <dt>Poids</dt>
+            <dd>{{weight}} Kg</dd>
+            {{#ifEquals birthCountry representCountry}}
+                <dt>Pays</dt>
+                <dd>{{countryBlock birthCountry}}</dd>
+            {{else}}
+                <dt>Originaire de</dt>
+                <dd>{{countryBlock birthCountry}}</dd>
+                <dt>Représente</dt>
+                <dd>{{countryBlock representCountry}}</dd>
+            {{/ifEquals}}
+        </dl>
+    </aside>
+    <div class="infos">
+        <h1>{{fullname}}</h1>
+        <div class="teams">
+            {{#each teams}}
+                <div class="team">
+                    <h3>{{name}}</h3>
+                    <div class="logo">
+                        <img src="/data/teams/{{id}}.png" alt="{{name}}">
+                    </div>
+                    {{countryBlock country}}
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</header>

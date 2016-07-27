@@ -1,0 +1,134 @@
+#player
+
+  padding 2em 0
+
+  .phase
+    margin-bottom 1em
+
+  .teamsWrapper
+    display flex
+    flex-wrap wrap
+    perspective 1000px
+    max-width 1200px
+    margin 0 auto
+    justify-content center
+
+  .team
+    transition transform .1s linear
+    display block
+    text-decoration none
+    color black
+    padding 1em
+    text-align center
+    width 150px
+    overflow hidden
+    &:hover
+      text-decoration underline
+      transform scale3d(1.1, 1.1, 1.1)
+
+    .logo
+      position relative
+    .logo:after
+      content ''
+      position absolute
+      top 0
+      left 0
+      right 0
+      bottom 0
+      opacity 0
+      background linear-gradient(135deg, rgba(white,.2) 0%, rgba(white,.5) 50%, rgba(white,.1) 51%, rgba(white,0) 71%, rgba(white,0) 100%);
+      transition opacity .4s linear, transform .4s linear
+      transform scale3d(2, 2, 2)
+
+    &:hover .logo:after
+      opacity 1
+      transform scale3d(1,1,1)
+
+    img
+      filter drop-shadow(0 5px 10px rgba(black, .3))
+
+  header
+    display flex
+    flex-wrap wrap
+    max-width 1200px
+    margin 0 auto
+    padding 1em
+    aside
+      margin 1em
+      padding 1em
+      max-width 250px
+      box-shadow 0 5px 20px rgba(black, .1)
+      border-radius 4px
+      img
+        max-width 100%
+
+      dl
+        padding 1em
+        margin-top 2em
+
+      dt
+        font-weight bold
+        text-transform uppercase
+        font-size .7em
+        color #666
+        margin-top 1.5em
+        margin-bottom .5em
+    .infos
+      padding 1em
+      flex 1
+    h1
+      text-transform uppercase
+      text-align left
+      font-size 2em
+      font-weight 400
+      color #666
+      margin-bottom .5em
+    p.date
+      margin-bottom 2em
+      font-weight 200
+      span
+        font-weight 400
+
+h3 em
+  font-weight 200
+  color #666
+
+.calendarWrapper
+  .wrapper
+    margin-bottom 2em
+    display none
+    &.active
+      display block
+
+  .groups
+    display flex
+    flex-wrap wrap
+    justify-content center
+
+  .group
+    min-width 380px
+    max-width 480px
+    flex 1
+    border 1px solid #DDD
+    background white
+    margin .5em
+    border-radius 4px
+  ul
+    padding .5em
+    list-style-type none
+h5
+  text-align center
+  color #999
+  padding 1em
+
+.calendar
+  border-top 1px solid #DDD
+  border-bottom 1px solid #DDD
+  margin-top 2em
+  padding 40px 0
+  background #F1F1F1
+  h2
+    margin-top 0
+
+.calendarWrapper
+  padding-top .5em

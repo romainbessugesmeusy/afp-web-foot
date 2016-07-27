@@ -88,7 +88,7 @@ function getEvenementsScoreboard(evenements) {
 
 function getTeamFromEventStats(evenement, teamId) {
     var team = null;
-    evenement.statistiques.forEach(function (t) {
+    evenement.Equipes.forEach(function (t) {
         if (t.TeamId === teamId) {
             team = t;
         }
@@ -504,9 +504,6 @@ function getCompetitions(evenements, write) {
 
         evenements.forEach(function (evenement) {
 
-            if (evenement.id === 6096) {
-                debugger;
-            }
             var competition = {
                 id: evenement.id,
                 label: evenement.Label,
@@ -589,7 +586,7 @@ function getCompetitions(evenements, write) {
                 type: evenement.TypeEvenement
             });
 
-            competition.teams = evenement.statistiques.map(function (equipe) {
+            competition.teams = evenement.Equipes.map(function (equipe) {
                 return {
                     name: equipe.TeamNom,
                     country: equipe.TeamPaysIso,
@@ -625,7 +622,7 @@ function getTeams(evenements, write) {
                 });
             });
 
-            evt.statistiques.forEach(function (equipe) {
+            evt.Equipes.forEach(function (equipe) {
 
                 if (typeof teams[equipe.TeamId] === 'undefined') {
                     teams[equipe.TeamId] = {
@@ -699,6 +696,59 @@ function getTeams(evenements, write) {
     }
 }
 
+function getPlayers(evenements, write) {
+    return function (playersCb) {
+        var players = {};
+        evenements.forEach(function (evenement) {
+            evenement.Equipes.forEach(function (equipe) {
+                equipe.Staff.forEach(function (member) {
+                    if (typeof players[member.Id] === 'undefined') {
+                        players[member.Id] = {
+                            id: member.Id,
+                            name: member.NomCourt,
+                            fullname: member.NomLong,
+                            number: member.Bib,
+                            height: member.Taille,
+                            weight: member.Poids,
+                            birthDate: member.DateDeNaissance,
+                            representCountry: member.PaysRepresenteIso,
+                            birthCountry: member.PaysNaissanceIso,
+                            city: member.VilleNom,
+                            faceshot: member.Faceshot,
+                            teams: {},
+                            competitions: []
+                        }
+                    }
+
+                    players[member.Id].teams[equipe.TeamId] = {
+                        id: equipe.TeamId,
+                        name: equipe.TeamNom,
+                        type: equipe.TeamType,
+                        country: equipe.PaysIso
+                    };
+
+                    players[member.Id].competitions.push({
+                        id: evenement.id,
+                        label: evenement.Label,
+                        startDate: evenement.DateDeb,
+                        endDate: evenement.DateFin,
+                        country: evenement.CountryIso,
+                        type: evenement.TypeEvenement
+                    });
+                });
+            });
+        });
+
+        var playerId;
+        for (playerId in players) {
+            if (players.hasOwnProperty(playerId)) {
+                write('players/' + playerId, players[playerId]);
+            }
+        }
+        playersCb();
+    }
+}
+
 module.exports = function transform(write, cb) {
     return function (evenements) {
         console.info('TRANSFORM START', new Date());
@@ -706,7 +756,8 @@ module.exports = function transform(write, cb) {
             transformScoreboardData(evenements, write),
             getMatches(evenements, write),
             getCompetitions(evenements, write),
-            getTeams(evenements, write)
+            getTeams(evenements, write),
+            getPlayers(evenements, write)
         ], function () {
             console.info('TRANSFORM END', new Date());
             if (cb) {

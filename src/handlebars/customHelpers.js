@@ -4,7 +4,6 @@ var constants = require('../app/constants');
 var groupBy = require('handlebars-group-by');
 var translations = require('../../dist/data/locale/fr.json');
 
-console.info(translations);
 
 groupBy.register(Handlebars);
 
@@ -50,7 +49,7 @@ Handlebars.registerHelper('relativeDate', function (date, format) {
             return 'après-demain';
         default :
             if (typeof format !== 'string') {
-                format = date.year() === now.year() ? 'dddd D MMM' : 'dddd D MMMM YYYY';
+                format = date.year() === now.year() ? 'dddd D MMM' : 'D M YYYY';
             }
             return moment(date, 'YYYY-MM-DD').format(format);
     }

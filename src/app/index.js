@@ -18,7 +18,8 @@ var $pages = {
     team: $('#team'),
     teams: $('#teams'),
     competition: $('#competition'),
-    competitions: $('#competitions')
+    competitions: $('#competitions'),
+    player: $('#player')
 };
 
 var appCtx = window.appCtx = {
@@ -47,6 +48,7 @@ var processMatchData = require('./processMatchData');
 var processCompetitionData = require('./processCompetitionData');
 var processCompetitionsData = require('./processCompetitionsData');
 var processTeamData = require('./processTeamData');
+var processPlayerData = require('./processPlayerData');
 var activateMatchTab = require('./activateMatchTab');
 var pageScroll = require('./pageScroll');
 
@@ -188,7 +190,6 @@ function handleCompetitionParams(ctx, next) {
     // in the same rendering frame
     // we activate the tab and link for both
 
-    console.info(appCtx.competition, params);
     window.requestAnimationFrame(function () {
 
         if (appCtx.competition.phase !== params.phase) {
@@ -222,5 +223,15 @@ page('/teams/:teamId', function (ctx, next) {
         next();
     });
 }, showPage($pages.team));
+
+
+page('/players/:playerId', function (ctx, next) {
+    $.getJSON('/data/players/' + ctx.params.playerId + '.json', function (data) {
+        var markup = processPlayerData(data);
+        $pages.player.get('0').innerHTML = views.player(markup);
+        next();
+    });
+
+}, showPage($pages.player));
 
 page();

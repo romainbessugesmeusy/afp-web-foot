@@ -91,7 +91,7 @@ module.exports = function (options) {
         return (moment(match.Date).diff(new Date()) < 0 && match.StatusCode !== 'EMFIN');
     }
 
-    function isEvenementCurrent(evenement){
+    function isEvenementCurrent(evenement) {
         var now = new Date();
         return (new Date(evenement.DateDeb) < now && new Date(evenement.DateFin) > now);
     }
@@ -143,7 +143,7 @@ module.exports = function (options) {
                         getClassementGroupes(evenement, phase)
                     ], eachPhaseDone);
                 }, eachPhasesCb);
-            }, function(){
+            }, function () {
                 return isEvenementCurrent(evenement);
             });
         }
@@ -194,7 +194,7 @@ module.exports = function (options) {
         return function (eachEquipeCb) {
             fetch('xcequipestaff/:lang/:evtId/:id', {
                 evtId: evenement.id,
-                id: equipe.TeamId
+                id: equipe.Id
             }, function (err, teamStaff) {
                 extend(equipe, teamStaff);
                 getPlayersFaceshots(equipe)(eachEquipeCb);
@@ -211,9 +211,18 @@ module.exports = function (options) {
         return function (evenementStatCb) {
             fetch('xcstatistiques/:lang/:id', {id: evenement.id}, function (err, stats) {
                 evenement.statistiques = stats.Statistiques;
-                async.forEach(evenement.statistiques, function (equipe, eachEquipeDone) {
+                evenementStatCb();
+            });
+        }
+    }
+
+    function getEvenementEquipes(evenement) {
+        return function (equipesCb) {
+            fetch('xcequipes/:lang/:evt/0', {evt: evenement.id}, function (err, data) {
+                evenement.Equipes = data.Equipes;
+                async.forEach(evenement.Equipes, function (equipe, eachEquipeDone) {
                     getEquipeStaff(evenement, equipe)(eachEquipeDone);
-                }, evenementStatCb);
+                }, equipesCb);
             });
         }
     }
@@ -225,6 +234,7 @@ module.exports = function (options) {
             var evenement = {id: evtId};
             evenements.push(evenement);
             async.parallel([
+                getEvenementEquipes(evenement),
                 getEvenementInfos(evenement),
                 getPhases(evenement),
                 getEvenementStatistiques(evenement)

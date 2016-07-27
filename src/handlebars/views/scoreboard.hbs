@@ -32,7 +32,7 @@
             <nav class="sectionNavbar">
                 <div class="wrapper">
                     <button class="prev-group">⇤</button>
-                    <button class="prev">⇽</button>
+                    <button class="prev">←</button>
                     <p>
                         {{#each upcomingDateList}}
                             <a class="{{className}}" href="#" data-param="upcomingDate" data-value="{{date}}">
@@ -40,7 +40,7 @@
                             </a>
                         {{/each}}
                     </p>
-                    <button class="next">⇾</button>
+                    <button class="next">→</button>
                     <button class="next-group">⇥</button>
                 </div>
             </nav>
@@ -55,14 +55,14 @@
             <nav class="sectionNavbar">
                 <div class="wrapper">
                     <button class="prev-group">⇤</button>
-                    <button class="prev">⇽</button>
+                    <button class="prev">←</button>
                     <p>
                         {{#each pastDateList}}
                             <a class="{{className}}" href="#" data-param="pastDate"
                                data-value="{{date}}">{{relativeDate date}}</a>
                         {{/each}}
                     </p>
-                    <button class="next">⇾</button>
+                    <button class="next">→</button>
                     <button class="next-group">⇥</button>
                 </div>
             </nav>

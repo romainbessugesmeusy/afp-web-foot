@@ -1,12 +1,12 @@
 <div class="tab feed active" id="events">
 
     {{#if hasComments}}
-    <button id="toggleComments"
-            data-state="on"
-            data-message-on="Masquer les commentaires"
-            data-message-off="Afficher les commentaires">
-        Masquer les commentaires
-    </button>
+        <button id="toggleComments"
+                data-state="on"
+                data-message-on="Masquer les commentaires"
+                data-message-off="Afficher les commentaires">
+            Masquer les commentaires
+        </button>
     {{/if}}
     <div class="eventsWrapper">
         {{#each events}}
@@ -18,14 +18,14 @@
                         {{/each}}
                     </div>
                 {{else}}
-                    <div class="event {{side}} {{#if comment}}withComment{{/if}}">
+                    <div class="event {{type}} {{side}} {{#if comment}}withComment{{/if}}">
                         <p>
                             <span class="time fontFigures">{{time}}'</span>
-                                <span class="players">
-                                    {{#each players}}
-                                        <span class="player">{{name}}</span>
-                                    {{/each}}
-                                </span>
+                            <a href="/players/{{players.0.id}}" class="player">{{players.0.name}}</a>
+                            {{#if players.1.name}}
+                                <span class="subArrow">⇄</span>
+                                <a href="/players/{{players.1.id}}" class="player sub">{{players.1.name}}</a>
+                            {{/if}}
                             {{#if type}}
                                 <img class="type" src="/img/icons/{{type}}.png" height="60"/>
                             {{/if}}
