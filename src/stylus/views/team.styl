@@ -1,10 +1,32 @@
 #team
   padding 2em 0
 
-  .teamWrapper
-    max-width 1200px
-    margin 0 auto
+  h1
+    font-size 2em
+    font-weight 200
+    margin-bottom .5em
+
+  > header
+    padding 60px
+    background url(/img/stadium-crowd.jpg) top center // not working in chrome because of overflow hidden on <html> tag
+    background-attachment fixed
     text-align center
+    position relative
+    background-size contain
+
+    .content
+      padding 40px
+      margin 0 auto
+      display inline-block
+      background white
+      border-radius 8px
+      box-shadow 0 5px 30px black
+    .logo
+      display inline
+      margin 0 auto
+      img
+        height 200px
+        filter drop-shadow(0 5px 10px rgba(0,0,0,0.3))
 
   .competitionWrapper
     display flex
@@ -15,3 +37,28 @@
 
       .matchesWrapper
         max-height 100%
+
+  .wrapper
+    display flex
+    flex-wrap: wrap
+    width 100%
+
+    h3
+      text-transform uppercase
+      margin-bottom 1em
+
+  .position
+    flex 1 0 auto
+    border-right 1px solid #EEE
+    text-align left
+    padding 1em
+    min-width 240px
+    &:first-child
+      border-left 1px solid #EEE
+  .member
+    position relative
+    padding .5em 0
+    display block
+    &:hover
+      .faceshot
+        display block

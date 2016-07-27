@@ -1,44 +1,51 @@
-<div id="team">
-    <div class="teamWrapper">
-        <header>
-            <div class="logo">
-                <img src="/data/teams/{{id}}.png" alt="{{label}}">
-            </div>
-            <div class="infos">
-                <h1>{{name}}</h1>
-            </div>
-        </header>
-        <div class="players">
-            <h2>Effectif</h2>
-            {{#group staff by="position"}}
-                <h3>{{value}}</h3>
-                {{#each items}}
-                    {{> teamPlayer}}
-                {{/each}}
-            {{/group}}
+<header>
+    <div class="content">
+        <h1>{{name}}</h1>
+        <div class="logo">
+            <img src="/data/teams/{{id}}.png" alt="{{label}}">
         </div>
     </div>
-    <div class="matches">
-        <h2>Matches</h2>
-        <div class="competitionWrapper">
-            {{#each competitions}}
-                <article class="competition pastMatches">
-                    {{> scoreboardCompetitionHeader }}
-                    <div class="matchesWrapper">
-                        <ul>
+</header>
+{{#if staff}}
+    <div class="pageWrapper">
+        <div class="players">
+            <h2>Effectif</h2>
+            <div class="wrapper">
+                {{#group staff by="position"}}
+                    <div class="position">
+                        <h3>{{t value 'const'}}</h3>
+                        {{#each items}}
+                            <a class="member" href="/players/{{id}}">
+                                {{> faceshot }}
+                                <span class="name">{{fullname}}</span>
+                            </a>
+                        {{/each}}
+                    </div>
+                {{/group}}
+            </div>
+        </div>
+    </div>
+{{/if}}
+<div class="matches">
+    <h2>Matches</h2>
+    <div class="competitionWrapper">
+        {{#each competitions}}
+            <article class="competition pastMatches">
+                {{> scoreboardCompetitionHeader }}
+                <div class="matchesWrapper">
+                    <ul>
                         {{#each matches}}
                             <li>
-                            {{#ifEquals status "EMNCO"}}
-                                {{> upcomingMatch }}
-                            {{else}}
-                                {{> pastMatch }}
-                            {{/ifEquals}}
+                                {{#ifEquals status "EMNCO"}}
+                                    {{> upcomingMatch }}
+                                {{else}}
+                                    {{> pastMatch }}
+                                {{/ifEquals}}
                             </li>
                         {{/each}}
-                        </ul>
-                    </div>
-                </article>
-            {{/each}}
-        </div>
+                    </ul>
+                </div>
+            </article>
+        {{/each}}
     </div>
 </div>
