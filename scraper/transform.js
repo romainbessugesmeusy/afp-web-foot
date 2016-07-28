@@ -8,15 +8,15 @@ function extractScoreboardTeamInfo(team) {
         id: team.TeamId,
         name: (team.TeamName === '?') ? null : team.TeamName,
         goals: (team.TeamScore === -1) ? null : team.TeamScore,
-        penaltyShootoutScore: team.TeamTabScore,
+        penaltyShootoutGoals: team.TeamTabScore,
         cards: {
             yellow: team.TeamNbYellowCards,
             red: team.TeamNbRedCards
         }
     };
 
-    if (obj.penaltyShootoutScore === null || obj.penaltyShootoutScore === -1) {
-        delete obj.penaltyShootoutScore;
+    if (obj.penaltyShootoutGoals === null || obj.penaltyShootoutGoals === -1) {
+        delete obj.penaltyShootoutGoals;
     }
 
     if (obj.goals === null) {
@@ -319,6 +319,14 @@ function getMatches(evenements, write) {
                     city: match.Stadium.CityName,
                     country: match.Stadium.CountryIso
                 },
+                periods: match.Periods.map(function (period) {
+                    return {
+                        code: period.PeriodCode,
+                        home: period.HomeRes,
+                        away: period.AwayRes,
+                        time: period.TotalTime
+                    };
+                }),
                 home: getTeamDetail(evenement, phase, match, 'Home'),
                 away: getTeamDetail(evenement, phase, match, 'Away'),
                 penaltyShootouts: getPenaltyShootouts(match),

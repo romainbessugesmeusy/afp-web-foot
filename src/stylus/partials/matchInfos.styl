@@ -2,6 +2,7 @@
   //padding-bottom 300px
   display flex
   flex-wrap wrap
+  border-bottom 1px solid #eeeeee
   h3
     background #EEE
     border-bottom 1px solid #DDD
@@ -10,22 +11,26 @@
     text-align center
     padding .5em
   .name
-    padding 1em
+    padding .5em
     font-weight 400
 
-.referees, .stadium
+.referees, .stadium, .periods
   min-width 300px
   flex 1
   border-right 1px solid #EEE
-.refereesWrapper
-  display flex
-  flex-wrap wrap
 
 .referee
-  flex 1 1 auto
-  padding 1em
+  padding .5em
+  list-style-type none
+  text-align left
+
+.periods .goals span
+  display: inline-block
+  background #BBB
+  color white
+  padding .5em
+  font-size .8em
   border-radius 4px
-  border 1px solid #EEE
-  margin 1em
+  font-weight 800
 
 

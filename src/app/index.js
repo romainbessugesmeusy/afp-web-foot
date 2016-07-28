@@ -128,7 +128,7 @@ page('/matches/:matchId/*', function (ctx, next) {
 //
 // MATCH TABS (called after the individual match route)
 //
-page('/matches/:matchId/', activateMatchTab('events'));
+page('/matches/:matchId/', activateMatchTab('infos'));
 page('/matches/:matchId/evenements', activateMatchTab('events'));
 page('/matches/:matchId/tirs-au-but', activateMatchTab('penaltyShootouts'));
 page('/matches/:matchId/composition', activateMatchTab('composition'));

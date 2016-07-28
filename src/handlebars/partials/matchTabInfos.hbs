@@ -1,17 +1,41 @@
 <div class="tab" id="infos">
     <div class="infosWrapper">
+        <div class="periods">
+            <h3>Périodes</h3>
+            <table class="periods">
+                <thead>
+                <tr>
+                    <th>Période</th>
+                    <th class="center">Durée</th>
+                    <th class="center">Score</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#each periods}}
+                    <tr class="period">
+                        <td>{{t code 'const'}}</td>
+                        <td class="center fontFigures">{{time}}'</td>
+                        <td class="center goals">
+                            <span class="home">{{home}}</span>
+                            <span class="away">{{away}}</span>
+                        </td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        </div>
         {{#if referees}}
             <div class="referees">
                 <h3>Arbitres</h3>
-                <div class="refereesWrapper">
+                <ul class="refereesWrapper">
                     {{#each referees}}
-                        <div class="referee">
-                            <p class="name">{{name}}</p>
-                            {{countryBlock country}}
-                            <p class="role">{{t role 'const'}}</p>
-                        </div>
+                        <li class="referee">
+                            {{countryInline country}}
+                            <span class="name">{{name}}</span>
+                            <span class="role">{{t role 'const'}}</span>
+                        </li>
                     {{/each}}
-                </div>
+                </ul>
             </div>
         {{/if}}
         <div class="stadium">

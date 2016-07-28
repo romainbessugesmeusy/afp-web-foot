@@ -151,6 +151,14 @@ Handlebars.registerHelper('countryBlock', function (code) {
     return new Handlebars.SafeString(ret);
 });
 
+Handlebars.registerHelper('countryInline', function (code) {
+    var countryName = Handlebars.Utils.escapeExpression(translations['country.' + code]);
+    var flag = '<img class="flag" src="/img/flags/flags_un/48/' + code + '.png" alt="' + countryName + '"/>';
+    var name = '<span class="countryName">' + countryName + '</span>';
+    var ret = '<span class="country inline">' + flag + name + '</span>';
+    return new Handlebars.SafeString(ret);
+});
+
 Handlebars.registerHelper('matchTime', function (match, options) {
     switch (match.status) {
         case constants.status.paused :

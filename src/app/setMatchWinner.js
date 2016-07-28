@@ -8,6 +8,6 @@ module.exports = function setMatchWinner(match) {
         }
     }
     compareScore('goals');
-    compareScore('penaltyShootoutScore');
+    compareScore('penaltyShootoutGoals');
     return match;
 };

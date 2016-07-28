@@ -3,6 +3,7 @@
     {{> matchHeader }}
     <div class="tabs" id="matchTabs">
         <nav class="sectionNavbar light">
+            {{#if hasInfos}}<a href="/matches/{{id}}/infos" data-target="infos">Infos</a>{{/if}}
             {{#if hasEvents}}
                 <a href="/matches/{{id}}/evenements" class="active" data-target="events">Événements</a>
             {{/if}}
@@ -10,11 +11,10 @@
                 <a href="/matches/{{id}}/tirs-au-but" data-target="penaltyShootouts">Tirs au but</a>
             {{/if}}
             {{#if hasPlayers}}<a href="/matches/{{id}}/composition" data-target="composition">Composition</a>{{/if}}
-            {{#if hasInfos}}<a href="/matches/{{id}}/infos" data-target="infos">Infos</a>{{/if}}
         </nav>
+        {{> matchTabInfos}}
         {{> matchTabEvents}}
         {{> matchTabCompo}}
-        {{> matchTabInfos}}
         {{#if penaltyShootouts}}
             {{> matchTabPenaltyShootouts }}
         {{/if}}

@@ -2,6 +2,7 @@
   text-align center
 
   .feedBackground
+    display none
     position fixed
     height 100%
     width 100%
@@ -9,6 +10,8 @@
     bottom 0
     z-index -1
 
+  &[data-tab=events] .feedBackground
+    display block
 
   .tab
     background white
@@ -93,13 +96,11 @@
       position relative
       font-weight 500
       &:before, &:after
-        content ''
-        background url(/img/winner.png) no-repeat center
-        background-size contain
-        height 40px
-        width 40px
+        content '★'
+        //height 40px
+        //width 40px
         display none
-        margin 0 10px
+        //margin 0 10px
         position relative
 
     &.home h3:before

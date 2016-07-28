@@ -20,7 +20,7 @@ a
 .pageWrapper
   max-width 1200px
   margin 0 auto
-  padding 100px 0
+  padding 0
 
 h1, h2
   text-align center
@@ -41,6 +41,27 @@ h4
 
 nav
   text-align center
+
+table
+  width 100%
+td, th
+  text-align left
+  vertical-align middle
+  padding .5em
+  &.center
+    text-align center
+  &.right
+    text-align right
+  img
+    max-height 2em
+    vertical-align middle
+    margin-right 1em
+
+td
+  border-bottom 1px solid #EEE
+th
+  padding .5em
+  border-bottom 1px solid #DDD
 
 a.button
   display inline-block
@@ -79,31 +100,36 @@ body > header
       max-width 1000px
       display flex
       flex-wrap wrap
-      justify-content space-around
+      justify-content center
       a
-        margin-top 1em
+        z-index 2
+        margin 1em 1em 0 1em
         font-size 1.2em
         text-decoration none
         display inline-block
-        padding .2em
-        border-bottom 2px solid black
+        padding .4em
         color black
         text-transform uppercase
+        position relative
+        &:before
+          content ''
+          display block
+          position absolute
+          z-index -1
+          background black
+          height 100%
+          bottom 0
+          left 0
+          width 100%
+          transform scaleY(0.1)
+          transform-origin bottom
+          transition transform .1s ease-out, color .1s ease-in
+
         &:hover
-          color white
           text-decoration none
-        &.scoreboard
-          border-color #D0021B
-          &:hover
-            background-color #D0021B
-        &.competitions
-          border-color #F8E71C
-          &:hover
-            background-color #F8E71C
-        &.teams
-          border-color #7ED321
-          &:hover
-            background-color #7ED321
+          color white
+          &:before
+            transform scaleY(1)
 
 .country.block
   margin 1em auto
@@ -115,6 +141,26 @@ body > header
   text-align center
   .countryName
     display block
+
+.country.inline
+  display inline-block
+  height 24px
+  vertical-align middle
+  img
+    height 24px
+    float left
+  .countryName
+    display none
+    position absolute
+    margin-top -32px
+    margin-left -20px
+    background white
+    box-shadow 0 3px 10px rgba(black, .2)
+    padding .5em
+    border-radius 4px
+  &:hover
+    .countryName
+      display block
 
 body.scroll > header nav
   position fixed
