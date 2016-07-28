@@ -16,6 +16,10 @@
   th
     padding .5em
     border-bottom 1px solid #DDD
+
+  tbody th
+    text-align left
+
   .teamName
     text-align left
 
@@ -33,6 +37,7 @@
     max-width 1200px
     margin 0 auto
     justify-content center
+    align-items baseline
 
   .team
     transition transform .1s linear
@@ -46,7 +51,8 @@
     &:hover
       text-decoration underline
       transform scale3d(1.1, 1.1, 1.1)
-
+    img
+      width 100%
     .logo
       position relative
     .logo:after
@@ -126,6 +132,12 @@ h3 em
     flex-wrap wrap
     justify-content center
 
+  .date
+    font-size .8em
+    text-align center
+    margin-top .5em
+    padding .5em
+    color #AAA
   .group
     min-width 380px
     max-width 480px

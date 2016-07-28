@@ -131,6 +131,10 @@ Handlebars.registerHelper('teamCondensed', function (teamId, options) {
             team = t;
         }
     });
+
+    if (team === null) {
+        return teamId;
+    }
     var ret = '<a href="/teams/' + team.id + '"><img src="/data/teams/' + team.id + '.png"/><span class="name">' + team.name + '</span></a>';
     return new Handlebars.SafeString(ret);
 });
@@ -201,7 +205,13 @@ Handlebars.registerHelper('default', function (options) {
         return options.fn(this);
     }
 });
-/*
 
- */
+Handlebars.registerHelper('groupName', function (groupId, options) {
+    return (options.data.root.groups[groupId]) ? options.data.root.groups[groupId].name : groupId;
+});
+
+Handlebars.registerHelper('ifGroupHasName', function (groupId, options) {
+    return (options.data.root.groups[groupId].name) ? options.fn(this) : options.inverse(this);
+});
+
 module.exports = Handlebars;

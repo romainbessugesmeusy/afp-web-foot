@@ -7,12 +7,12 @@
 
   > header
     padding 60px
-    background url(/img/stadium-crowd.jpg) top center // not working in chrome because of overflow hidden on <html> tag
+    background url(/img/stadium-crowd.jpg)
     background-attachment fixed
     text-align center
     position relative
     background-size cover
-    background-position 0 600px
+    background-position 0 800px
 
     .content
       padding 40px
@@ -22,11 +22,12 @@
       border-radius 8px
       box-shadow 0 5px 30px black
     .logo
-      display inline
-      margin 0 auto
+      display block
+      margin 1em auto
       img
         height 200px
         filter drop-shadow(0 5px 10px rgba(0,0,0,0.3))
+
 
   .competitionWrapper
     display flex

@@ -16,7 +16,8 @@
             </aside>
             <div class="infos">
                 <h1>{{label}}</h1>
-                <p class="date">Du <span>{{relativeDate startDate 'dddd D MMMM YYYY'}}</span> au <span>{{relativeDate endDate 'dddd D MMMM YYYY'}}</span></p>
+                <p class="date">Du <span>{{relativeDate startDate 'dddd D MMMM YYYY'}}</span> au
+                    <span>{{relativeDate endDate 'dddd D MMMM YYYY'}}</span></p>
 
                 <div class="rankings">
                     {{#each phases}}
@@ -26,7 +27,7 @@
                                 <table>
                                     <thead>
                                     <tr>
-                                        <th><abbr title="Place">#</abbr></th>
+                                        <th>▲</th>
                                         <th class="teamName">Équipe</th>
                                         <th><abbr title="Points">Pts</abbr></th>
                                         <th><abbr title="Matches joués">J</abbr></th>
@@ -40,18 +41,27 @@
                                     </thead>
                                     <tbody>
                                     {{#each rankings}}
+                                        {{#ifGroupHasName @key}}
                                         <tr>
-                                            <td>{{CCPOS}}</td>
-                                            <td class="teamName">{{teamCondensed teamId}}</td>
-                                            <td>{{CCPTS}}</td>
-                                            <td>{{CCJOU}}</td>
-                                            <td>{{CCGAG}}</td>
-                                            <td>{{CCNUL}}</td>
-                                            <td>{{CCPER}}</td>
-                                            <td>{{CC_BP}}</td>
-                                            <td>{{CC_BC}}</td>
-                                            <td>{{CCDIF}}</td>
+                                            <th></th>
+                                            <th colspan="9">{{groupName @key}}</th>
                                         </tr>
+                                        {{/ifGroupHasName}}
+                                        {{#each this}}
+                                            <tr>
+                                                <td>{{CCPOS}}</td>
+                                                <td class="teamName">{{teamCondensed teamId}}</td>
+                                                <td>{{CCPTS}}</td>
+                                                <td>{{CCJOU}}</td>
+                                                <td>{{CCGAG}}</td>
+                                                <td>{{CCNUL}}</td>
+                                                <td>{{CCPER}}</td>
+                                                <td>{{CC_BP}}</td>
+                                                <td>{{CC_BC}}</td>
+                                                <td>{{CCDIF}}</td>
+                                            </tr>
+                                        {{/each}}
+
                                     {{/each}}
                                     </tbody>
                                 </table>

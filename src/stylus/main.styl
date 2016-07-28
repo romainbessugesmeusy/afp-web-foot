@@ -116,20 +116,21 @@ body > header
           display block
           position absolute
           z-index -1
-          background black
+          background #AAA
           height 100%
           bottom 0
           left 0
           width 100%
           transform scaleY(0.1)
           transform-origin bottom
-          transition transform .1s ease-out, color .1s ease-in
+          transition transform .1s ease-out, color .1s ease-in, box-shadow .1s ease-in
 
         &:hover
           text-decoration none
           color white
           &:before
             transform scaleY(1)
+            box-shadow 0 3px 15px rgba(black, .2)
 
 .country.block
   margin 1em auto

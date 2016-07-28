@@ -4,6 +4,10 @@
         <div class="logo">
             <img src="/data/teams/{{id}}.png" alt="{{label}}">
         </div>
+        {{#ifEquals type 'CENAT'}}
+        {{else}}
+            {{countryBlock country}}
+        {{/ifEquals}}
     </div>
 </header>
 {{#if staff}}

@@ -554,30 +554,30 @@ function getCompetitions(evenements, write) {
                     });
                 });
 
-                // saison régulière
-                if (p.format === "TPSAR") {
-                    var props = {};
-                    phase.Groupes[0].Classement.Colonnes.forEach(function (colonne) {
-                        props[colonne.DataTypeId] = colonne.DataTypeCode;
-                    });
+                console.info('EVENEMENT', evenement.Label, phase.PhaseCompetCode);
 
-                    if (typeof phase.Groupes[0].Classement.Classements[0] === 'undefined') {
-                        console.info('no ranking for evt', evenement.Label);
-                        console.info(phase.Groupes)
-                        return p;
-                    }
+                p.rankings = {};
 
-                    p.rankings = phase.Groupes[0].Classement.Classements[0].Classement.map(function (team) {
-                        var teamRanking = {
-                            teamId: team.TeamId
-                        };
-
-                        team.Colonnes.forEach(function (col) {
-                            teamRanking[props[col.DataTypeId]] = col.Value;
+                var hasRankings = false;
+                phase.Groupes.forEach(function (groupe) {
+                    if (groupe.Classement.Classements.length) {
+                        hasRankings = true;
+                        var props = {};
+                        groupe.Classement.Colonnes.forEach(function (colonne) {
+                            props[colonne.DataTypeId] = colonne.DataTypeCode;
                         });
+                        p.rankings[groupe.GroupeId] = groupe.Classement.Classements[0].Classement.map(function (team) {
+                            var teamRanking = {teamId: team.TeamId};
+                            team.Colonnes.forEach(function (col) {
+                                teamRanking[props[col.DataTypeId]] = col.Value;
+                            });
+                            return teamRanking
+                        });
+                    }
+                });
 
-                        return teamRanking
-                    });
+                if (hasRankings === false) {
+                    delete p.rankings;
                 }
 
                 return p;
@@ -635,7 +635,8 @@ function getTeams(evenements, write) {
                 if (typeof teams[equipe.TeamId] === 'undefined') {
                     teams[equipe.TeamId] = {
                         name: equipe.TeamNom,
-                        country: equipe.TeamPaysIso,
+                        country: equipe.PaysIso,
+                        type: equipe.TeamType,
                         id: equipe.TeamId,
                         staff: [],
                         competitions: []
