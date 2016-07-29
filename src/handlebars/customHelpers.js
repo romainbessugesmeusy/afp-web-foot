@@ -3,7 +3,7 @@ var moment = require('moment');
 var constants = require('../app/constants');
 var groupBy = require('handlebars-group-by');
 var translations = require('../../dist/data/locale/fr.json');
-
+var $ = require('jquery');
 
 groupBy.register(Handlebars);
 
@@ -36,7 +36,6 @@ Handlebars.registerHelper('relativeDate', function (date, format) {
     format = format || 'dddd D MMM';
     date = moment(date, 'YYYY-MM-DD');
     var diff = now.diff(date, 'days');
-
     switch (diff) {
         case 1:
             return 'hier';
@@ -135,7 +134,7 @@ Handlebars.registerHelper('teamCondensed', function (teamId, options) {
     if (team === null) {
         return teamId;
     }
-    var ret = '<a href="/teams/' + team.id + '"><img src="/data/teams/' + team.id + '.png"/><span class="name">' + team.name + '</span></a>';
+    var ret = '<a href="/teams/' + team.id + '"><img src="/data/teams/logos/' + team.id + '.png"/><span class="name">' + team.name + '</span></a>';
     return new Handlebars.SafeString(ret);
 });
 
@@ -214,4 +213,21 @@ Handlebars.registerHelper('ifGroupHasName', function (groupId, options) {
     return (options.data.root.groups[groupId].name) ? options.fn(this) : options.inverse(this);
 });
 
+Handlebars.registerHelper('groupRanking', function (groupId, options) {
+    var data = '';
+    $(options.data.root.phases).each(function (i, phase) {
+        if (phase.rankings && phase.rankings[groupId]) {
+            data = new Handlebars.SafeString(Handlebars.partials['rankings'](phase.rankings[groupId], options));
+        }
+    });
+    return data;
+});
+
+Handlebars.registerHelper('regularSeasonRankings', function (phase, options) {
+    if (phase.rankings) {
+        var groupId = Object.keys(phase.rankings)[0];
+        return new Handlebars.SafeString(Handlebars.partials['rankings'](phase.rankings[groupId], options));
+    }
+    return '';
+});
 module.exports = Handlebars;

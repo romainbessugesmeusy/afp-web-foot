@@ -21,16 +21,20 @@
                                 {{/if}}
                             {{/with}}
 
-                            <ul class="matches">
-                                {{#each items}}
-                                    <p class="date">{{relativeDate date}}</p>
-                                    {{#ifEquals status 'EMNCO'}}
-                                        {{> upcomingMatch }}
-                                    {{else}}
-                                        {{> pastMatch }}
-                                    {{/ifEquals}}
-                                {{/each}}
-                            </ul>
+                            {{groupRanking value}}
+
+                            {{#group items by='day'}}
+                                <p class="date">{{relativeDate value}}</p>
+                                <ul class="matches">
+                                    {{#each items}}
+                                        {{#ifEquals status 'EMNCO'}}
+                                            {{> upcomingMatch }}
+                                        {{else}}
+                                            {{> pastMatch }}
+                                        {{/ifEquals}}
+                                    {{/each}}
+                                </ul>
+                            {{/group}}
                         </div>
                     {{/group}}
                 </div>

@@ -17,6 +17,8 @@ module.exports = function (options) {
             fetch('aaevenementinfo/:lang/:id', {id: evenement.id}, function (err, evenementInfos) {
                 extend(evenement, evenementInfos);
                 evenementInfosCb()
+            }, function (data) {
+                return new Date(data.DateFin) >= new Date();
             });
         }
     }
@@ -82,7 +84,7 @@ module.exports = function (options) {
                     ], eachMatchCb)
                 }, matchesPhaseCb);
             }, function () {
-                return isEvenementCurrent(evenement);
+                return phase.IsCurrent;
             });
         }
     }
@@ -151,7 +153,7 @@ module.exports = function (options) {
 
     function getFaceshot(player, cb) {
         var uri = options.root + 'aaheadshot/' + player.Id;
-        var filename = path.join(__dirname, '../dist/data/players', player.Id + '.jpg');
+        var filename = path.join(__dirname, '../dist/data/players/faceshots', player.Id + '.jpg');
         downloadFile(uri, filename, function (err) {
             if (!err) player.Faceshot = true;
             cb();
@@ -181,7 +183,7 @@ module.exports = function (options) {
                         return cb();
                 }
 
-                downloadFile(uri, path.join(__dirname, '../dist/data/teams', equipe.Id + '.png'), function (err) {
+                downloadFile(uri, path.join(__dirname, '../dist/data/teams/logos', equipe.Id + '.png'), function (err) {
                     if (!err) equipe.logo = true;
                     cb();
                 });
@@ -233,7 +235,7 @@ module.exports = function (options) {
         async.forEach(options.evts, function eachEvenement(evtId, eachEvenementDone) {
             var evenement = {id: evtId};
             evenements.push(evenement);
-            async.parallel([
+            async.series([
                 getEvenementEquipes(evenement),
                 getEvenementInfos(evenement),
                 getPhases(evenement),

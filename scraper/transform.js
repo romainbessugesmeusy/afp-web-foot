@@ -9,6 +9,7 @@ function extractScoreboardTeamInfo(team) {
         name: (team.TeamName === '?') ? null : team.TeamName,
         goals: (team.TeamScore === -1) ? null : team.TeamScore,
         penaltyShootoutGoals: team.TeamTabScore,
+        winner: team.TeamStatusCode === 'PAWIN',
         cards: {
             yellow: team.TeamNbYellowCards,
             red: team.TeamNbRedCards
@@ -106,7 +107,8 @@ function getTeamDetail(evenement, phase, match, team) {
         id: match[team].TeamId,
         name: match[team].TeamName,
         goals: match[team].TeamScore,
-        penaltyShootoutGoals: match[team].TeamTabScore
+        penaltyShootoutGoals: match[team].TeamTabScore,
+        winner: match[team].TeamStatusCode === 'PAWIN'
     };
 
     if (teamDetail.penaltyShootoutGoals < 0 || teamDetail.penaltyShootoutGoals === null) {
@@ -290,6 +292,12 @@ function getPenaltyShootouts(match) {
 function getMatches(evenements, write) {
     return function (eachMatchCb) {
         eachMatches(evenements, function (evenement, phase, match) {
+
+            if(new Date(evenement.DateFin) < new Date()){
+                return;
+            }
+
+
             match.Arbitres = match.Arbitres || [];
             match.Events = match.Events || [];
 
@@ -511,6 +519,7 @@ function getCompetitions(evenements, write) {
         var competitionList = [];
 
         evenements.forEach(function (evenement) {
+
 
             var competition = {
                 id: evenement.id,

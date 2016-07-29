@@ -23,49 +23,9 @@
                     {{#each phases}}
                         <div class="phase">
                             <h3>{{t format 'const'}} <em>({{t type 'const'}})</em></h3>
-                            {{#if rankings}}
-                                <table>
-                                    <thead>
-                                    <tr>
-                                        <th>▲</th>
-                                        <th class="teamName">Équipe</th>
-                                        <th><abbr title="Points">Pts</abbr></th>
-                                        <th><abbr title="Matches joués">J</abbr></th>
-                                        <th><abbr title="Matches gagnés">G</abbr></th>
-                                        <th><abbr title="Matches nuls">N</abbr></th>
-                                        <th><abbr title="Matches perdus">P</abbr></th>
-                                        <th><abbr title="Buts marqués">BP</abbr></th>
-                                        <th><abbr title="Buts encaissés">BC</abbr></th>
-                                        <th><abbr title="Différence de buts">D</abbr></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {{#each rankings}}
-                                        {{#ifGroupHasName @key}}
-                                        <tr>
-                                            <th></th>
-                                            <th colspan="9">{{groupName @key}}</th>
-                                        </tr>
-                                        {{/ifGroupHasName}}
-                                        {{#each this}}
-                                            <tr>
-                                                <td>{{CCPOS}}</td>
-                                                <td class="teamName">{{teamCondensed teamId}}</td>
-                                                <td>{{CCPTS}}</td>
-                                                <td>{{CCJOU}}</td>
-                                                <td>{{CCGAG}}</td>
-                                                <td>{{CCNUL}}</td>
-                                                <td>{{CCPER}}</td>
-                                                <td>{{CC_BP}}</td>
-                                                <td>{{CC_BC}}</td>
-                                                <td>{{CCDIF}}</td>
-                                            </tr>
-                                        {{/each}}
-
-                                    {{/each}}
-                                    </tbody>
-                                </table>
-                            {{/if}}
+                            {{#ifEquals format 'TPSAR'}}
+                                {{regularSeasonRankings this}}
+                            {{/ifEquals}}
                         </div>
                     {{/each}}
                 </div>
@@ -101,7 +61,7 @@
                         <div class="teamsWrapper">
                             {{#each items}}
                                 <a href="/teams/{{id}}" class="team">
-                                    <div class="logo"><img src="/data/teams/{{id}}.png"></div>
+                                    <div class="logo"><img src="/data/teams/logos/{{id}}.png"></div>
                                     <div class="name">{{name}}</div>
                                 </a>
                             {{/each}}
@@ -112,7 +72,7 @@
                 <div class="teamsWrapper">
                     {{#each teams}}
                         <a href="/teams/{{id}}" class="team">
-                            <div class="logo"><img src="/data/teams/{{id}}.png"></div>
+                            <div class="logo"><img src="/data/teams/logos/{{id}}.png"></div>
                             <div class="name">{{name}}</div>
                         </a>
                     {{/each}}

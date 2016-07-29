@@ -17,7 +17,7 @@ module.exports = function (options) {
     };
 
     var unlinkAndFetchRemote = function (filename, resource, params, callback, invalidateFn) {
-        console.info('invalidating:', filename);
+        //console.info('invalidating:', filename);
         fs.unlink(filename, function () {
             fetch(resource, params, callback, invalidateFn);
         });
@@ -65,7 +65,10 @@ module.exports = function (options) {
                 }
 
                 fs.writeFile(cacheFilename, body, function (err) {
-                    if (err)  return callback(err, json);
+                    if (err)  {
+                        return callback(err, json);
+                    }
+                    json.__new = true;
                     callback(null, json);
                 });
             });

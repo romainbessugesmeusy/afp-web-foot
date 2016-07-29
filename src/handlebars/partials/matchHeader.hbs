@@ -16,13 +16,13 @@
             <div class="team home {{#if home.winner}}winner{{/if}}">
                 <h3><a href="/teams/{{home.id}}">{{home.name}}</a></h3>
                 <div class="logo">
-                    <img src="/data/teams/{{home.id}}.png" alt="{{home.name}}">
+                    <img src="/data/teams/logos/{{home.id}}.png" alt="{{home.name}}">
                 </div>
             </div>
             <div class="team away {{#if away.winner}}winner{{/if}}">
                 <h3><a href="/teams/{{away.id}}">{{away.name}}</a></h3>
                 <div class="logo">
-                    <img src="/data/teams/{{away.id}}.png" alt="{{away.name}}">
+                    <img src="/data/teams/logos/{{away.id}}.png" alt="{{away.name}}">
                 </div>
             </div>
         </div>
@@ -45,7 +45,7 @@
             <h3><a href="/teams/{{home.id}}">{{home.name}}</a></h3>
             {{> matchScorers home}}
             <div class="logo">
-                <img src="/data/teams/{{home.id}}.png" alt="{{home.name}}">
+                <img src="/data/teams/logos/{{home.id}}.png" alt="{{home.name}}">
             </div>
         </div>
         <div class="timeAndScore fontFigures {{#if penaltyShootouts}}withPenaltyShootouts{{/if}}">
@@ -77,7 +77,7 @@
             <h3><a href="/teams/{{away.id}}">{{away.name}}</a></h3>
             {{> matchScorers away}}
             <div class="logo">
-                <img src="/data/teams/{{away.id}}.png" alt="{{away.name}}">
+                <img src="/data/teams/logos/{{away.id}}.png" alt="{{away.name}}">
             </div>
         </div>
 

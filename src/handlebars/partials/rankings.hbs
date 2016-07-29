@@ -1,0 +1,32 @@
+<table class="rankings">
+    <thead>
+    <tr>
+        <th>▲</th>
+        <th class="teamName">Équipe</th>
+        <th><abbr title="Points">Pts</abbr></th>
+        <th><abbr title="Matches joués">J</abbr></th>
+        <th><abbr title="Matches gagnés">G</abbr></th>
+        <th><abbr title="Matches nuls">N</abbr></th>
+        <th><abbr title="Matches perdus">P</abbr></th>
+        <th><abbr title="Buts marqués">BP</abbr></th>
+        <th><abbr title="Buts encaissés">BC</abbr></th>
+        <th><abbr title="Différence de buts">D</abbr></th>
+    </tr>
+    </thead>
+    <tbody>
+        {{#each this}}
+            <tr>
+                <td>{{CCPOS}}</td>
+                <td class="teamName">{{teamCondensed teamId}}</td>
+                <td>{{CCPTS}}</td>
+                <td>{{CCJOU}}</td>
+                <td>{{CCGAG}}</td>
+                <td>{{CCNUL}}</td>
+                <td>{{CCPER}}</td>
+                <td>{{CC_BP}}</td>
+                <td>{{CC_BC}}</td>
+                <td>{{CCDIF}}</td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
