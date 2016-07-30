@@ -104,6 +104,9 @@ module.exports = function (options) {
                 id: phase.PhaseId,
                 evtId: evenement.id
             }, function (err, topScorers) {
+                if (err) {
+                    return topScorersCb();
+                }
                 phase.TopScorers = topScorers.TopScorers;
                 topScorersCb();
             });

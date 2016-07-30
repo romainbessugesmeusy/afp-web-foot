@@ -1,7 +1,7 @@
 var async = require('async');
 var extend = require('extend');
 var moment = require('moment');
-
+var setMatchWinner = require('../src/app/setMatchWinner');
 
 function extractScoreboardTeamInfo(team) {
     var obj = {
@@ -9,12 +9,16 @@ function extractScoreboardTeamInfo(team) {
         name: (team.TeamName === '?') ? null : team.TeamName,
         goals: (team.TeamScore === -1) ? null : team.TeamScore,
         penaltyShootoutGoals: team.TeamTabScore,
-        winner: team.TeamStatusCode === 'PAWIN',
+        qualified: team.TeamStatusCode === 'PAWIN',
         cards: {
             yellow: team.TeamNbYellowCards,
             red: team.TeamNbRedCards
         }
     };
+
+    if (obj.qualified === false) {
+        delete obj.qualified;
+    }
 
     if (obj.penaltyShootoutGoals === null || obj.penaltyShootoutGoals === -1) {
         delete obj.penaltyShootoutGoals;
@@ -59,7 +63,8 @@ function getAllMatchDates(evenements) {
         if (typeof dates[day] === 'undefined') {
             dates[day] = []
         }
-        dates[day].push({
+
+        var scoreboardMatch = {
             id: match.Id,
             time: time,
             minute: match.Minute,
@@ -69,7 +74,10 @@ function getAllMatchDates(evenements) {
             status: match.StatusCode,
             home: extractScoreboardTeamInfo(match.Home),
             away: extractScoreboardTeamInfo(match.Away)
-        });
+        };
+
+        setMatchWinner(scoreboardMatch);
+        dates[day].push(scoreboardMatch);
     });
     return dates;
 }
@@ -108,7 +116,7 @@ function getTeamDetail(evenement, phase, match, team) {
         name: match[team].TeamName,
         goals: match[team].TeamScore,
         penaltyShootoutGoals: match[team].TeamTabScore,
-        winner: match[team].TeamStatusCode === 'PAWIN'
+        qualified: match[team].TeamStatusCode === 'PAWIN'
     };
 
     if (teamDetail.penaltyShootoutGoals < 0 || teamDetail.penaltyShootoutGoals === null) {
@@ -293,7 +301,7 @@ function getMatches(evenements, write) {
     return function (eachMatchCb) {
         eachMatches(evenements, function (evenement, phase, match) {
 
-            if(new Date(evenement.DateFin) < new Date()){
+            if (new Date(evenement.DateFin) < new Date()) {
                 return;
             }
 
@@ -550,7 +558,7 @@ function getCompetitions(evenements, write) {
                 });
 
                 phase.matches.forEach(function (match) {
-                    competition.matches.push({
+                    var m = {
                         id: match.Id,
                         date: match.Date,
                         competition: evenement.id,
@@ -560,7 +568,10 @@ function getCompetitions(evenements, write) {
                         dayOfCompetition: match.Journee,
                         home: extractScoreboardTeamInfo(match.Home),
                         away: extractScoreboardTeamInfo(match.Away)
-                    });
+                    };
+
+                    setMatchWinner(m)
+                    competition.matches.push(m);
                 });
 
                 console.info('EVENEMENT', evenement.Label, phase.PhaseCompetCode);
@@ -667,14 +678,16 @@ function getTeams(evenements, write) {
 
                     matchesByTeamId[team.id].forEach(function (match) {
                         if (evt.id === match.EvenementId) {
-                            competition.matches.push({
+                            var m = {
                                 id: match.Id,
                                 groupId: match.GroupId,
                                 date: match.Date,
                                 status: match.StatusCode,
                                 home: extractScoreboardTeamInfo(match.Home),
                                 away: extractScoreboardTeamInfo(match.Away)
-                            });
+                            };
+                            setMatchWinner(m);
+                            competition.matches.push(m);
                         }
                     });
                 }

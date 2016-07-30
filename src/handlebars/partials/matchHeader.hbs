@@ -13,13 +13,13 @@
     <div class="summaryPlaceholder"></div>
     <div class="summaryMobile">
         <div class="row">
-            <div class="team home {{#if home.winner}}winner{{/if}}">
+            <div class="team home {{#if home.winner}}winner{{/if}} {{#if home.qualified}}qualified{{/if}}">
                 <h3><a href="/teams/{{home.id}}">{{home.name}}</a></h3>
                 <div class="logo">
                     <img src="/data/teams/logos/{{home.id}}.png" alt="{{home.name}}">
                 </div>
             </div>
-            <div class="team away {{#if away.winner}}winner{{/if}}">
+            <div class="team away {{#if away.winner}}winner{{/if}} {{#if away.qualified}}qualified{{/if}}">
                 <h3><a href="/teams/{{away.id}}">{{away.name}}</a></h3>
                 <div class="logo">
                     <img src="/data/teams/logos/{{away.id}}.png" alt="{{away.name}}">
@@ -41,7 +41,7 @@
         </div>
     </div>
     <div class="summary">
-        <div class="team home {{#if home.winner}}winner{{/if}}">
+        <div class="team home {{#if home.winner}}winner{{/if}} {{#if home.qualified}}qualified{{/if}}">
             <h3><a href="/teams/{{home.id}}">{{home.name}}</a></h3>
             {{> matchScorers home}}
             <div class="logo">
@@ -73,7 +73,7 @@
                 {{/if}}
             </div>
         </div>
-        <div class="team away {{#if away.winner}}winner{{/if}}">
+        <div class="team away {{#if away.winner}}winner{{/if}} {{#if away.qualified}}qualified{{/if}}">
             <h3><a href="/teams/{{away.id}}">{{away.name}}</a></h3>
             {{> matchScorers away}}
             <div class="logo">

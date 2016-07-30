@@ -1,17 +1,22 @@
-<div class="{{side}} {{#if penaltyShootoutScore}}withPenaltyShootout{{/if}} {{#if winner}}winner{{/if}}">
+<div class="{{side}}
+    {{#if penaltyShootoutGoals}}withPenaltyShootout{{/if}}
+    {{#if winner}}winner{{/if}}
+    {{#if qualified}}qualified{{/if}}">
     <span class="goals fontFigures">
         {{goals}}
     </span>
     <span class="penaltyShootout fontFigures">
         {{penaltyShootoutGoals}}
     </span>
+    {{#if qualified}}<span class="star"> ★ </span>{{/if}}
     <span class="name">{{name}}</span>
-        <span class="cards fontFigures">
-            {{#if cards.yellow}}
-                <span class="card yellow">{{cards.yellow}}</span>
-            {{/if}}
-            {{#if cards.red}}
-                <span class="card red">{{cards.red}}</span>
-            {{/if}}
-        </span>
+    <span class="cards fontFigures">
+        {{#if cards.yellow}}
+            <span class="card yellow">{{cards.yellow}}</span>
+        {{/if}}
+        {{#if cards.red}}
+            <span class="card red">{{cards.red}}</span>
+        {{/if}}
+    </span>
+
 </div>
