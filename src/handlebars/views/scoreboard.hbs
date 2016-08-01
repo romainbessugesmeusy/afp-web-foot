@@ -1,4 +1,4 @@
-<section id="todaysMatches">
+<section id="today">
     <h2>Matches du jour</h2>
     <div class="highlighted matches">
         {{#each todaysMatches.highlight}}
@@ -26,7 +26,7 @@
     </div>
 </section>
 {{#if upcomingDateList.length}}
-    <section id="upcomingMatches">
+    <section id="upcoming">
         <h2>Matches à venir</h2>
         <div class="tabs" id="upcomingMatchesTabs">
             <nav class="sectionNavbar">
@@ -49,7 +49,7 @@
     </section>
 {{/if}}
 {{#if pastDateList.length}}
-    <section id="finishedMatches">
+    <section id="past">
         <h2>Matches Terminés</h2>
         <div class="tabs" id="pastMatchesTabs">
             <nav class="sectionNavbar">

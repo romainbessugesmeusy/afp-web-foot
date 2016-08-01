@@ -7,6 +7,7 @@ module.exports = function (appCtx) {
                 window.requestAnimationFrame(function () {
                     $('#page').find('> .page').hide();
                     page.show();
+                    window.scrollTo(0, 0);
                 });
                 appCtx.currentPage = page;
             }

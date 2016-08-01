@@ -1,4 +1,5 @@
-    <a class="pastMatch" href="/matches/{{id}}/">
+    <a class="pastMatch {{status}}" href="/matches/{{id}}/">
         {{> pastMatchTeam home side="home"}}
+            <span class="status">{{t status 'const'}}</span>
         {{> pastMatchTeam away side="away"}}
     </a>

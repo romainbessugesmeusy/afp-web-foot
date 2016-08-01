@@ -301,9 +301,9 @@ function getMatches(evenements, write) {
     return function (eachMatchCb) {
         eachMatches(evenements, function (evenement, phase, match) {
 
-            if (new Date(evenement.DateFin) < new Date()) {
-                return;
-            }
+            //if (new Date(evenement.DateFin) < new Date()) {
+            //    return;
+            //}
 
 
             match.Arbitres = match.Arbitres || [];
@@ -379,13 +379,36 @@ function getMatches(evenements, write) {
             var inGroup = true;
 
 
-            function commentIsDuringPlay(comment, debug) {
-                var isHourAndMinutes = (comment.props.time.indexOf(':') > -1);
-                var time = parseFloat(String(comment.props.time).replace('+', '.'));
-                //if (debug) {
-                //    console.info(comment.props.time, isHourAndMinutes, time, (!isNaN(time) && !isHourAndMinutes && time !== 0))
-                //}
-                return (!isNaN(time) && !isHourAndMinutes && time !== 0);
+            function timeDuringPlay(time) {
+                time = String(time);
+                var isHourAndMinutes = (time.indexOf(':') > -1);
+                var floatVal = getTimeAsFloat(time);
+                return (!isNaN(floatVal) && !isHourAndMinutes && floatVal !== 0);
+            }
+
+            function getTimeAsFloat(time) {
+                time = String(time);
+                return parseFloat(time.replace('+', '.'));
+            }
+
+            function commentIsDuringPlay(comment, lastCommentTime, nextCommentTime) {
+
+                if (timeDuringPlay(comment.props.time)) {
+                    return true;
+                }
+
+                lastCommentTime = getTimeAsFloat(lastCommentTime);
+                nextCommentTime = getTimeAsFloat(nextCommentTime);
+
+                if (lastCommentTime >= 45 && nextCommentTime <= 46) {
+                    return false;
+                }
+
+                if (lastCommentTime >= 90 && nextCommentTime <= 91) {
+                    return false;
+                }
+
+                return timeDuringPlay(lastCommentTime) && timeDuringPlay(nextCommentTime);
             }
 
             function mapCommentToEvent(comment) {
@@ -399,30 +422,31 @@ function getMatches(evenements, write) {
                 return mapped;
             }
 
+
             if (Array.isArray(match.Comments)) {
 
-                if (match.Id === 159002) {
-                    data.comments = match.Comments;
-                }
-
-                var nextComment;
-
+                var nextCommentTime;
+                var j;
                 match.Comments.forEach(function (comment, i) {
 
-                    nextComment = match.Comments[i + 1];
+                    nextCommentTime = null;
 
-                    if (commentIsDuringPlay(comment, lastCommentTime, (match.Id === 159002))) {
-                        if (inGroup && parseInt(comment.props.time) < 20) {
+                    for(j = i+1; j < match.Comments.length; j++){
+                        if(match.Comments[j].props.time){
+                            nextCommentTime = match.Comments[j].props.time;
+                            break;
+                        }
+                    }
+
+                    if (commentIsDuringPlay(comment, lastCommentTime, nextCommentTime)) {
+                        if (inGroup) {
                             groupIndex++;
                         }
                         inGroup = false;
-                        lastCommentTime = comment.props.time;
-                        if (match.Id === 159002) {
-                            console.info('lastCommentTime', comment.props.time)
-                        }
+                        lastCommentTime = comment.props.time ? comment.props.time : lastCommentTime;
                         if (!mapCommentToEvent(comment)) {
                             commentEvents.push({
-                                time: comment.props.time,
+                                time: lastCommentTime,
                                 comment: comment,
                                 side: 'both',
                                 type: comment.props.event
@@ -431,12 +455,12 @@ function getMatches(evenements, write) {
                     } else {
                         inGroup = true;
                         if (typeof groups[groupIndex] === 'undefined') {
-                            if (match.Id === 159002) {
-                                console.info('newGroup')
-                            }
 
+                            if(match.Id === 141157){
+                                console.info(lastCommentTime);
+                            }
                             groups[groupIndex] = {
-                                start: lastCommentTime,
+                                after: lastCommentTime,
                                 comments: []
                             }
                         }
@@ -445,58 +469,21 @@ function getMatches(evenements, write) {
                     }
                 });
 
-                if (match.Id === 159002) {
-                    console.info(groups);
-                }
-
-                data.commentGroups = groups;
-
-
-                //commentEvents.push({
-                //    time: comment.props.time,
-                //    comment: comment,
-                //    side: 'both',
-                //    type: comment.props.event
-                //});
             }
 
             data.events = data.events.concat(commentEvents);
-            /*
-             if (commentsBeforeKickoff.length) {
-             data.events.push({
-             time: '-1000',
-             group: 'pre',
-             side: 'both',
-             comments: commentsBeforeKickoff
-             });
-             }
-             if (commentsAfterMatch.length) {
-             data.events.push({
-             time: '1000',
-             group: 'post',
-             side: 'both',
-             comments: commentsAfterMatch
-             });
-             }*/
 
-            var secondPeriodStartIndex = -1;
-            var firstPeriodFinishIndex = -1;
-
-            data.events.forEach(function (evt, i) {
-                if (evt.type === 'VTD2M') {
-                    secondPeriodStartIndex = i;
-                }
-
-                if (evt.type === 'VTF1M') {
-                    firstPeriodFinishIndex = i;
-                }
+            groups.forEach(function (group) {
+                data.events.push({
+                    time: group.after ? parseFloat(String(group.after).replace('+', '.')) + 0.1 : '-1000',
+                    group: 'pre',
+                    side: 'both',
+                    comments: group.comments
+                });
             });
 
-            //if (commentsDuringHalfTime.length) {
-            //    console.info(commentsDuringHalfTime.length, match.Id, firstPeriodFinishIndex, secondPeriodStartIndex);
-            //}
+            data.commentGroups = groups;
 
-            //data.commentsDuringHalfTime = commentsDuringHalfTime;
 
             data.events.sort(function (a, b) {
                 var aTime = parseFloat(String(a.time).replace('+', '.'));
