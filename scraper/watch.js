@@ -18,6 +18,8 @@ var startOver = false;
 var deleting = false;
 
 var watcherOptions = {
+    followSymLinks: true,
+    recursive: false,
     filter: function (filename) {
         return filename.indexOf('.DS_Store') === -1;
     }
@@ -164,7 +166,7 @@ function parseNotifications() {
 }
 
 
-console.info('start watching', notificationsPath)
+console.info('start watching', notificationsPath);
 
 watch(notificationsPath, watcherOptions, function(){
     if(deleting === false){
