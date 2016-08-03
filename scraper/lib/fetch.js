@@ -50,6 +50,7 @@ module.exports = function (options) {
             });
         }, function () {
             console.info('downloading:', uri);
+
             request(apiUri(uri), function (error, response, body) {
                 if (error) {
                     console.error(error);

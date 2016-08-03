@@ -15,8 +15,6 @@ function processQueue() {
             isWriting = false;
             processQueue();
         });
-    } else {
-        isWriting = false;
     }
 }
 

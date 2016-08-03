@@ -431,8 +431,8 @@ function getMatches(evenements, write) {
 
                     nextCommentTime = null;
 
-                    for(j = i+1; j < match.Comments.length; j++){
-                        if(match.Comments[j].props.time){
+                    for (j = i + 1; j < match.Comments.length; j++) {
+                        if (match.Comments[j].props.time) {
                             nextCommentTime = match.Comments[j].props.time;
                             break;
                         }
@@ -456,7 +456,7 @@ function getMatches(evenements, write) {
                         inGroup = true;
                         if (typeof groups[groupIndex] === 'undefined') {
 
-                            if(match.Id === 141157){
+                            if (match.Id === 141157) {
                                 console.info(lastCommentTime);
                             }
                             groups[groupIndex] = {
@@ -474,6 +474,11 @@ function getMatches(evenements, write) {
             data.events = data.events.concat(commentEvents);
 
             groups.forEach(function (group) {
+
+                if (group.comments.length === 0) {
+                    return;
+                }
+
                 data.events.push({
                     time: group.after ? parseFloat(String(group.after).replace('+', '.')) + 0.1 : '-1000',
                     group: 'pre',
@@ -481,17 +486,14 @@ function getMatches(evenements, write) {
                     comments: group.comments
                 });
             });
-
             data.commentGroups = groups;
-
-
             data.events.sort(function (a, b) {
                 var aTime = parseFloat(String(a.time).replace('+', '.'));
                 var bTime = parseFloat(String(b.time).replace('+', '.'));
                 return bTime - aTime;
             });
 
-            data.raw = match;
+            //data.raw = match;
 
             write('matches/' + match.Id, data);
         });
