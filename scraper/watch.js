@@ -3,14 +3,15 @@ var fs = require('fs');
 var async = require('async');
 var glob = require('glob');
 var debounce = require('debounce');
+var path = require('path');
 
 var options = require('./options');
 var extract = require('./extract')(options);
 var transform = require('./transform');
 var write = require('./writer');
 
-var notificationsPath = '../dist/data/notifications';
-var cachePath = '../dist/data/cache';
+var notificationsPath = path.join(__dirname, '/../dist/data/notifications');
+var cachePath = path.join(__dirname, '/../dist/data/cache');
 
 var busy = false;
 var startOver = false;
@@ -162,6 +163,8 @@ function parseNotifications() {
     });
 }
 
+
+console.info('start watching', notificationsPath)
 
 watch(notificationsPath, watcherOptions, function(){
     if(deleting === false){

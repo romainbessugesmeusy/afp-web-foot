@@ -17,8 +17,6 @@ module.exports = function (options) {
             fetch('aaevenementinfo/:lang/:id', {id: evenement.id}, function (err, evenementInfos) {
                 extend(evenement, evenementInfos);
                 evenementInfosCb()
-            }, function (data) {
-                return new Date(data.DateFin) >= new Date();
             });
         }
     }
@@ -38,7 +36,7 @@ module.exports = function (options) {
                 match.Events = matchDetail.Events;
                 match.Tabs = matchDetail.Tabs;
                 eachMatchCb();
-            }, isMatchOutdated);
+            }/*, isMatchOutdated*/);
         }
     }
 
@@ -83,8 +81,6 @@ module.exports = function (options) {
                         getMatchComments(evenement, match)
                     ], eachMatchCb)
                 }, matchesPhaseCb);
-            }, function () {
-                return phase.IsCurrent;
             });
         }
     }
@@ -148,9 +144,9 @@ module.exports = function (options) {
                         getClassementGroupes(evenement, phase)
                     ], eachPhaseDone);
                 }, eachPhasesCb);
-            }, function () {
+            }/*, function () {
                 return isEvenementCurrent(evenement);
-            });
+            }*/);
         }
     }
 
