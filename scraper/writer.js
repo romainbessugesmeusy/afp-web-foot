@@ -26,7 +26,6 @@ function processQueue() {
                    isWriting = false;
                    processQueue();
                } else {
-                   console.info('content is different', file.filename);
                    writeFile();
                }
             });
