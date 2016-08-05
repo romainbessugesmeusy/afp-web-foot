@@ -455,10 +455,6 @@ function getMatches(evenements, write) {
                     } else {
                         inGroup = true;
                         if (typeof groups[groupIndex] === 'undefined') {
-
-                            if (match.Id === 141157) {
-                                console.info(lastCommentTime);
-                            }
                             groups[groupIndex] = {
                                 after: lastCommentTime,
                                 comments: []
@@ -563,7 +559,7 @@ function getCompetitions(evenements, write) {
                     competition.matches.push(m);
                 });
 
-                console.info('EVENEMENT', evenement.Label, phase.PhaseCompetCode);
+                //console.info('EVENEMENT', evenement.Label, phase.PhaseCompetCode);
 
                 p.rankings = {};
 
@@ -780,9 +776,18 @@ module.exports = function transform(write, cb) {
             getPlayers(evenements, write)
         ], function () {
             console.info('TRANSFORM END', new Date());
+            evenements.length = 0;
+            evenements = null;
+            if (global.gc) {
+                global.gc();
+            } else {
+                console.log('Garbage collection unavailable.  Pass --expose-gc '
+                    + 'when launching node to enable forced garbage collection.');
+            }
             if (cb) {
                 cb();
             }
+            console.info('memory usage', process.memoryUsage());
         });
     }
 };

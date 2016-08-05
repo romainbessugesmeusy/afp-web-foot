@@ -8,21 +8,23 @@ function processQueue() {
 
     if (queue.length > 0 && !isWriting) {
         var file = queue.shift();
+        var contents = JSON.stringify(file.data);
         isWriting = true;
 
         var writeFile = function(){
-            fs.writeFile(file.filename, file.data, function (err) {
+            fs.writeFile(file.filename, contents, function (err) {
                 if(err){
                     console.error (err);
                 }
                 isWriting = false;
+                file = null;
                 processQueue();
             });
         };
 
         fileExists(file.filename,function(){
             fs.readFile(file.filename, 'utf-8', function(err, content){
-               if(content == file.data){
+               if(content == contents){
                    isWriting = false;
                    processQueue();
                } else {
@@ -36,7 +38,7 @@ function processQueue() {
 module.exports = function write(filename, data) {
     queue.push({
         filename: path.join(__dirname, '../dist/data/' + filename + '.json'),
-        data: JSON.stringify(data)
+        data: data
     });
     processQueue();
 };
