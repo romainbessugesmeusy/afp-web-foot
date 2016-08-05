@@ -13,7 +13,7 @@
 {{#if staff}}
     <div class="pageWrapper">
         <div class="players">
-            <h2>Effectif</h2>
+            <h2>{{t 'staff.title' 'app.team' 'Staff'}}</h2>
             <div class="wrapper">
                 {{#group staff by="position"}}
                     <div class="position">
@@ -31,7 +31,7 @@
     </div>
 {{/if}}
 <div class="matches">
-    <h2>Matches</h2>
+    <h2>{{t 'matches.title' 'app.team' 'Matches'}}</h2>
     <div class="competitionWrapper">
         {{#each competitions}}
             <article class="competition pastMatches">

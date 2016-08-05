@@ -4,21 +4,22 @@
             <aside>
                 <div class="logo"><img src="/data/events/{{id}}.png" alt="{{label}}"></div>
                 <dl>
-                    <dt>Pays</dt>
+                    <dt>{{t 'country' 'app.competition.infos' 'Pays'}}</dt>
                     <dd>{{countryBlock country}}</dd>
-                    <dt>Début</dt>
+                    <dt>{{t 'startDate' 'app.competition.infos' 'Début'}}</dt>
                     <dd>{{relativeDate startDate 'dddd D MMMM YYYY'}}</dd>
-                    <dt>Fin</dt>
+                    <dt>{{t 'endDate' 'app.competition.infos' 'Fin'}}</dt>
                     <dd>{{relativeDate endDate 'dddd D MMMM YYYY'}}</dd>
-                    <dt>Genre</dt>
+                    <dt>{{t 'gender' 'app.competition.infos' 'Genre'}}</dt>
                     <dd>{{t gender 'const'}}</dd>
                 </dl>
             </aside>
             <div class="infos">
                 <h1>{{label}}</h1>
-                <p class="date">Du <span>{{relativeDate startDate 'dddd D MMMM YYYY'}}</span> au
+                <p class="date">
+                    {{t 'from' 'app.competition.dateRange' 'Du'}} <span>{{relativeDate startDate 'dddd D MMMM YYYY'}}</span>
+                    {{t 'from' 'app.competition.dateRange' 'Au'}}
                     <span>{{relativeDate endDate 'dddd D MMMM YYYY'}}</span></p>
-
                 <div class="rankings">
                     {{#each phases}}
                         <div class="phase">

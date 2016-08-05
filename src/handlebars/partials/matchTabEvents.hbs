@@ -3,9 +3,9 @@
     {{#if hasComments}}
         <button id="toggleComments"
                 data-state="on"
-                data-message-on="Masquer les commentaires"
-                data-message-off="Afficher les commentaires">
-            Masquer les commentaires
+                data-message-on="{{t 'hideCommentsButton' 'app.match.events' 'Masquer les commentaires'}}"
+                data-message-off="{{t 'showCommentsButton' 'app.match.events' 'Afficher les commentaires'}}">
+            {{t 'hideCommentsButton' 'app.match.events' 'Masquer les commentaires'}}
         </button>
     {{/if}}
     <div class="eventsWrapper">

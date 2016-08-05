@@ -138,12 +138,16 @@ Handlebars.registerHelper('teamCondensed', function (teamId, options) {
     return new Handlebars.SafeString(ret);
 });
 
-Handlebars.registerHelper('t', function (name, domainOrCount) {
+Handlebars.registerHelper('t', function (name, domainOrCount, defaultValue) {
     if (typeof domainOrCount === 'string') {
         name = domainOrCount + '.' + name;
     }
 
-    return (typeof translations[name] !== 'undefined') ? translations[name] : name;
+    if (typeof translations[name] === 'undefined') {
+        console.info('/*translation*/', '"' + name + '":"' + (defaultValue || name) + '",');
+    }
+
+    return (typeof translations[name] !== 'undefined') ? translations[name] : defaultValue || name;
 });
 
 Handlebars.registerHelper('countryBlock', function (code) {

@@ -5,11 +5,9 @@
             <img src="/data/events/{{competition.id}}.png" alt="{{competition.name}}">
         </a>
     </div>
-    {{#ifEquals status "EMENC"}}
-        <div class="status">
-            MATCH EN COURS
-        </div>
-    {{/ifEquals}}
+    <div class="status {{status}}">
+        {{t status 'const'}}
+    </div>
     <div class="summaryPlaceholder"></div>
     <div class="summaryMobile">
         <div class="row">

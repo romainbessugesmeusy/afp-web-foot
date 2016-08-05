@@ -34,10 +34,14 @@
                 <span class="away">7</span>
             </p>--}}
             {{#ifEquals status 'EMENC'}}
-                <p><a href="/matches/{{id}}/" class="button live">LIVE</a></p>
+                <p><a href="/matches/{{id}}/" class="button live">
+                    {{t 'live.button' 'app.scoreboard.liveMatch' 'LIVE'}}
+                </a></p>
             {{/ifEquals}}
             {{#ifEquals status 'EMFIN'}}
-                <p><a href="/matches/{{id}}/" class="button">Résumé</a></p>
+                <p><a href="/matches/{{id}}/" class="button">
+                    {{t 'past.button' 'app.scoreboard.liveMatch' 'Résumé'}}
+                </a></p>
             {{/ifEquals}}
 
         </div>

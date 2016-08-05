@@ -3,14 +3,26 @@
     {{> matchHeader }}
     <div class="tabs" id="matchTabs">
         <nav class="sectionNavbar light">
-            {{#if hasInfos}}<a href="/matches/{{id}}/infos" data-target="infos">Infos</a>{{/if}}
+            {{#if hasInfos}}
+                <a href="/matches/{{id}}/infos" data-target="infos">
+                    {{t 'infos' 'app.match.tabs' 'Infos'}}
+                </a>
+            {{/if}}
             {{#if hasEvents}}
-                <a href="/matches/{{id}}/evenements" class="active" data-target="events">Événements</a>
+                <a href="/matches/{{id}}/evenements" class="active" data-target="events">
+                    {{t 'feed' 'app.match.tabs' 'Événements'}}
+                </a>
             {{/if}}
             {{#if penaltyShootouts}}
-                <a href="/matches/{{id}}/tirs-au-but" data-target="penaltyShootouts">Tirs au but</a>
+                <a href="/matches/{{id}}/tirs-au-but" data-target="penaltyShootouts">
+                    {{t 'penaltyShootouts' 'app.match.tabs' 'Tirs au but'}}
+                </a>
             {{/if}}
-            {{#if hasPlayers}}<a href="/matches/{{id}}/composition" data-target="composition">Composition</a>{{/if}}
+            {{#if hasPlayers}}
+                <a href="/matches/{{id}}/composition" data-target="composition">
+                    {{t 'composition' 'app.match.tabs' 'Composition'}}
+                </a>
+            {{/if}}
         </nav>
         {{> matchTabInfos}}
         {{> matchTabEvents}}

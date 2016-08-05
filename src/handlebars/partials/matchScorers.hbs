@@ -1,7 +1,11 @@
 
 <div class="scorers">
     {{#group scorers by="player"}}
-        <span><a href="/players/{{value}}">{{matchPlayerName value}}</a>&nbsp;<span class="fontFigures">{{joinScorerGoals items}}</span></span>
+        <span>
+            <a href="/players/{{value}}">{{matchPlayerName value}}</a>
+            &nbsp;
+            <span class="fontFigures">{{joinScorerGoals items}}</span>
+        </span>
     {{/group}}
     &nbsp;
 </div>
