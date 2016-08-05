@@ -1,18 +1,16 @@
 var $ = require('jquery');
 module.exports = {
 
-    bind: function (ctx, next) {
+    bind: function () {
         var html = $('html');
         var body = $('body');
         $(window).on('scroll', function () {
             body.toggleClass('scroll', document.getElementById('page').getBoundingClientRect().top < -337)
         });
-        next();
     },
 
-    unbind: function (ctx, next) {
+    unbind: function () {
         $('body').removeClass('scroll');
         $(window).off('scroll');
-        next();
     }
 };

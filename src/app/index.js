@@ -50,7 +50,7 @@ var processCompetitionsData = require('./processCompetitionsData');
 var processTeamData = require('./processTeamData');
 var processPlayerData = require('./processPlayerData');
 var activateMatchTab = require('./activateMatchTab');
-var pageScroll = require('./pageScroll');
+var pageScroll = require('./pageScroll').bind();
 
 var handleDateParams = require('./handleDateParams')(appCtx);
 var listenToUserEvents = require('./listenToUserEvents')(appCtx);
@@ -93,7 +93,7 @@ page('/', function (ctx, next) {
         next();
     });
 
-}, handleDateParams, pageScroll.unbind, showPage($pages.scoreboard));
+}, handleDateParams, showPage($pages.scoreboard));
 //
 // SCOREBOARD EXIT (reset date params in context)
 page.exit('/', function (ctx, next) {
@@ -123,7 +123,7 @@ page('/matches/:matchId/*', function (ctx, next) {
         bs();
         next()
     });
-}, pageScroll.bind, showPage($pages.match, true));
+}, showPage($pages.match, true));
 
 //
 // MATCH TABS (called after the individual match route)
