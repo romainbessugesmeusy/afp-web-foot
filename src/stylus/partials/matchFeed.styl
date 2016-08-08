@@ -6,13 +6,17 @@
   min-height 800px
   background transparent
 
+  .eventsWrapper
+    margin 0 auto
+    max-width 800px
   .row.away
-    text-align left
-
-  .row.home
     text-align right
 
+  .row.home
+    text-align left
+
   .event
+    min-width 300px
     position relative
     margin-top 1.5em
     background white
@@ -43,7 +47,6 @@
       color #444
 
     &.home
-      margin-right 48%
       padding-left 60px
       img.type
         left 0
@@ -54,7 +57,6 @@
         margin-left 1em
 
     &.away
-      margin-left 48%
       padding-right 60px
       img.type
         right 0
@@ -62,7 +64,7 @@
         margin-right 1em
 
     &.both
-      width 500px
+      max-width 500px
       position relative
       img.type
         right 0
