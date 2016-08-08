@@ -173,3 +173,6 @@ watch(notificationsPath, watcherOptions, function(){
         debouncedParse();
     }
 });
+
+
+extract(transform(write));

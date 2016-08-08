@@ -18,6 +18,7 @@ function processQueue() {
                 }
                 isWriting = false;
                 file = null;
+                contents = null;
                 processQueue();
             });
         };

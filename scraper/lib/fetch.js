@@ -50,7 +50,6 @@ module.exports = function (options) {
             });
         }, function () {
             console.info('downloading:', uri);
-
             request(apiUri(uri), function (error, response, body) {
                 if (error) {
                     console.error(error);
@@ -65,7 +64,10 @@ module.exports = function (options) {
                     return callback(err);
                 }
 
+                console.info('finished donwloading:', uri);
+
                 fs.writeFile(cacheFilename, body, function (err) {
+                    console.info('file written to disk:', cacheFilename);
                     if (err)  {
                         return callback(err, json);
                     }

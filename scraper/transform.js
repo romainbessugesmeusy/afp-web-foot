@@ -42,11 +42,6 @@ function extractScoreboardTeamInfo(team) {
 function eachMatches(evenements, callback) {
     evenements.forEach(function (evenement) {
         evenement.phases.forEach(function (phase) {
-            if (typeof phase.matches === 'undefined') {
-                console.error('Phase with undefined matches');
-                console.error(evenement);
-                process.exit();
-            }
             phase.matches.forEach(function (match) {
                 callback(evenement, phase, match);
             })
@@ -145,6 +140,8 @@ function getTeamDetail(evenement, phase, match, team) {
     }
 
     extend(teamDetail, getTeamStaff(match, teamFromStats.Staff, match[team]));
+
+    teamFromStats = null;
 
     return teamDetail;
 }
@@ -301,10 +298,9 @@ function getMatches(evenements, write) {
     return function (eachMatchCb) {
         eachMatches(evenements, function (evenement, phase, match) {
 
-            //if (new Date(evenement.DateFin) < new Date()) {
-            //    return;
-            //}
-
+            if (new Date(evenement.DateFin) < new Date()) {
+                return;
+            }
 
             match.Arbitres = match.Arbitres || [];
             match.Events = match.Events || [];
@@ -555,7 +551,7 @@ function getCompetitions(evenements, write) {
                         away: extractScoreboardTeamInfo(match.Away)
                     };
 
-                    setMatchWinner(m)
+                    setMatchWinner(m);
                     competition.matches.push(m);
                 });
 
@@ -675,13 +671,15 @@ function getTeams(evenements, write) {
                             competition.matches.push(m);
                         }
                     });
+
+                    delete matchesByTeamId[team.id];
                 }
 
                 //if (team.id === 4656) {
                 //    console.info(matchesByTeamId[team.id]);
                 //}
 
-                var teamStaff = equipe.Staff.map(function (member) {
+                team.staff = equipe.Staff.map(function (member) {
                     return {
                         id: member.Id,
                         fullname: member.NomLong,
@@ -696,8 +694,6 @@ function getTeams(evenements, write) {
                         faceshot: member.Faceshot
                     }
                 });
-
-                team.staff = teamStaff; // todo ask AFP
             });
         });
 

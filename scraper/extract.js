@@ -30,13 +30,14 @@ module.exports = function (options) {
                 }
                 extend(match.Home, matchDetail.Home);
                 extend(match.Away, matchDetail.Away);
+                match.StatusCode = matchDetail.StatusCode;
                 match.Attendance = matchDetail.Attendance;
                 match.Arbitres = matchDetail.Arbitres;
                 match.Periods = matchDetail.Periods;
                 match.Events = matchDetail.Events;
                 match.Tabs = matchDetail.Tabs;
                 eachMatchCb();
-            }/*, isMatchOutdated*/);
+            }, isMatchOutdated);
         }
     }
 
