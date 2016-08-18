@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var mkdirp = require('mkdirp');
 var fileExists = require('./lib/fileExists');
 var queue = [];
 var isWriting = false;
@@ -11,26 +12,32 @@ function processQueue() {
         var contents = JSON.stringify(file.data);
         isWriting = true;
 
-        var writeFile = function(){
-            fs.writeFile(file.filename, contents, function (err) {
-                if(err){
-                    console.error (err);
+        var writeFile = function () {
+            mkdirp(path.dirname(file.filename), function (mkdirErr) {
+                if (mkdirErr) {
+                    console.error(mkdirErr);
                 }
-                isWriting = false;
-                file = null;
-                contents = null;
-                processQueue();
+                fs.writeFile(file.filename, contents, function (err) {
+                    if (err) {
+                        console.error(err);
+                    }
+                    isWriting = false;
+                    file = null;
+                    contents = null;
+                    processQueue();
+                });
+
             });
         };
 
-        fileExists(file.filename,function(){
-            fs.readFile(file.filename, 'utf-8', function(err, content){
-               if(content == contents){
-                   isWriting = false;
-                   processQueue();
-               } else {
-                   writeFile();
-               }
+        fileExists(file.filename, function () {
+            fs.readFile(file.filename, 'utf-8', function (err, content) {
+                if (content == contents) {
+                    isWriting = false;
+                    processQueue();
+                } else {
+                    writeFile();
+                }
             });
         }, writeFile);
     }
