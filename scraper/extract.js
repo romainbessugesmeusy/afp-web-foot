@@ -7,6 +7,7 @@ var moment = require('moment');
 var parseCommentFile = require('./lib/parseCommentFile');
 var downloadFile = require('./lib/downloadFile');
 var fileExists = require('./lib/fileExists');
+var unique = require('array-unique');
 
 module.exports = function (options) {
 
@@ -76,7 +77,7 @@ module.exports = function (options) {
             }, function (err, matches) {
                 if (err) console.error(err);
                 phase.matches = matches.Matches;
-                async.forEach(phase.matches, function (match, eachMatchCb) {
+                async.forEachLimit(phase.matches, 5, function (match, eachMatchCb) {
                     async.parallel([
                         getMatchDetail(match),
                         getMatchComments(evenement, match)
@@ -121,7 +122,7 @@ module.exports = function (options) {
 
     function getClassementGroupes(evenement, phase) {
         return function (classementGroupesCb) {
-            async.forEach(phase.Groupes, function (groupe, cb) {
+            async.forEachLimit(phase.Groupes, 10, function (groupe, cb) {
                 fetch('xcclassementgroupe/:lang/:evenementId/:groupeId', {
                     evenementId: evenement.id,
                     groupeId: groupe.GroupeId
@@ -137,7 +138,7 @@ module.exports = function (options) {
         return function (eachPhasesCb) {
             fetch('xcphases/:lang/:id', {id: evenement.id}, function (err, phasesJson) {
                 evenement.phases = phasesJson.Phases;
-                async.forEach(evenement.phases, function (phase, eachPhaseDone) {
+                async.forEachLimit(evenement.phases, 10, function (phase, eachPhaseDone) {
                     async.parallel([
                         getPhaseMatches(evenement, phase),
                         getPhaseTopScorers(evenement, phase),
@@ -146,8 +147,8 @@ module.exports = function (options) {
                     ], eachPhaseDone);
                 }, eachPhasesCb);
             }/*, function () {
-                return isEvenementCurrent(evenement);
-            }*/);
+             return isEvenementCurrent(evenement);
+             }*/);
         }
     }
 
@@ -162,13 +163,13 @@ module.exports = function (options) {
 
     function getPlayersFaceshots(equipe) {
         return function (cb) {
-            async.forEach(equipe.Staff, getFaceshot, cb);
+            async.forEachLimit(equipe.Staff, 10, getFaceshot, cb);
         }
     }
 
     function getTeamsLogo(phase) {
         return function (eachEquipeCb) {
-            async.forEach(phase.Equipes, function (equipe, cb) {
+            async.forEachLimit(phase.Equipes, 10, function (equipe, cb) {
                 var uri;
                 switch (equipe.TeamType) {
                     case 'CECLU':
@@ -222,7 +223,7 @@ module.exports = function (options) {
         return function (equipesCb) {
             fetch('xcequipes/:lang/:evt/0', {evt: evenement.id}, function (err, data) {
                 evenement.Equipes = data.Equipes;
-                async.forEach(evenement.Equipes, function (equipe, eachEquipeDone) {
+                async.forEachLimit(evenement.Equipes, 20, function (equipe, eachEquipeDone) {
                     getEquipeStaff(evenement, equipe)(eachEquipeDone);
                 }, equipesCb);
             });
@@ -231,8 +232,19 @@ module.exports = function (options) {
 
     return function extract(cb) {
         var evenements = [];
-        console.info('EXTRACT', new Date());
-        async.forEach(options.evts, function eachEvenement(evtId, eachEvenementDone) {
+        var evenementsIds = [];
+
+        for (var client in options.clients) {
+            if (options.clients.hasOwnProperty(client)) {
+                evenementsIds = evenementsIds.concat(options.clients[client].evts);
+            }
+        }
+
+        unique(evenementsIds);
+
+        console.info(evenementsIds);
+
+        async.forEach(evenementsIds, function eachEvenement(evtId, eachEvenementDone) {
             var evenement = {id: evtId};
             evenements.push(evenement);
             async.series([

@@ -493,23 +493,27 @@ function getMatches(evenements, write) {
     }
 }
 
-function transformScoreboardData(evenements, write) {
+function transformScoreboardData(options, evenements, write) {
     return function (scoreboardCb) {
-        write('scoreboard', {
-            dates: getAllMatchDates(evenements),
-            competitions: getEvenementsScoreboard(evenements)
-        });
-        scoreboardCb();
+        async.forEachOf(options.clients, function (clientOptions, clientId, cb) {
+            var clientEvents = evenements.filter(function (evt) {
+                return clientOptions.evts.indexOf(evt.id) !== -1
+            });
+
+            write('clients/' + clientId + '/scoreboard', {
+                dates: getAllMatchDates(clientEvents),
+                competitions: getEvenementsScoreboard(clientEvents)
+            });
+            cb();
+        }, scoreboardCb);
     }
 }
 
-function getCompetitions(evenements, write) {
+function getCompetitions(options, evenements, write) {
     return function (competitionCb) {
         var competitionList = [];
 
         evenements.forEach(function (evenement) {
-
-
             var competition = {
                 id: evenement.id,
                 label: evenement.Label,
@@ -606,8 +610,12 @@ function getCompetitions(evenements, write) {
             write('competitions/' + competition.id, competition);
         });
 
-        write('competitions', competitionList);
-        competitionCb();
+        async.forEachOf(options.clients, function (clientOptions, clientId, cb) {
+            write('clients/' + clientId + '/competitions', competitionList.filter(function (evt) {
+                return clientOptions.evts.indexOf(evt.id) !== -1
+            }));
+            cb();
+        }, competitionCb);
     }
 }
 
@@ -761,30 +769,32 @@ function getPlayers(evenements, write) {
     }
 }
 
-module.exports = function transform(write, cb) {
-    return function (evenements) {
-        console.info('TRANSFORM START', new Date());
-        async.parallel([
-            transformScoreboardData(evenements, write),
-            getMatches(evenements, write),
-            getCompetitions(evenements, write),
-            getTeams(evenements, write),
-            getPlayers(evenements, write)
-        ], function () {
-            console.info('TRANSFORM END', new Date());
-            evenements.length = 0;
-            evenements = null;
-            if (global.gc) {
-                global.gc();
-            } else {
-                console.log('Garbage collection unavailable.  Pass --expose-gc '
-                    + 'when launching node to enable forced garbage collection.');
-            }
-            if (cb) {
-                cb();
-            }
-            console.info('memory usage', process.memoryUsage());
-        });
+module.exports = function (options) {
+    return function transform(write, cb) {
+        return function (evenements) {
+            console.info('TRANSFORM START', new Date());
+            async.parallel([
+                transformScoreboardData(options, evenements, write),
+                getCompetitions(options, evenements, write),
+                getMatches(evenements, write),
+                getTeams(evenements, write),
+                getPlayers(evenements, write)
+            ], function () {
+                console.info('TRANSFORM END', new Date());
+                evenements.length = 0;
+                evenements = null;
+                if (global.gc) {
+                    global.gc();
+                } else {
+                    console.log('Garbage collection unavailable.  Pass --expose-gc '
+                        + 'when launching node to enable forced garbage collection.');
+                }
+                if (cb) {
+                    cb();
+                }
+                console.info('memory usage', process.memoryUsage());
+            });
+        }
     }
 };
 

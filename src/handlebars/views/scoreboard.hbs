@@ -1,30 +1,31 @@
-<section id="today">
-    <h2>{{t 'todaysMatches.title' 'app.scoreboard' 'Matches du jour'}}</h2>
-    <div class="highlighted matches">
-        {{#each todaysMatches.highlight}}
-            {{> liveMatch }}
-        {{/each}}
-    </div>
-    <div class="other matches">
-        {{#group todaysMatches.normal by='competition'}}
-            <div class="competition">
-                <h5>{{competitionName value}}</h5>
-                <ul>
-                    {{#each items}}
-                        <li>
-                            {{#ifEquals status 'EMNCO'}}
-                                {{> upcomingMatch }}
-                            {{else}}
-                                {{> pastMatch }}
-                            {{/ifEquals}}
-                        </li>
-                    {{/each}}
-                </ul>
-            </div>
-        {{/group}}
-
-    </div>
-</section>
+{{#if todaysMatches}}
+    <section id="today">
+        <h2>{{t 'todaysMatches.title' 'app.scoreboard' 'Matches du jour'}}</h2>
+        <div class="highlighted matches">
+            {{#each todaysMatches.highlight}}
+                {{> liveMatch }}
+            {{/each}}
+        </div>
+        <div class="other matches">
+            {{#group todaysMatches.normal by='competition'}}
+                <div class="competition">
+                    <h5>{{competitionName value}}</h5>
+                    <ul>
+                        {{#each items}}
+                            <li>
+                                {{#ifEquals status 'EMNCO'}}
+                                    {{> upcomingMatch }}
+                                {{else}}
+                                    {{> pastMatch }}
+                                {{/ifEquals}}
+                            </li>
+                        {{/each}}
+                    </ul>
+                </div>
+            {{/group}}
+        </div>
+    </section>
+{{/if}}
 {{#if upcomingDateList.length}}
     <section id="upcoming">
         <h2>{{t 'upcomingMatches.title' 'app.scoreboard' 'Matches à venir'}}</h2>

@@ -78,6 +78,10 @@ module.exports = function (data, options) {
         scoreboard.pastMatches[date] = matchesByDateAndCompetition[date];
     });
 
+    //if (scoreboard.todaysMatches.highlight.length + scoreboard.todaysMatches.normal.length === 0) {
+    //    delete scoreboard.todaysMatches;
+    //}
+
 
     scoreboard.pastDateList.sort(sortByDate(false));
     scoreboard.pastDateList = scoreboard.pastDateList.map(wrapDates);

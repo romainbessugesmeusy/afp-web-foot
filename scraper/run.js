@@ -7,7 +7,7 @@ var path = require('path');
 
 var options = require('./options');
 var extract = require('./extract')(options);
-var transform = require('./transform');
+var transform = require('./transform')(options);
 var write = require('./writer');
 
 var notificationsPath = path.join(__dirname, '/../dist/data/notifications');
