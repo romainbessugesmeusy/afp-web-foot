@@ -8,6 +8,8 @@
     "array-unique": "^0.2.1",
     "async": "^2.0.0-rc.6",
     "browserify": "^13.0.1",
+    "clear": "0.0.1",
+    "cli-table": "^0.3.1",
     "color-thief": "^2.2.2",
     "debounce": "^1.0.0",
     "extend": "^3.0.0",

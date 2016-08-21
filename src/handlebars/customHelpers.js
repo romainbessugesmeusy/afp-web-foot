@@ -5,6 +5,15 @@ var groupBy = require('handlebars-group-by');
 var translations = require('../../dist/data/locale/fr.json');
 var $ = require('jquery');
 
+var enforceLeadingZero = function(value){
+    return value < 10 ? '0' + String(value) : String(value);
+};
+
+var formatTime = function(date){
+    var d = new Date(date);
+    return enforceLeadingZero(d.getHours()) + ':' + enforceLeadingZero(d.getMinutes());
+};
+
 groupBy.register(Handlebars);
 
 require('moment/locale/fr');
@@ -29,6 +38,10 @@ Handlebars.registerHelper('each_competition', function (dateObject, date, option
     }
 
     return ret;
+});
+
+Handlebars.registerHelper('relativeTime', function (date) {
+    return formatTime(date);
 });
 
 Handlebars.registerHelper('relativeDate', function (date, format) {
@@ -72,7 +85,7 @@ Handlebars.registerHelper('joinScorerGoals', function (goals) {
     return new Handlebars.SafeString('(' + strings.join(', ') + ')');
 });
 
-Handlebars.registerHelper('matchTime', function (match, options) {
+Handlebars.registerHelper('liveMatchTime', function (match, options) {
     if (match.status === constants.status.inProgress) {
         return match.time;
     }
@@ -81,7 +94,7 @@ Handlebars.registerHelper('matchTime', function (match, options) {
         return 'TERMINÉ';
     }
 
-    return ''
+    return formatTime(match.date);
 });
 
 Handlebars.registerHelper('ifEquals', function (a, b, opts) {

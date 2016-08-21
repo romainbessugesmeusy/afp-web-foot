@@ -6,7 +6,7 @@
     {{else}}
         <span class="home unknown"></span>
     {{/if}}
-    <span class="time fontFigures">{{time}}</span>
+    <span class="time fontFigures">{{relativeTime date}}</span>
     {{#if away.id}}
         <a href="/teams/{{away.id}}" class="away"><span class="name">{{away.name}}</span></a>
     {{else}}

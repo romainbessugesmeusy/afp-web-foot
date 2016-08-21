@@ -9,7 +9,7 @@
         <div class="other matches">
             {{#group todaysMatches.normal by='competition'}}
                 <div class="competition">
-                    <h5>{{competitionName value}}</h5>
+                    <h5><a href="/competitions/{{value}}">{{competitionName value}}</a></h5>
                     <ul>
                         {{#each items}}
                             <li>
