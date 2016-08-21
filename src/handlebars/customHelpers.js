@@ -25,10 +25,18 @@ var getRealTime = function (match) {
     if (parts.length > 1) {
         parts[1] += delta;
     } else {
-        parts[0] += delta;
+        if (parts[0] < 46 && parts[0] + delta > 45) {
+            parts[0] = 45;
+            parts.push(parts[0] + delta - 45)
+        } else if (parts[0] < 90 && parts[0] > 45 && parts[0] + delta > 90) {
+            parts[0] = 90;
+            parts.push(parts[0] + delta - 90)
+        } else {
+            parts[0] += delta;
+        }
     }
 
-    return parts.map(function(part){
+    return parts.map(function (part) {
         return String(part) + '\'';
     }).join('+');
 };

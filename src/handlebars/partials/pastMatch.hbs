@@ -1,5 +1,8 @@
-    <a class="pastMatch {{status}}" href="/matches/{{id}}/">
-        {{> pastMatchTeam home side="home"}}
-            <span class="status">{{t status 'const'}}</span>
-        {{> pastMatchTeam away side="away"}}
-    </a>
+<a class="pastMatch {{status}}" href="/matches/{{id}}/">
+    {{> pastMatchTeam home side="home"}}
+    {{#ifEquals status 'EMENC'}}
+        <span class="time">{{liveMatchTime this}}</span>
+    {{/ifEquals}}
+    <span class="status">{{t status 'const'}}</span>
+    {{> pastMatchTeam away side="away"}}
+</a>
