@@ -5,11 +5,11 @@ var groupBy = require('handlebars-group-by');
 var translations = require('../../dist/data/locale/fr.json');
 var $ = require('jquery');
 
-var enforceLeadingZero = function(value){
+var enforceLeadingZero = function (value) {
     return value < 10 ? '0' + String(value) : String(value);
 };
 
-var formatTime = function(date){
+var formatTime = function (date) {
     var d = new Date(date);
     return enforceLeadingZero(d.getHours()) + ':' + enforceLeadingZero(d.getMinutes());
 };
@@ -181,12 +181,31 @@ Handlebars.registerHelper('countryInline', function (code) {
 
 Handlebars.registerHelper('matchTime', function (match, options) {
     switch (match.status) {
+        case constants.status.upcoming :
+            return 'PAS COMMENCÉ';
         case constants.status.paused :
             return 'MI-TEMPS';
         case constants.status.finished :
             return 'TERMINÉ';
     }
-    return match.minute ? match.minute : match.time;
+
+    var delta = moment().diff(match.now, 'minutes');
+    var parts = match.time.replace('\'', '').split('+').map(function (part) {
+        return parseInt(part);
+    });
+
+    if (parts.length > 1) {
+        parts[1] += delta;
+    } else {
+        parts[0] += delta;
+    }
+
+    return parts.map(function(part){
+        return String(part) + '\'';
+    }).join('+');
+
+    //console.info(match.time, match.now, delta);
+    //return match.minute ? match.minute : match.time;
 });
 
 Handlebars.registerHelper('competitionName', function (competitionId, options) {
@@ -246,5 +265,9 @@ Handlebars.registerHelper('regularSeasonRankings', function (phase, options) {
         return new Handlebars.SafeString(Handlebars.partials['rankings'](phase.rankings[groupId], options));
     }
     return '';
+});
+
+Handlebars.registerHelper('matchStatus', function (match, options) {
+    return translations['const.' + match.status];
 });
 module.exports = Handlebars;

@@ -16,6 +16,8 @@ var statusTable = new Table({
     colWidths: [30, 100]
 });
 
+var writer = require('./writer');
+
 var setEventStatus = function (evtId, message) {
     var i = 0;
     var l = statusTable.length;
@@ -35,11 +37,30 @@ var writeStatus = function () {
 
 
 var debouncedWriteStatus = debounce(writeStatus, 50);
-
+var evenementsIds = [];
 
 module.exports = function (options) {
 
     var fetch = require('./lib/fetch')(options);
+
+
+    getEvenementsIds().forEach(function (evtId) {
+        statusTable.push([evtId, 'idle']);
+    });
+
+    function getEvenementsIds() {
+        var ids = [];
+        for (var client in options.clients) {
+            if (options.clients.hasOwnProperty(client)) {
+                ids = ids.concat(options.clients[client].evts);
+            }
+        }
+        unique(ids);
+        return ids;
+
+    }
+
+    writeStatus();
 
     function getEvenementInfos(evenement) {
         return function (evenementInfosCb) {
@@ -67,6 +88,7 @@ module.exports = function (options) {
                 match.Periods = matchDetail.Periods;
                 match.Events = matchDetail.Events;
                 match.Tabs = matchDetail.Tabs;
+                match.Minute = matchDetail.Minute;
                 eachMatchCb();
             }, isMatchOutdated);
         }
@@ -119,7 +141,7 @@ module.exports = function (options) {
                         async.setImmediate(eachMatchCb);
                     })
                 }, function () {
-                    setEventStatus(evenement.id, 'getPhaseMatchesDone Phase Done ' + phase.PhaseId );
+                    setEventStatus(evenement.id, 'getPhaseMatchesDone Phase Done ' + phase.PhaseId);
                     async.setImmediate(matchesPhaseCb);
                 });
             });
@@ -127,7 +149,11 @@ module.exports = function (options) {
     }
 
     function isMatchOutdated(match) {
-        return false;
+
+        if (match.StatusCode === 'EMENC') {
+            return true;
+        }
+
         return (moment(match.Date).diff(new Date()) < 0 && match.StatusCode !== 'EMFIN');
     }
 
@@ -188,11 +214,11 @@ module.exports = function (options) {
                         getPhaseTopScorers(evenement, phase),
                         getPhaseEquipes(evenement, phase),
                         getClassementGroupes(evenement, phase)
-                    ], function(){
+                    ], function () {
                         setEventStatus(evenement.id, 'getPhases phase done ' + phase.PhaseId);
                         phaseDone()
                     });
-                }, function(){
+                }, function () {
                     setEventStatus(evenement.id, 'getPhases all phases done');
                     eachPhasesCb()
                 });
@@ -287,36 +313,47 @@ module.exports = function (options) {
         }
     }
 
-    return function extract(cb) {
-        var evenements = [];
-        var evenementsIds = [];
-
-        for (var client in options.clients) {
-            if (options.clients.hasOwnProperty(client)) {
-                evenementsIds = evenementsIds.concat(options.clients[client].evts);
-            }
-        }
-
-        unique(evenementsIds);
-
-        async.forEachLimit(evenementsIds, 2, function eachEvenement(evtId, eachEvenementDone) {
-            statusTable.push([evtId, 'start']);
-            var evenement = {id: evtId};
-            evenements.push(evenement);
-            async.series([
-                getEvenementEquipes(evenement),
-                getEvenementInfos(evenement),
-                getPhases(evenement),
-                getEvenementStatistiques(evenement)
-            ], function () {
+    function reloadEvent(evtId, cb) {
+        var evenement = {id: evtId};
+        console.info('reloadEvent', evtId);
+        async.series([
+            getEvenementEquipes(evenement),
+            getEvenementInfos(evenement),
+            getPhases(evenement),
+            getEvenementStatistiques(evenement)
+        ], function () {
+            setEventStatus(evtId, 'writing');
+            writer('cache/evenement_' + evtId, evenement, function () {
                 setEventStatus(evtId, 'done');
-                eachEvenementDone();
+                cb(evenement);
+            });
+        });
+    }
+
+
+    return function extract(cb) {
+        console.info('EXTRACT');
+        var ids = getEvenementsIds();
+        var evenements = [];
+        async.forEach(ids, function eachEvenement(evtId, eachEvenementDone) {
+            setEventStatus(evtId, 'Loading File');
+            fs.readFile(__dirname + '/../dist/data/cache/evenement_' + evtId + '.json', function (err, data) {
+                if (err) {
+                    reloadEvent(evtId, function (evenement) {
+                        evenements.push(evenement);
+                        eachEvenementDone();
+                    });
+                } else {
+                    setEventStatus(evtId, 'inCache');
+                    evenements.push(JSON.parse(data));
+                    eachEvenementDone();
+                }
             });
         }, function () {
             console.info('EXTRACT FINISHED', new Date());
             cb(evenements);
         });
     }
-};
 
-writeStatus();
+
+};

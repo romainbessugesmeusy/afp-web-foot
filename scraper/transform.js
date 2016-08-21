@@ -299,16 +299,19 @@ function getMatches(evenements, write) {
     return function (eachMatchCb) {
         eachMatches(evenements, function (evenement, phase, match) {
 
-            if (new Date(evenement.DateFin) < new Date()) {
-                return;
-            }
+            //if (new Date(evenement.DateFin) < new Date()) {
+            //    return;
+            //}
 
             match.Arbitres = match.Arbitres || [];
             match.Events = match.Events || [];
 
             var data = {
+                now: new Date(),
                 id: match.Id,
                 status: match.StatusCode,
+                time: match.Minute,
+                raw: match,
                 competition: {
                     id: evenement.id,
                     date: match.Date,

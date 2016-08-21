@@ -4,6 +4,9 @@ var mkdirp = require('mkdirp');
 var fileExists = require('./lib/fileExists');
 var queue = [];
 var isWriting = false;
+var noop = function () {
+
+};
 
 function processQueue() {
 
@@ -12,6 +15,7 @@ function processQueue() {
         var contents = JSON.stringify(file.data);
         isWriting = true;
 
+        file.callback = file.callback || noop;
         var writeFile = function () {
             mkdirp(path.dirname(file.filename), function (mkdirErr) {
                 if (mkdirErr) {
@@ -21,6 +25,7 @@ function processQueue() {
                     if (err) {
                         console.error(err);
                     }
+                    file.callback();
                     isWriting = false;
                     file = null;
                     contents = null;
@@ -33,7 +38,10 @@ function processQueue() {
         fileExists(file.filename, function () {
             fs.readFile(file.filename, 'utf-8', function (err, content) {
                 if (content == contents) {
+                    file.callback();
                     isWriting = false;
+                    file = null;
+                    contents = null;
                     processQueue();
                 } else {
                     writeFile();
@@ -43,10 +51,11 @@ function processQueue() {
     }
 }
 
-module.exports = function write(filename, data) {
+module.exports = function write(filename, data, cb) {
     queue.push({
         filename: path.join(__dirname, '../dist/data/' + filename + '.json'),
-        data: data
+        data: data,
+        callback: cb
     });
     processQueue();
 };
