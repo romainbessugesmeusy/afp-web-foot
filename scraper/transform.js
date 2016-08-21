@@ -2,6 +2,7 @@ var async = require('async');
 var extend = require('extend');
 var moment = require('moment');
 var setMatchWinner = require('../src/app/setMatchWinner');
+var unique = require('array-unique');
 
 function extractScoreboardTeamInfo(team) {
     var obj = {
@@ -496,9 +497,9 @@ function getMatches(evenements, write) {
 function transformScoreboardData(options, evenements, write) {
     return function (scoreboardCb) {
         async.forEachOf(options.clients, function (clientOptions, clientId, cb) {
-            var clientEvents = evenements.filter(function (evt) {
+            var clientEvents = unique(evenements.filter(function (evt) {
                 return clientOptions.evts.indexOf(evt.id) !== -1
-            });
+            }));
 
             write('clients/' + clientId + '/scoreboard', {
                 dates: getAllMatchDates(clientEvents),
@@ -611,9 +612,10 @@ function getCompetitions(options, evenements, write) {
         });
 
         async.forEachOf(options.clients, function (clientOptions, clientId, cb) {
-            write('clients/' + clientId + '/competitions', competitionList.filter(function (evt) {
+            var clientCompetitions = unique(competitionList.filter(function (evt) {
                 return clientOptions.evts.indexOf(evt.id) !== -1
             }));
+            write('clients/' + clientId + '/competitions', clientCompetitions);
             cb();
         }, competitionCb);
     }

@@ -297,6 +297,8 @@ module.exports = function (options) {
             }
         }
 
+        unique(evenementsIds);
+
         async.forEachLimit(evenementsIds, 2, function eachEvenement(evtId, eachEvenementDone) {
             statusTable.push([evtId, 'start']);
             var evenement = {id: evtId};
