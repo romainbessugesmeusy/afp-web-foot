@@ -45,8 +45,8 @@ module.exports = function (options) {
                     console.error(jsonParseError);
                     return invalidate();
                 }
-
-                return (typeof compareFn !== 'function' || compareFn(json) === false) ? callback(null, json) : invalidate();
+            //var json = require(cacheFilename);
+            return (typeof compareFn !== 'function' || compareFn(json) === false) ? callback(null, json) : invalidate();
             });
         }, function () {
             console.info('downloading:', uri);
@@ -68,7 +68,7 @@ module.exports = function (options) {
 
                 fs.writeFile(cacheFilename, body, function (err) {
                     console.info('file written to disk:', cacheFilename);
-                    if (err)  {
+                    if (err) {
                         return callback(err, json);
                     }
                     json.__new = true;

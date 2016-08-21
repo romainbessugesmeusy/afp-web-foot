@@ -61,7 +61,7 @@ function getAllMatchDates(evenements) {
 
         var scoreboardMatch = {
             id: match.Id,
-            time: time,
+            date: match.Date,
             minute: match.Minute,
             competition: evenement.id,
             phase: phase.PhaseCompetCode,

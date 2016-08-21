@@ -60,7 +60,7 @@ function globDelete(pattern) {
     }
 }
 
-function startOverIfNeeded(){
+function startOverIfNeeded() {
     if (startOver) {
         startOver = false;
         parseNotifications();
@@ -68,7 +68,7 @@ function startOverIfNeeded(){
 }
 
 function parseNotifications() {
-    //console.info('parsingNotifications call');
+    console.info('parsingNotifications call');
     if (busy) {
         //console.info('parser is busy, it should start over');
         startOver = true;
@@ -81,7 +81,7 @@ function parseNotifications() {
     //var now = new Date();
     fs.readdir(notificationsPath, function (err, files) {
 
-        if(files.length === 0 || (files.length === 1 && files[0] === '.DS_Store')){
+        if (files.length === 0 || (files.length === 1 && files[0] === '.DS_Store')) {
             busy = false;
             //console.info('no more files to treat');
             startOverIfNeeded();
@@ -168,11 +168,13 @@ function parseNotifications() {
 
 console.info('start watching', notificationsPath);
 
-watch(notificationsPath, watcherOptions, function(){
-    if(deleting === false){
+watch(notificationsPath, watcherOptions, function () {
+    console.info('folder change');
+    if (deleting === false) {
         debouncedParse();
     }
 });
 
+debouncedParse();
 
 extract(transform(write));

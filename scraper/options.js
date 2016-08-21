@@ -22,9 +22,7 @@ module.exports = {
         },
         demo2: {
             lang: 2,
-            evts: [5392, 6104]
+            evts: [5392, 6105]
         }
     }
-
-    //evts: [5365, 4571]
 };

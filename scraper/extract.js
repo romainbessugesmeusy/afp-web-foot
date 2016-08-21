@@ -8,6 +8,34 @@ var parseCommentFile = require('./lib/parseCommentFile');
 var downloadFile = require('./lib/downloadFile');
 var fileExists = require('./lib/fileExists');
 var unique = require('array-unique');
+var Table = require('cli-table');
+var clear = require('clear');
+var debounce = require('debounce');
+var statusTable = new Table({
+    head: ['EventID', 'Step'],
+    colWidths: [30, 100]
+});
+
+var setEventStatus = function (evtId, message) {
+    var i = 0;
+    var l = statusTable.length;
+    for (; i < l; i++) {
+        if (statusTable[i][0] === evtId) {
+            statusTable[i][1] = message;
+        }
+    }
+
+    debouncedWriteStatus();
+};
+
+var writeStatus = function () {
+    clear();
+    process.stdout.write(statusTable.toString() + '\n');
+};
+
+
+var debouncedWriteStatus = debounce(writeStatus, 50);
+
 
 module.exports = function (options) {
 
@@ -15,6 +43,7 @@ module.exports = function (options) {
 
     function getEvenementInfos(evenement) {
         return function (evenementInfosCb) {
+            setEventStatus(evenement.id, 'getEvenementInfos');
             fetch('aaevenementinfo/:lang/:id', {id: evenement.id}, function (err, evenementInfos) {
                 extend(evenement, evenementInfos);
                 evenementInfosCb()
@@ -22,8 +51,9 @@ module.exports = function (options) {
         }
     }
 
-    function getMatchDetail(match) {
+    function getMatchDetail(evenement, match) {
         return function (eachMatchCb) {
+            setEventStatus(evenement.id, 'getMatchDetail ' + match.Id);
             fetch('xcmatchdetail/:lang/:id', {id: match.Id}, function (err, matchDetail) {
                 if (err) {
                     console.error({id: match.Id}, err);
@@ -55,6 +85,7 @@ module.exports = function (options) {
 
     function getMatchComments(evenement, match) {
         return function (matchCommentCb) {
+            setEventStatus(evenement.id, 'getMatchComments ' + match.Id);
             var filename = path.join(
                 __dirname,
                 '../dist/data/comments/' + getEvenementMetaData(evenement, 'EDFTP') + '/xml/fr/comments/commentslive-fr-' + match.Id + '.xml'
@@ -64,6 +95,7 @@ module.exports = function (options) {
                 if (comments) {
                     match.Comments = comments;
                 }
+                setEventStatus(evenement.id, 'getMatchComments ' + match.Id + ' DONE');
                 matchCommentCb();
             });
         }
@@ -72,22 +104,30 @@ module.exports = function (options) {
 
     function getPhaseMatches(evenement, phase) {
         return function (matchesPhaseCb) {
+            setEventStatus(evenement.id, 'getPhaseMatches ' + phase.PhaseId);
             fetch('xcmatchesphase/:lang/:id', {
                 id: phase.PhaseId
             }, function (err, matches) {
                 if (err) console.error(err);
                 phase.matches = matches.Matches;
-                async.forEachLimit(phase.matches, 5, function (match, eachMatchCb) {
+                async.forEach(phase.matches, function (match, eachMatchCb) {
                     async.parallel([
-                        getMatchDetail(match),
+                        getMatchDetail(evenement, match),
                         getMatchComments(evenement, match)
-                    ], eachMatchCb)
-                }, matchesPhaseCb);
+                    ], function () {
+                        setEventStatus(evenement.id, 'getPhaseMatches Match Done' + match.Id);
+                        async.setImmediate(eachMatchCb);
+                    })
+                }, function () {
+                    setEventStatus(evenement.id, 'getPhaseMatchesDone Phase Done ' + phase.PhaseId );
+                    async.setImmediate(matchesPhaseCb);
+                });
             });
         }
     }
 
     function isMatchOutdated(match) {
+        return false;
         return (moment(match.Date).diff(new Date()) < 0 && match.StatusCode !== 'EMFIN');
     }
 
@@ -98,6 +138,7 @@ module.exports = function (options) {
 
     function getPhaseTopScorers(evenement, phase) {
         return function (topScorersCb) {
+            setEventStatus(evenement.id, 'getPhaseTopScorers ' + phase.PhaseId);
             fetch('xcclassementbuteurs/:lang/:evtId/:id', {
                 id: phase.PhaseId,
                 evtId: evenement.id
@@ -113,6 +154,7 @@ module.exports = function (options) {
 
     function getPhaseEquipes(evenement, phase) {
         return function (phaseEquipesCb) {
+            setEventStatus(evenement.id, 'getPhaseEquipes ' + phase.PhaseId);
             fetch('xcequipes/:lang/:evt/:phase', {evt: evenement.id, phase: phase.PhaseId}, function (err, equipes) {
                 phase.Equipes = equipes.Equipes;
                 getTeamsLogo(phase)(phaseEquipesCb);
@@ -122,7 +164,8 @@ module.exports = function (options) {
 
     function getClassementGroupes(evenement, phase) {
         return function (classementGroupesCb) {
-            async.forEachLimit(phase.Groupes, 10, function (groupe, cb) {
+            async.forEachLimit(phase.Groupes, 2, function (groupe, cb) {
+                setEventStatus(evenement.id, 'getClassementGroupes phase: ' + phase.PhaseId + ', groupe : ' + groupe.GroupeId);
                 fetch('xcclassementgroupe/:lang/:evenementId/:groupeId', {
                     evenementId: evenement.id,
                     groupeId: groupe.GroupeId
@@ -136,40 +179,51 @@ module.exports = function (options) {
 
     function getPhases(evenement) {
         return function (eachPhasesCb) {
+            setEventStatus(evenement.id, 'getPhases');
             fetch('xcphases/:lang/:id', {id: evenement.id}, function (err, phasesJson) {
                 evenement.phases = phasesJson.Phases;
-                async.forEachLimit(evenement.phases, 10, function (phase, eachPhaseDone) {
+                async.forEachLimit(evenement.phases, 2, function (phase, phaseDone) {
                     async.parallel([
                         getPhaseMatches(evenement, phase),
                         getPhaseTopScorers(evenement, phase),
                         getPhaseEquipes(evenement, phase),
                         getClassementGroupes(evenement, phase)
-                    ], eachPhaseDone);
-                }, eachPhasesCb);
+                    ], function(){
+                        setEventStatus(evenement.id, 'getPhases phase done ' + phase.PhaseId);
+                        phaseDone()
+                    });
+                }, function(){
+                    setEventStatus(evenement.id, 'getPhases all phases done');
+                    eachPhasesCb()
+                });
             }/*, function () {
              return isEvenementCurrent(evenement);
              }*/);
         }
     }
 
-    function getFaceshot(player, cb) {
+    function getFaceshot(evenement, player, cb) {
         var uri = options.root + 'aaheadshot/' + player.Id;
+        setEventStatus(evenement.id, 'getFaceshot ' + player.Id + ' ' + uri);
         var filename = path.join(__dirname, '../dist/data/players/faceshots', player.Id + '.jpg');
         downloadFile(uri, filename, function (err) {
-            if (!err) player.Faceshot = true;
-            cb();
+            if (!err) player.Faceshot = true
         });
+        cb();
     }
 
-    function getPlayersFaceshots(equipe) {
+    function getPlayersFaceshots(evenement, equipe) {
         return function (cb) {
-            async.forEachLimit(equipe.Staff, 10, getFaceshot, cb);
+            setEventStatus(evenement.id, 'getPlayersFaceshot', equipe.Id);
+            async.forEachLimit(equipe.Staff, 2, function (member, cb) {
+                getFaceshot(evenement, member, cb);
+            }, cb);
         }
     }
 
     function getTeamsLogo(phase) {
         return function (eachEquipeCb) {
-            async.forEachLimit(phase.Equipes, 10, function (equipe, cb) {
+            async.forEachLimit(phase.Equipes, 2, function (equipe, cb) {
                 var uri;
                 switch (equipe.TeamType) {
                     case 'CECLU':
@@ -195,12 +249,14 @@ module.exports = function (options) {
 
     function getEquipeStaff(evenement, equipe) {
         return function (eachEquipeCb) {
+            setEventStatus(evenement.id, 'getEquipeStaff ' + equipe.Id);
             fetch('xcequipestaff/:lang/:evtId/:id', {
                 evtId: evenement.id,
                 id: equipe.Id
             }, function (err, teamStaff) {
                 extend(equipe, teamStaff);
-                getPlayersFaceshots(equipe)(eachEquipeCb);
+                setEventStatus(evenement.id, 'getEquipeStaff OK ' + equipe.Id);
+                getPlayersFaceshots(evenement, equipe)(eachEquipeCb);
             }, function (cachedStaff) {
                 if (cachedStaff.Staff.length === 0) {
                     //console.warn('team', equipe.TeamId, 'has no staff for event', evenement.id);
@@ -221,9 +277,10 @@ module.exports = function (options) {
 
     function getEvenementEquipes(evenement) {
         return function (equipesCb) {
+            setEventStatus(evenement.id, 'getEvenementEquipes');
             fetch('xcequipes/:lang/:evt/0', {evt: evenement.id}, function (err, data) {
                 evenement.Equipes = data.Equipes;
-                async.forEachLimit(evenement.Equipes, 20, function (equipe, eachEquipeDone) {
+                async.forEachLimit(evenement.Equipes, 2, function (equipe, eachEquipeDone) {
                     getEquipeStaff(evenement, equipe)(eachEquipeDone);
                 }, equipesCb);
             });
@@ -240,11 +297,8 @@ module.exports = function (options) {
             }
         }
 
-        unique(evenementsIds);
-
-        console.info(evenementsIds);
-
-        async.forEach(evenementsIds, function eachEvenement(evtId, eachEvenementDone) {
+        async.forEachLimit(evenementsIds, 2, function eachEvenement(evtId, eachEvenementDone) {
+            statusTable.push([evtId, 'start']);
             var evenement = {id: evtId};
             evenements.push(evenement);
             async.series([
@@ -252,10 +306,15 @@ module.exports = function (options) {
                 getEvenementInfos(evenement),
                 getPhases(evenement),
                 getEvenementStatistiques(evenement)
-            ], eachEvenementDone);
+            ], function () {
+                setEventStatus(evtId, 'done');
+                eachEvenementDone();
+            });
         }, function () {
             console.info('EXTRACT FINISHED', new Date());
             cb(evenements);
         });
     }
 };
+
+writeStatus();
