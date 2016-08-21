@@ -1,7 +1,7 @@
 var $ = require('jquery');
 var sortByDate = require('./sortByDate');
 var setMatchWinner = require('./setMatchWinner');
-var highlightedTeams = [2829, 1819, 2694, 1585];
+var highlightedTeams = [2829, 1819, 2694, 1585, 594];
 
 module.exports = function (data, options) {
     var startDate = new Date();

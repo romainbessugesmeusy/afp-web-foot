@@ -63,13 +63,14 @@ function getAllMatchDates(evenements) {
         var scoreboardMatch = {
             id: match.Id,
             date: match.Date,
-            minute: match.Minute,
+            time: match.Minute,
             competition: evenement.id,
             phase: phase.PhaseCompetCode,
             group: match.GroupId,
             status: match.StatusCode,
             home: extractScoreboardTeamInfo(match.Home),
-            away: extractScoreboardTeamInfo(match.Away)
+            away: extractScoreboardTeamInfo(match.Away),
+            now: new Date()
         };
 
         setMatchWinner(scoreboardMatch);
@@ -310,8 +311,7 @@ function getMatches(evenements, write) {
                 now: new Date(),
                 id: match.Id,
                 status: match.StatusCode,
-                time: match.Minute,
-                raw: match,
+                time: match.Minute || '0',
                 date: match.Date,
                 competition: {
                     id: evenement.id,

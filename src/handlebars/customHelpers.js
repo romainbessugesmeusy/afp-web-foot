@@ -14,6 +14,25 @@ var formatTime = function (date) {
     return enforceLeadingZero(d.getHours()) + ':' + enforceLeadingZero(d.getMinutes());
 };
 
+var getRealTime = function (match) {
+    var delta = moment().diff(match.now, 'minutes');
+    var parts = match.time.replace('\'', '').split('+').map(function (part) {
+        return parseInt(part);
+    });
+
+    console.info(parts, delta);
+
+    if (parts.length > 1) {
+        parts[1] += delta;
+    } else {
+        parts[0] += delta;
+    }
+
+    return parts.map(function(part){
+        return String(part) + '\'';
+    }).join('+');
+};
+
 groupBy.register(Handlebars);
 
 require('moment/locale/fr');
@@ -87,7 +106,7 @@ Handlebars.registerHelper('joinScorerGoals', function (goals) {
 
 Handlebars.registerHelper('liveMatchTime', function (match, options) {
     if (match.status === constants.status.inProgress) {
-        return match.time;
+        return getRealTime(match);
     }
 
     if (match.status === constants.status.finished) {
@@ -189,20 +208,7 @@ Handlebars.registerHelper('matchTime', function (match, options) {
             return 'TERMINÉ';
     }
 
-    var delta = moment().diff(match.now, 'minutes');
-    var parts = match.time.replace('\'', '').split('+').map(function (part) {
-        return parseInt(part);
-    });
-
-    if (parts.length > 1) {
-        parts[1] += delta;
-    } else {
-        parts[0] += delta;
-    }
-
-    return parts.map(function(part){
-        return String(part) + '\'';
-    }).join('+');
+    return getRealTime(match);
 
     //console.info(match.time, match.now, delta);
     //return match.minute ? match.minute : match.time;
