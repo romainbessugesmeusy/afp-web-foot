@@ -312,6 +312,7 @@ function getMatches(evenements, write) {
                 status: match.StatusCode,
                 time: match.Minute,
                 raw: match,
+                date: match.Date,
                 competition: {
                     id: evenement.id,
                     date: match.Date,
