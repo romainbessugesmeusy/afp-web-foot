@@ -341,27 +341,32 @@ module.exports = function (options) {
             setEventStatus(evtId, 'Loading File');
             var evenementCacheFilename = __dirname + '/../dist/data/cache/evenement_' + evtId + '.json';
             fs.stat(evenementCacheFilename, function (err, stat) {
-                var diff = Math.abs(new Date() - stat.mtime);
-                if (diff > 15 * 60 * 1000) {
-                    return reloadEvent(evtId, function (evenement) {
+
+                var reload = function () {
+                    reloadEvent(evtId, function (evenement) {
                         evenements.push(evenement);
                         eachEvenementDone();
                     });
+                };
+
+                if (err) {
+                    return reload();
+                }
+
+                var diff = Math.abs(new Date() - stat.mtime);
+                if (diff > 15 * 60 * 1000) {
+                    return reload();
                 }
 
                 fs.readFile(evenementCacheFilename, function (err, data) {
                     if (err) {
-                        reloadEvent(evtId, function (evenement) {
-                            evenements.push(evenement);
-                            eachEvenementDone();
-                        });
-                    } else {
-                        setEventStatus(evtId, 'inCache');
-                        evenements.push(JSON.parse(data));
-                        eachEvenementDone();
+                        return reload();
                     }
+
+                    setEventStatus(evtId, 'inCache');
+                    evenements.push(JSON.parse(data));
+                    eachEvenementDone();
                 });
-                console.info('stat', evenementCacheFilename, new Date() - stat.mtime);
             });
         }, function () {
             console.info('EXTRACT FINISHED', new Date());
