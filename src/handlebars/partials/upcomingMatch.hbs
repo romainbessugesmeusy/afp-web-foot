@@ -1,15 +1,15 @@
-<div class="upcomingMatch" data-id="{{id}}">
+<a class="upcomingMatch" data-id="{{id}}" href="/matches/{{id}}/">
     {{#if home.id}}
-        <a href="/teams/{{home.id}}" class="home">
+        <div class="home">
             <span class="name">{{home.name}}</span>
-        </a>
+        </div>
     {{else}}
         <span class="home unknown"></span>
     {{/if}}
     <span class="time fontFigures">{{relativeTime date}}</span>
     {{#if away.id}}
-        <a href="/teams/{{away.id}}" class="away"><span class="name">{{away.name}}</span></a>
+        <div class="away"><span class="name">{{away.name}}</span></div>
     {{else}}
         <span class="away unknown"></span>
     {{/if}}
-</div>
+</a>

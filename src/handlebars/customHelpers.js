@@ -209,7 +209,7 @@ Handlebars.registerHelper('countryInline', function (code) {
 Handlebars.registerHelper('matchTime', function (match, options) {
     switch (match.status) {
         case constants.status.upcoming :
-            return 'PAS COMMENCÉ';
+            return '—';
         case constants.status.paused :
             return 'MI-TEMPS';
         case constants.status.finished :

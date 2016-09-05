@@ -31,8 +31,8 @@ var setEventStatus = function (evtId, message) {
 };
 
 var writeStatus = function () {
-    clear();
-    process.stdout.write(statusTable.toString() + '\n');
+    //clear();
+    //process.stdout.write(statusTable.toString() + '\n');
 };
 
 
@@ -144,6 +144,8 @@ module.exports = function (options) {
                     setEventStatus(evenement.id, 'getPhaseMatchesDone Phase Done ' + phase.PhaseId);
                     async.setImmediate(matchesPhaseCb);
                 });
+            }, function (phases) {
+                return true;
             });
         }
     }
@@ -337,17 +339,29 @@ module.exports = function (options) {
         var evenements = [];
         async.forEach(ids, function eachEvenement(evtId, eachEvenementDone) {
             setEventStatus(evtId, 'Loading File');
-            fs.readFile(__dirname + '/../dist/data/cache/evenement_' + evtId + '.json', function (err, data) {
-                if (err) {
-                    reloadEvent(evtId, function (evenement) {
+            var evenementCacheFilename = __dirname + '/../dist/data/cache/evenement_' + evtId + '.json';
+            fs.stat(evenementCacheFilename, function (err, stat) {
+                var diff = Math.abs(new Date() - stat.mtime);
+                if (diff > 15 * 60 * 1000) {
+                    return reloadEvent(evtId, function (evenement) {
                         evenements.push(evenement);
                         eachEvenementDone();
                     });
-                } else {
-                    setEventStatus(evtId, 'inCache');
-                    evenements.push(JSON.parse(data));
-                    eachEvenementDone();
                 }
+
+                fs.readFile(evenementCacheFilename, function (err, data) {
+                    if (err) {
+                        reloadEvent(evtId, function (evenement) {
+                            evenements.push(evenement);
+                            eachEvenementDone();
+                        });
+                    } else {
+                        setEventStatus(evtId, 'inCache');
+                        evenements.push(JSON.parse(data));
+                        eachEvenementDone();
+                    }
+                });
+                console.info('stat', evenementCacheFilename, new Date() - stat.mtime);
             });
         }, function () {
             console.info('EXTRACT FINISHED', new Date());
