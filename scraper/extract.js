@@ -349,7 +349,7 @@ module.exports = function (options) {
                     });
                 };
 
-                if (err) {
+                if (err || typeof stat === 'undefined') {
                     return reload();
                 }
 
