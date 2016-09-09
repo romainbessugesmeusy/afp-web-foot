@@ -1,5 +1,6 @@
 <div class="tab" id="infos">
     <div class="infosWrapper">
+        {{#if periods}}
         <div class="periods">
             <h3>{{t 'periods.title' 'app.match.infos' 'Périodes'}}</h3>
             <table class="periods">
@@ -30,6 +31,7 @@
                 </tbody>
             </table>
         </div>
+        {{/if}}
         {{#if referees}}
             <div class="referees">
                 <h3>Arbitres</h3>

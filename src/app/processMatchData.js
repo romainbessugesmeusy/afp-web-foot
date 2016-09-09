@@ -4,6 +4,10 @@ var setMatchWinner = require('./setMatchWinner');
 
 module.exports = function (data) {
 
+    if(data.away.goals < 0 && data.home.goals < 0){
+        delete data.away.goals;
+        delete data.home.goals;
+    }
     data.hasEvents = (data.events.length > 0);
     data.hasPlayers = (data.home.players.length + data.away.players.length > 0);
     data.hasInfos = (data.stadium || data.referees.length > 0);

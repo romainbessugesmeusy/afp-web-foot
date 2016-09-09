@@ -181,10 +181,10 @@ var moment = require('moment');
 function handleCompetitionParams(ctx, next) {
     var params = (ctx.querystring) ? deparam(ctx.querystring) : {};
     var $aDayOfCompetition = $('a[data-param="day"].nearest');
-
+    var $aPhase = $('a[data-param="phase"].nearest');
     // take the first links to get the defaults
     params.day = params.day || $aDayOfCompetition.attr('data-value');
-    params.phase = params.phase || 'TPFIN';
+    params.phase = params.phase || $aPhase.attr('data-value');
     params.country = params.country || $('a[data-param="country"]:eq(0)').attr('data-value');
 
     // in the same rendering frame
@@ -195,7 +195,7 @@ function handleCompetitionParams(ctx, next) {
         if (appCtx.competition.phase !== params.phase) {
             $('a[data-param="phase"]').removeClass('active');
             $('.calendarWrapper').find('.wrapper[data-phase]').removeClass('active');
-            $('a[data-param="phase"][data-value="' + params.phase + '"]').addClass('active')
+            $('a[data-param="phase"][data-value="' + params.phase + '"]').addClass('active');
             $('.wrapper[data-phase="' + params.phase + '"]').addClass('active');
             // store in order to preserve browser repaints
             appCtx.competition.phase = params.phase;

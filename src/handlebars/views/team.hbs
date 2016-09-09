@@ -40,6 +40,9 @@
                     <ul>
                         {{#each matches}}
                             <li>
+                                {{#ifTimeOfMatchIsDefined}}
+                                    <h6>{{relativeDate date}}</h6>
+                                {{/ifTimeOfMatchIsDefined}}
                                 {{#ifEquals status "EMNCO"}}
                                     {{> upcomingMatch }}
                                 {{else}}

@@ -11,8 +11,12 @@ var enforceLeadingZero = function (value) {
 
 var formatTime = function (date) {
     var d = new Date(date);
+    if (d.getHours() + d.getMinutes() === 0) {
+        return moment(d).format('DD/MM/YY')
+    }
     return enforceLeadingZero(d.getHours()) + ':' + enforceLeadingZero(d.getMinutes());
 };
+
 
 var getRealTime = function (match) {
     var delta = moment().diff(match.now, 'minutes');
@@ -69,6 +73,26 @@ Handlebars.registerHelper('each_competition', function (dateObject, date, option
 
 Handlebars.registerHelper('relativeTime', function (date) {
     return formatTime(date);
+});
+
+Handlebars.registerHelper('ifTimeOfMatchIsDefined', function (opts) {
+    var d = new Date(this.date);
+    if (d.getHours() + d.getMinutes() !== 0) {
+        return opts.fn(this);
+    } else {
+        return opts.inverse(this);
+    }
+});
+
+
+Handlebars.registerHelper('absDate', function (date, format) {
+    var now = moment(new Date().toJSON().slice(0, 10));
+    format = format || 'dddd D MMM';
+    date = moment(date, 'YYYY-MM-DD');
+    if (typeof format !== 'string') {
+        format = (date.year() === now.year()) ? 'dddd D MMM' : 'D MMM YYYY';
+    }
+    return moment(date, 'YYYY-MM-DD').format(format);
 });
 
 Handlebars.registerHelper('relativeDate', function (date, format) {

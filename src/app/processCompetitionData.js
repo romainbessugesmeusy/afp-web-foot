@@ -4,6 +4,8 @@ module.exports = function processCompetitionData(data) {
     data.matchesMonths = [];
     data.daysOfCompetition = [];
     data.nearestDayOfCompetition = 1;
+    data.nearestPhase = null;
+
     var uniqueMonths = [];
     var lowestDateDiff = 1000;
     var dateDiff;
@@ -16,6 +18,7 @@ module.exports = function processCompetitionData(data) {
         if (dateDiff < lowestDateDiff) {
             lowestDateDiff = dateDiff;
             data.nearestDayOfCompetition = match.dayOfCompetition;
+            data.nearestPhase = match.phase;
         }
 
         match.month = matchDate.format('YYYY-MM');
@@ -28,6 +31,16 @@ module.exports = function processCompetitionData(data) {
         match.day = matchDate.format('YYYY-MM-DD');
         match.time = matchDate.format('HH:mm');
     });
+
+    if (data.phases.length > 1) {
+        data.phases.forEach(function (phase) {
+            if (phase.format === data.nearestPhase) {
+                phase.nearest = true;
+            }
+        });
+    } else if (data.phases.length === 1) {
+        data.phases[0].nearest = true;
+    }
 
     unique(data.daysOfCompetition);
 
