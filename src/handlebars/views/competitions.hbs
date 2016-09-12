@@ -2,13 +2,21 @@
     {{#group this by="status"}}
         <div class="group {{value}}">
             <h2>{{t value 'app.competition.status'}}</h2>
+
             <div class="wrapper">
-                {{#each items}}
-                    <a href="/competitions/{{id}}" class="competition">
-                        <img src="/data/events/{{id}}.png" alt="{{label}}">
-                        <span>{{label}}</span>
-                    </a>
-                {{/each}}
+                {{#group items by="country"}}
+                    <div class="byCountry">
+                        <h4>{{countryBlock value}}</h4>
+                        <div class="wrapper">
+                            {{#each items}}
+                                <a href="/competitions/{{id}}" class="competition">
+                                    <img src="/data/events/{{id}}.png" alt="{{label}}">
+                                    <span>{{label}}</span>
+                                </a>
+                            {{/each}}
+                        </div>
+                    </div>
+                {{/group}}
             </div>
         </div>
     {{/group}}

@@ -45,8 +45,16 @@ module.exports = function (options) {
                     console.error(jsonParseError);
                     return invalidate();
                 }
-            //var json = require(cacheFilename);
-            return (typeof compareFn !== 'function' || compareFn(json) === false) ? callback(null, json) : invalidate();
+                //var json = require(cacheFilename);
+                if (compareFn === true) {
+                    return invalidate();
+                }
+
+                if (typeof compareFn === 'function' && compareFn(json) === true) {
+                    return invalidate();
+                }
+
+                return callback(null, json);
             });
         }, function () {
             console.info('downloading:', uri);
@@ -64,10 +72,10 @@ module.exports = function (options) {
                     return callback(err);
                 }
 
-                console.info('finished donwloading:', uri);
+                //console.info('finished donwloading:', uri);
 
                 fs.writeFile(cacheFilename, body, function (err) {
-                    console.info('file written to disk:', cacheFilename);
+                    //console.info('file written to disk:', cacheFilename);
                     if (err) {
                         return callback(err, json);
                     }

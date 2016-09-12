@@ -8,6 +8,8 @@ var path = require('path');
 var options = require('./options');
 var extract = require('./extract')(options);
 var transform = require('./transform')(options);
+var fetch = require('./lib/fetch')(options);
+
 var write = require('./writer');
 var clear = require('clear');
 
@@ -28,6 +30,9 @@ var watcherOptions = {
 
 var debouncedParse = debounce(parseNotifications, 300);
 
+var broadcast = require('../socket/server');
+var extractScoreboardTeamInfo = require('./lib/extractScoreboardTeamInfo');
+var setMatchWinner = require('../src/app/setMatchWinner');
 
 function parseFileTimestamp(ts) {
     return new Date(
@@ -66,6 +71,22 @@ function startOverIfNeeded() {
         startOver = false;
         parseNotifications();
     }
+}
+
+function getMatchDetailsAndBroadcastEvent(matchId) {
+    fetch('xcmatchdetail/:lang/:id', {id: matchId}, function (err, matchDetail) {
+        var payload = {
+            id: matchDetail.Id,
+            status: matchDetail.StatusCode,
+            home: extractScoreboardTeamInfo(matchDetail.Home),
+            away: extractScoreboardTeamInfo(matchDetail.Away)
+        };
+
+        setMatchWinner(payload);
+        broadcast('match', payload);
+    }, function () {
+        return true;
+    });
 }
 
 function parseNotifications() {
@@ -110,6 +131,9 @@ function parseNotifications() {
                         console.error('json parse error', filename);
                         return cb();
                     }
+
+                    getMatchDetailsAndBroadcastEvent(json.Citius.MatchId);
+
                     invalidate.push({
                         filename: notificationsPath + '/' + filename,
                         type: find[3],
@@ -183,6 +207,11 @@ watch(notificationsPath, watcherOptions, function () {
     }
 });
 
-//debouncedParse();
 
-extract(transform(write));
+setInterval(function () {
+    if (!busy) {
+        extract(transform(write))
+    }
+}, 1000 * 60 * 5);
+
+//extract(transform(write));

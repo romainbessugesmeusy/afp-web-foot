@@ -1,4 +1,4 @@
-<a class="pastMatch {{status}}" href="/matches/{{id}}/">
+<a class="pastMatch {{status}}" href="/matches/{{id}}/" data-match-id="{{id}}">
     {{> pastMatchTeam home side="home"}}
     {{#ifEquals status 'EMENC'}}
         <span class="time">{{liveMatchTime this}}</span>

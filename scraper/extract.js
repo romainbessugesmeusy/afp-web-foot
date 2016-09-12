@@ -151,12 +151,7 @@ module.exports = function (options) {
     }
 
     function isMatchOutdated(match) {
-
-        if (match.StatusCode === 'EMENC') {
-            return true;
-        }
-
-        return (moment(match.Date).diff(new Date()) < 0 && match.StatusCode !== 'EMFIN');
+        return (match.StatusCode !== 'EMFIN');
     }
 
     function isEvenementCurrent(evenement) {
@@ -211,7 +206,7 @@ module.exports = function (options) {
             fetch('xcphases/:lang/:id', {id: evenement.id}, function (err, phasesJson) {
                 evenement.phases = phasesJson.Phases;
                 async.forEachLimit(evenement.phases, 2, function (phase, phaseDone) {
-                    async.parallel([
+                    async.series([
                         getPhaseMatches(evenement, phase),
                         getPhaseTopScorers(evenement, phase),
                         getPhaseEquipes(evenement, phase),
@@ -325,10 +320,14 @@ module.exports = function (options) {
             getEvenementStatistiques(evenement)
         ], function () {
             setEventStatus(evtId, 'writing');
-            writer('cache/evenement_' + evtId, evenement, function () {
-                setEventStatus(evtId, 'done');
+            if (!isEvenementCurrent(evenement)) {
+                writer('cache/evenement_' + evtId, evenement, function () {
+                    setEventStatus(evtId, 'done');
+                    cb(evenement);
+                });
+            } else {
                 cb(evenement);
-            });
+            }
         });
     }
 
@@ -337,24 +336,28 @@ module.exports = function (options) {
         console.info('EXTRACT');
         var ids = getEvenementsIds();
         var evenements = [];
-        async.forEach(ids, function eachEvenement(evtId, eachEvenementDone) {
+        async.forEachSeries(ids, function eachEvenement(evtId, eachEvenementDone) {
             setEventStatus(evtId, 'Loading File');
             var evenementCacheFilename = __dirname + '/../dist/data/cache/evenement_' + evtId + '.json';
             fs.stat(evenementCacheFilename, function (err, stat) {
 
                 var reload = function () {
                     reloadEvent(evtId, function (evenement) {
+
+
+                        if (evenement.id === 6101) {
+                            writer('cache/evenement_6101.json', evenement, function () {
+
+                            });
+                        }
+
                         evenements.push(evenement);
                         eachEvenementDone();
                     });
                 };
 
-                if (err || typeof stat === 'undefined') {
-                    return reload();
-                }
 
-                var diff = Math.abs(new Date() - stat.mtime);
-                if (diff > 15 * 60 * 1000) {
+                if (err || typeof stat === 'undefined') {
                     return reload();
                 }
 
@@ -362,7 +365,6 @@ module.exports = function (options) {
                     if (err) {
                         return reload();
                     }
-
                     setEventStatus(evtId, 'inCache');
                     evenements.push(JSON.parse(data));
                     eachEvenementDone();

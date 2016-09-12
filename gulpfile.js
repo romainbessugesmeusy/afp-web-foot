@@ -95,7 +95,7 @@ gulp.task('hbsPartials', function () {
             }
         }))
         .pipe(concat('partials.js'))
-        .pipe(wrap('var Handlebars = require("../handlebars/customHelpers");\n <%= contents %>'))
+        .pipe(wrap('var Handlebars = require("../handlebars/customHelpers");\n <%= contents %>\n module.exports = Handlebars;'))
         .pipe(gulp.dest('src/gen'));
 });
 

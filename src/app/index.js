@@ -56,6 +56,8 @@ var handleDateParams = require('./handleDateParams')(appCtx);
 var listenToUserEvents = require('./listenToUserEvents')(appCtx);
 var showPage = require('./showPage')(appCtx);
 
+var live = require('./live');
+
 var _timer;
 var _message;
 var _started;
