@@ -315,4 +315,8 @@ Handlebars.registerHelper('matchStatus', function (match, options) {
     }
     return translations['const.' + match.status];
 });
+
+Handlebars.registerHelper('upper', function(str){
+    return str.toUpperCase();
+})
 module.exports = Handlebars;

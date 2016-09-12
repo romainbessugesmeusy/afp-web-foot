@@ -45,6 +45,9 @@
         {{/switch}}
         <div class="teams">
             <h2>Les équipes</h2>
+            <div class="pageWrapper">
+                <p class="filter" data-target="#teamsList"><input type="text" placeholder="Rechercher une équipe"></p>
+            </div>
             {{#if groupTeamsByCountry}}
                 <div class="navSelect">
                     <div class="selected">
@@ -66,9 +69,9 @@
             {{#if groupTeamsByCountry}}
                 {{#group teams by='country'}}
                     <div class="country" data-value="{{value}}">
-                        <div class="teamsWrapper">
+                        <div class="teamsWrapper" id="teamsList">
                             {{#each items}}
-                                <a href="/teams/{{id}}" class="team">
+                                <a href="/teams/{{id}}" class="team" data-search="{{upper name}} {{countryName country}}">
                                     <div class="logo"><img src="/data/teams/logos/{{id}}.png"></div>
                                     <div class="name">{{name}}</div>
                                 </a>
@@ -77,9 +80,9 @@
                     </div>
                 {{/group}}
             {{else}}
-                <div class="teamsWrapper">
+                <div class="teamsWrapper" id="teamsList">
                     {{#each teams}}
-                        <a href="/teams/{{id}}" class="team">
+                        <a href="/teams/{{id}}" class="team" data-search="{{upper name}}">
                             <div class="logo"><img src="/data/teams/logos/{{id}}.png"></div>
                             <div class="name">{{name}}</div>
                         </a>

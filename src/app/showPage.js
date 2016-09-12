@@ -6,6 +6,7 @@ module.exports = function (appCtx) {
             if (appCtx.currentPage !== page) {
                 window.requestAnimationFrame(function () {
                     $('#page').find('> .page').hide();
+                    $('#filterRules').empty();
                     page.show();
                     window.scrollTo(0, 0);
                 });

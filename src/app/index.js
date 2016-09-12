@@ -58,6 +58,19 @@ var showPage = require('./showPage')(appCtx);
 
 var live = require('./live');
 
+
+$('body').on('keyup', '.filter > input', function () {
+    var styleEl = $('#filterRules');
+    if (this.value === '') {
+        styleEl.text('');
+        return;
+    }
+
+    var target = $(this).closest('.filter').data().target;
+    var rule = target + ' > *:not([data-search*="' + this.value.toUpperCase() + '"]) { display: none }';
+    styleEl.text(rule);
+}).append('<style id="filterRules"></style>');
+
 var _timer;
 var _message;
 var _started;
