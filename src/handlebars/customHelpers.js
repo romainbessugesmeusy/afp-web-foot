@@ -250,9 +250,6 @@ Handlebars.registerHelper('matchTime', function (match, options) {
     //return match.minute ? match.minute : match.time;
 });
 
-Handlebars.registerHelper('competitionName', function (competitionId, options) {
-    return options.data.root.competitions[competitionId].label
-});
 
 Handlebars.registerHelper('switch', function (value, options) {
     this._switch_value_ = value;

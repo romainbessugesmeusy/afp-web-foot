@@ -32,6 +32,7 @@ module.exports = function (data, options) {
             };
 
             matches.forEach(function (m) {
+                m.competitionName = data.competitions[m.competition].label;
                 if (highlightedTeams.indexOf(m.home.id) > -1 || highlightedTeams.indexOf(m.away.id) > -1) {
                     scoreboard.todaysMatches.highlight.push(m);
                 } else {

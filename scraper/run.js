@@ -77,6 +77,7 @@ function getMatchDetailsAndBroadcastEvent(matchId) {
     fetch('xcmatchdetail/:lang/:id', {id: matchId}, function (err, matchDetail) {
         var payload = {
             id: matchDetail.Id,
+            date: matchDetail.Date,
             status: matchDetail.StatusCode,
             home: extractScoreboardTeamInfo(matchDetail.Home),
             away: extractScoreboardTeamInfo(matchDetail.Away)
@@ -90,15 +91,6 @@ function getMatchDetailsAndBroadcastEvent(matchId) {
 }
 
 function parseNotifications() {
-    //clear();
-    console.info('parsingNotifications call');
-    if (busy) {
-        console.info('parser is busy, it should start over');
-        startOver = true;
-        return;
-    }
-
-    console.info('parser is NOW busy');
     busy = true;
     var invalidate = [];
     //var now = new Date();
@@ -107,7 +99,6 @@ function parseNotifications() {
 
         if (files.length === 0 || (files.length === 1 && files[0] === '.DS_Store')) {
             busy = false;
-            console.info('no more files to treat');
             startOverIfNeeded();
             return;
         }
