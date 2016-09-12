@@ -95,7 +95,8 @@ Handlebars.registerHelper('absDate', function (date, format) {
     return moment(date, 'YYYY-MM-DD').format(format);
 });
 
-Handlebars.registerHelper('relativeDate', function (date, format) {
+
+var relativeDate = function(date, format){
     var now = moment(new Date().toJSON().slice(0, 10));
     format = format || 'dddd D MMM';
     date = moment(date, 'YYYY-MM-DD');
@@ -117,7 +118,10 @@ Handlebars.registerHelper('relativeDate', function (date, format) {
             }
             return moment(date, 'YYYY-MM-DD').format(format);
     }
-});
+};
+
+
+Handlebars.registerHelper('relativeDate', relativeDate);
 
 Handlebars.registerHelper('penaltyShooter', function (playerId, options) {
     var player = options.data.root.playerHash[playerId];
@@ -306,6 +310,9 @@ Handlebars.registerHelper('regularSeasonRankings', function (phase, options) {
 });
 
 Handlebars.registerHelper('matchStatus', function (match, options) {
+    if(match.status === constants.status.upcoming || match.status === constants.status.finished){
+        return relativeDate(match.date, 'dddd DD MMMM Y') + ' à ' + moment(match.date).format('H[h]mm');
+    }
     return translations['const.' + match.status];
 });
 module.exports = Handlebars;
