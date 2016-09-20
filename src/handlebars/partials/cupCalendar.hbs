@@ -4,7 +4,7 @@
         <div class="wrapper">
             <p>
                 {{#each phases}}
-                    <a href="#" data-param="phase" data-value="{{format}}" class="{{#if nearest}}nearest{{/if}}">{{t format 'const'}}</a>
+                    <a href="?phase={{format}}" data-param="phase" data-value="{{format}}" class="{{#if nearest}}nearest{{/if}}">{{t format 'const'}}</a>
                 {{/each}}
             </p>
         </div>

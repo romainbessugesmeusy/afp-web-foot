@@ -4,7 +4,7 @@
         <div class="wrapper">
             <p>
                 {{#each daysOfCompetition}}
-                    <a href="#" class="{{#if nearest}}nearest{{/if}}" data-param="day"
+                    <a href="?day={{value}}" class="{{#if nearest}}nearest{{/if}}" data-param="day"
                        data-value="{{value}}">
                         {{value}}
                     </a>

@@ -9,7 +9,10 @@
         <div class="other matches">
             {{#group todaysMatches.normal by='competition'}}
                 <div class="competition">
-                    <h5><a href="/competitions/{{value}}">{{competitionName}}</a></h5>
+
+                    {{#with (lookup @root.competitions value)}}
+                    <h5><a href="/competitions/{{value}}">{{label}}</a></h5>
+                    {{/with}}
                     <ul>
                         {{#each items}}
                             <li>
