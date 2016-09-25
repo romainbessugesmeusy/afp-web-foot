@@ -1,94 +1,79 @@
 <div id="competition">
     <div class="competitionWrapper">
         <header>
-            <aside>
-                <div class="logo"><img src="/data/events/{{id}}.png" alt="{{label}}"></div>
-                <dl>
-                    {{#ifEquals country 'ZZZ'}}
-                    {{else}}
-                        <dt>{{t 'country' 'app.competition.infos' 'Pays'}}</dt>
-                        <dd>{{countryBlock country}}</dd>
-                    {{/ifEquals}}
-                    <dt>{{t 'startDate' 'app.competition.infos' 'Début'}}</dt>
-                    <dd>{{absDate startDate 'dddd D MMMM YYYY'}}</dd>
-                    <dt>{{t 'endDate' 'app.competition.infos' 'Fin'}}</dt>
-                    <dd>{{absDate endDate 'dddd D MMMM YYYY'}}</dd>
-                    <dt>{{t 'gender' 'app.competition.infos' 'Genre'}}</dt>
-                    <dd>{{t gender 'const'}}</dd>
-                </dl>
-            </aside>
-            <div class="infos">
-                <h1>{{label}}</h1>
-                <p class="date">
-                    {{t 'from' 'app.competition.dateRange' 'Du'}}
-                    <span>{{absDate startDate 'dddd D MMMM YYYY'}}</span>
-                    {{t 'to' 'app.competition.dateRange' 'Au'}}
-                    <span>{{absDate endDate 'dddd D MMMM YYYY'}}</span></p>
-                <div class="rankings">
-                    {{#each phases}}
-                        <div class="phase">
-                            <h3>{{t format 'const'}} <em>({{t type 'const'}})</em></h3>
-                            {{#ifEquals format 'TPSAR'}}
-                                {{regularSeasonRankings this}}
-                            {{/ifEquals}}
-                        </div>
-                    {{/each}}
-                </div>
-            </div>
+            <h1>{{label}}</h1>
+            <div class="logo"><img src="/data/events/{{id}}.png" alt="{{label}}"></div>
+            {{#ifEquals country 'ZZZ'}}
+            {{else}}
+                {{countryBlock country}}
+            {{/ifEquals}}
+            <p class="date">
+                {{t 'from' 'app.competition.dateRange' 'Du'}}
+                <span>{{absDate startDate 'dddd D MMMM YYYY'}}</span>
+                {{t 'to' 'app.competition.dateRange' 'au'}}
+                <span>{{absDate endDate 'dddd D MMMM YYYY'}}</span>
+            </p>
         </header>
-        <div class="ad center">
-            <img src="https://placeholdit.imgix.net/~text?txtsize=33&txt=publicit%C3%A9&w=728&h=120" alt="pub">
-        </div>
         {{#switch type}}
             {{#case "TECOM"}}{{> cupCalendar }}{{/case}}
             {{#case "TESIM"}}{{> championshipCalendar }}{{/case}}
         {{/switch}}
-        <div class="teams">
-            <h2>Les équipes</h2>
-            <div class="pageWrapper">
-                <p class="filter" data-target="#teamsList"><input type="text" placeholder="Rechercher une équipe"></p>
-            </div>
-            {{#if groupTeamsByCountry}}
-                <div class="navSelect">
-                    <div class="selected">
-                        <img src="/img/flags/flags_un/32/TUR.png" alt="TUR">
-                        <span class="label">TUR</span>
-                    </div>
-                    <ul class="options">
-                        {{#each teamCountries}}
-                            <li>
-                                <a href="#" data-param="country" data-value="{{this}}">
-                                    <img src="/data/flags/flags_un/32/{{this}}.png" alt="{{this}}">
-                                    {{this}}
-                                </a>
-                            </li>
-                        {{/each}}
-                    </ul>
-                </div>
-            {{/if}}
-            {{#if groupTeamsByCountry}}
-                {{#group teams by='country'}}
-                    <div class="country" data-value="{{value}}">
-                        <div class="teamsWrapper" id="teamsList">
-                            {{#each items}}
-                                <a href="/teams/{{id}}" class="team" data-search="{{upper name}} {{countryName country}}">
-                                    <div class="logo"><img src="/data/teams/logos/{{id}}.png"></div>
-                                    <div class="name">{{name}}</div>
-                                </a>
-                            {{/each}}
+        <div class="pageWrapper" id="rankings">
+            {{#each phases}}
+
+                {{#ifEquals format 'TPSAR'}}
+                    <div class="wrapper">
+                        <div class="ranking">
+                            <h2>{{t 'title' 'app.competition.ranking' 'Classement'}}</h2>
+                            {{regularSeasonRankings this}}
+
+                        </div>
+                        <div class="topScorers">
+                            <h2>{{t 'title' 'app.competition.topScorers' 'Meilleurs buteurs'}}</h2>
+                            <div class="scroll" data-height-of="#competition table.rankings">
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th>{{t 'pos' 'app.competition.topScorers.table.header' '#'}}</th>
+                                        <th>{{t 'player' 'app.competition.topScorers.table.header' 'Joueur'}}</th>
+                                        <th>{{t 'team' 'app.competition.topScorers.table.header' 'Équipe'}}</th>
+                                        <th>{{t 'goals' 'app.competition.topScorers.table.header' 'Buts'}}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {{#each topScorers}}
+                                        <tr>
+                                            <td>{{pos}}</td>
+                                            <td><img class="face" src="/data/players/faceshots/{{playerId}}.jpg"
+                                                     alt="{{name}}">{{name}}</td>
+                                            <td>{{teamCondensed teamId}}</td>
+                                            <td class="fontFigures">{{goals}}</td>
+                                        </tr>
+                                    {{/each}}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                {{/group}}
-            {{else}}
-                <div class="teamsWrapper" id="teamsList">
-                    {{#each teams}}
-                        <a href="/teams/{{id}}" class="team" data-search="{{upper name}}">
-                            <div class="logo"><img src="/data/teams/logos/{{id}}.png"></div>
-                            <div class="name">{{name}}</div>
-                        </a>
-                    {{/each}}
-                </div>
-            {{/if}}
+                {{/ifEquals}}
+            {{/each}}
+        </div>
+        <div class="teams">
+            <h2>{{t 'title' 'app.competition.teams' 'Les équipes'}}</h2>
+            <div class="pageWrapper">
+                <p class="filter" data-target="#teamsList">
+                    <input type="text" size="26"
+                           placeholder="{{t 'placeholder' 'app.competition.filter.teams' 'Rechercher une équipe'}}">
+                </p>
+            </div>
+            <div class="teamsWrapper" id="teamsList">
+                {{#each teams}}
+                    <a href="/teams/{{id}}" class="team" data-search="{{upper name}}">
+                        <div class="logo"><img src="/data/teams/logos/{{id}}.png"></div>
+                        <div class="name">{{name}}</div>
+                    </a>
+                {{/each}}
+            </div>
         </div>
     </div>
 </div>

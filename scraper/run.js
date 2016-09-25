@@ -80,7 +80,8 @@ function getMatchDetailsAndBroadcastEvent(matchId) {
             date: matchDetail.Date,
             status: matchDetail.StatusCode,
             home: extractScoreboardTeamInfo(matchDetail.Home),
-            away: extractScoreboardTeamInfo(matchDetail.Away)
+            away: extractScoreboardTeamInfo(matchDetail.Away),
+            time: ''
         };
 
         setMatchWinner(payload);
@@ -102,8 +103,6 @@ function parseNotifications() {
             startOverIfNeeded();
             return;
         }
-
-        //console.info('read all files in notifications dir', files.length);
 
         async.forEach(files, function (filename, cb) {
             var find = filename.match(/([0-9]{8}T[0-9]{6})-([0-9]+)-([A-Z]+)\.json/);

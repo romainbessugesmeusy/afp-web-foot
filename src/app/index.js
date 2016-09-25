@@ -3,7 +3,7 @@
 // deps
 var $ = require('jquery');
 var page = require('page');
-//var io = require('socket.io-client');
+
 // templates and partials
 // expose the light runtime for browser
 var handlebars = require('handlebars/runtime');
@@ -127,7 +127,7 @@ page('/matches/:matchId/*', function (ctx, next) {
     }
 
     b('match getJSON');
-    $.getJSON('/data/matches/' + ctx.params.matchId + '.json', function (data) {
+    $.getJSON('/data/matches/' + ctx.params.matchId + '_1.json', function (data) {
         b('match process');
         var match = processMatchData(data);
         appCtx.currentMatchId = parseInt(ctx.params.matchId);
@@ -177,7 +177,7 @@ page('/competitions/:competitionId', function (ctx, next) {
     }
 
     b('competition getJSON');
-    $.getJSON('/data/competitions/' + ctx.params.competitionId + '.json', function (data) {
+    $.getJSON('/data/competitions/' + ctx.params.competitionId + '_1.json', function (data) {
         b('competition process');
         var competition = processCompetitionData(data);
         b('competition markup');

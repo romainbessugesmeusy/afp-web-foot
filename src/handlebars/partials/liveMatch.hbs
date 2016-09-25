@@ -32,17 +32,30 @@
                 <span class="home">8</span>
                 <span class="away">7</span>
             </p>--}}
-            {{#ifEquals status 'EMENC'}}
-                <p><a href="/matches/{{id}}/" class="button live">
-                    {{t 'live.button' 'app.scoreboard.liveMatch' 'LIVE'}}
-                </a></p>
-            {{/ifEquals}}
-            {{#ifEquals status 'EMFIN'}}
-                <p><a href="/matches/{{id}}/" class="button">
-                    {{t 'past.button' 'app.scoreboard.liveMatch' 'Résumé'}}
-                </a></p>
-            {{/ifEquals}}
-
+            <p>
+            {{#switch status}}
+                {{#case "EMENC"}}
+                    <a href="/matches/{{id}}/" class="button live">
+                        {{t 'live.button' 'app.scoreboard.liveMatch' 'LIVE'}}
+                    </a>
+                {{/case}}
+                {{#case "EMFIN"}}
+                    <a href="/matches/{{id}}/" class="button">
+                        {{t 'past.button' 'app.scoreboard.liveMatch' 'Résumé'}}
+                    </a>
+                {{/case}}
+                {{#case "EMNCO"}}
+                    <a href="/matches/{{id}}/" class="button">
+                        {{t 'upcoming.button' 'app.scoreboard.liveMatch' 'Feuille de match'}}
+                    </a>
+                {{/case}}
+                {{#case "EMPAU"}}
+                    <a href="/matches/{{id}}/" class="button live">
+                        {{t 'live.button' 'app.scoreboard.liveMatch' 'LIVE'}}
+                    </a>
+                {{/case}}
+            {{/switch}}
+            </p>
         </div>
         <div class="team away">
             <a href="/teams/{{away.id}}/">

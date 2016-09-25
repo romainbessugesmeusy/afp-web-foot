@@ -3,6 +3,9 @@
     {{#ifEquals status 'EMENC'}}
         <span class="time">{{liveMatchTime this}}</span>
     {{/ifEquals}}
+    {{#ifEquals status 'EMPAU'}}
+        <span class="time">{{t 'abbr' 'app.scoreboard.pastMatch.halftime' 'MT'}}</span>
+    {{/ifEquals}}
     <span class="status">{{t status 'const'}}</span>
     {{> pastMatchTeam away side="away"}}
 </a>

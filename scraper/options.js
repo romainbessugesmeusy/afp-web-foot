@@ -4,7 +4,7 @@ module.exports = {
     clients: {
         light: {
             lang: 1,
-            evts: [5506]
+            evts: [6100]
         },
         demo: {
             lang: 1,

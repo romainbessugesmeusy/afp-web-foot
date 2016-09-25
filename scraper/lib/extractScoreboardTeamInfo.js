@@ -31,5 +31,9 @@ module.exports = function extractScoreboardTeamInfo(team) {
         delete obj.cards.red;
     }
 
+    if (typeof obj.cards.red === 'undefined' && typeof obj.cards.yellow === 'undefined') {
+        delete obj.cards;
+    }
+
     return obj;
 }

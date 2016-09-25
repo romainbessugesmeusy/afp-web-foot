@@ -8,7 +8,12 @@ module.exports = function (appCtx) {
                     $('#page').find('> .page').hide();
                     $('#filterRules').empty();
                     page.show();
+                    // todo loss of scroll position
                     window.scrollTo(0, 0);
+                    $('[data-height-of]').each(function(){
+                        var h = $($(this).attr('data-height-of')).height();
+                        $(this).css('height', h);
+                    })
                 });
                 appCtx.currentPage = page;
             }

@@ -1,17 +1,18 @@
 
-table.rankings
+table
   border-top 1px solid #EEE
-  margin-top 1em
   width 100%
   td, th
     text-align right
     vertical-align middle
     padding 0 .5em
     img
-      max-height 2em
       vertical-align middle
       margin-right .4em
-
+      &.logo
+        max-height 2em
+      &.face
+        height 4em
   td
     border-bottom 1px solid #EEE
   th
@@ -24,6 +25,9 @@ table.rankings
   tbody th
     text-align left
 
+  th.CCEQU
+    text-align left
+
   .teamName
     padding 0
     text-align left
@@ -34,6 +38,22 @@ table.rankings
       max-width 145px
       overflow hidden
       vertical-align middle
+
+
+.topScorers
+  margin-left 4em
+  .scroll
+    height 35em
+    overflow-y scroll
+
+  table
+    height 100%
+    overflow hidden
+    td, th
+      text-align left
+
+    tr:nth-child(n+4) img.face
+      height: 1.5em
 
 #competition
 
@@ -87,37 +107,13 @@ table.rankings
       filter drop-shadow(0 5px 10px rgba(black, .3))
 
   header
-    display flex
-    flex-wrap wrap
-    max-width 1200px
-    margin 0 auto
-    padding 1em
-    aside
-      margin 1em
-      padding 1em
-      max-width 250px
-      box-shadow 0 5px 20px rgba(black, .1)
-      border-radius 4px
-      img
-        max-width 100%
+    text-align center
 
-      dl
-        padding 1em
-        margin-top 2em
+    img
+      max-width 100%
 
-      dt
-        font-weight bold
-        text-transform uppercase
-        font-size .7em
-        color #666
-        margin-top 1.5em
-        margin-bottom .5em
-    .infos
-      padding 1em
-      flex 1
     h1
       text-transform uppercase
-      text-align left
       font-size 2em
       font-weight 400
       color #666
@@ -181,6 +177,9 @@ h5
 .nearest
   background orange
 
+.ranking
+  flex 1
+
 @media only screen and (max-width: 700px)
   #competition
     .ad
@@ -197,3 +196,12 @@ h5
         &:nth-child(9),
         &:nth-child(10)
           display none
+
+  #rankings
+    .wrapper
+      display block
+    .topScorers
+      margin-left 0
+      .scroll
+        height auto !important
+        overflow-y visible

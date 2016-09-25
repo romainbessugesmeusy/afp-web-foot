@@ -38,6 +38,7 @@ function processQueue() {
         fileExists(file.filename, function () {
             fs.readFile(file.filename, 'utf-8', function (err, content) {
                 if (content == contents) {
+                    // todo https://www.npmjs.com/package/crc
                     file.callback();
                     isWriting = false;
                     file = null;

@@ -19,12 +19,13 @@ var formatTime = function (date) {
 
 
 var getRealTime = function (match) {
+    if (typeof match.time === 'undefined') {
+        return '';
+    }
     var delta = moment().diff(match.now, 'minutes');
     var parts = match.time.replace('\'', '').split('+').map(function (part) {
         return parseInt(part);
     });
-
-    console.info(parts, delta);
 
     if (parts.length > 1) {
         parts[1] += delta;
@@ -39,10 +40,11 @@ var getRealTime = function (match) {
             parts[0] += delta;
         }
     }
-
-    return parts.map(function (part) {
+    var time = parts.map(function (part) {
         return String(part) + '\'';
     }).join('+');
+
+    return new Handlebars.SafeString('<span class="realMatchTime" data-now="' + match.now + '" data-time="' + match.time + '">' + time + '</span>');
 };
 
 groupBy.register(Handlebars);
@@ -96,7 +98,7 @@ Handlebars.registerHelper('absDate', function (date, format) {
 });
 
 
-var relativeDate = function(date, format){
+var relativeDate = function (date, format) {
     var now = moment(new Date().toJSON().slice(0, 10));
     format = format || 'dddd D MMM';
     date = moment(date, 'YYYY-MM-DD');
@@ -133,6 +135,7 @@ Handlebars.registerHelper('matchPlayerName', function (playerId, options) {
     return player ? player.name : playerId;
 });
 
+// todo CSC
 Handlebars.registerHelper('joinScorerGoals', function (goals) {
     var strings = goals.map(function (g) {
         return g.penalty ? g.time + ' <strong>P</strong>' : g.time;
@@ -142,11 +145,12 @@ Handlebars.registerHelper('joinScorerGoals', function (goals) {
 
 Handlebars.registerHelper('liveMatchTime', function (match, options) {
     if (match.status === constants.status.inProgress) {
-        return getRealTime(match);
+        var time = getRealTime(match);
+        return time;
     }
 
     if (match.status === constants.status.finished) {
-        return 'TERMINÉ';
+        return '—';
     }
 
     return formatTime(match.date);
@@ -202,7 +206,7 @@ Handlebars.registerHelper('teamCondensed', function (teamId, options) {
     if (team === null) {
         return teamId;
     }
-    var ret = '<a href="/teams/' + team.id + '"><img src="/data/teams/logos/' + team.id + '.png"/><span class="name">' + team.name + '</span></a>';
+    var ret = '<a href="/teams/' + team.id + '"><img class="logo" src="/data/teams/logos/' + team.id + '.png"/><span class="name">' + team.name + '</span></a>';
     return new Handlebars.SafeString(ret);
 });
 
@@ -275,7 +279,7 @@ Handlebars.registerHelper('case', function (value, options) {
 });
 
 Handlebars.registerHelper('default', function (options) {
-    if (!this._switch_break_) {
+    if (this._switch_break_ === false) {
         return options.fn(this);
     }
 });
@@ -307,13 +311,13 @@ Handlebars.registerHelper('regularSeasonRankings', function (phase, options) {
 });
 
 Handlebars.registerHelper('matchStatus', function (match, options) {
-    if(match.status === constants.status.upcoming || match.status === constants.status.finished){
+    if (match.status === constants.status.upcoming || match.status === constants.status.finished) {
         return relativeDate(match.date, 'dddd DD MMMM Y') + ' à ' + moment(match.date).format('H[h]mm');
     }
     return translations['const.' + match.status];
 });
 
-Handlebars.registerHelper('upper', function(str){
+Handlebars.registerHelper('upper', function (str) {
     return str.toUpperCase();
 })
 module.exports = Handlebars;
