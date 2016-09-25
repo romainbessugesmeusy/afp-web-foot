@@ -28,20 +28,22 @@ var lockedEvents = [];
 var lockedMatches = [];
 var lockedClients = [];
 
-var TICK_TIMEOUT = 1000 * 60 * 5;
+var TICK_TIMEOUT = 1000 * 60 * 3;
 
 var noop = function () {
 
 };
 
-
 function createScoreboard(clientId, client, cb) {
+
 
     if (lockedClients.indexOf(clientId) !== -1) {
         return cb();
     }
 
     lockedClients.push(clientId);
+
+    console.info('CREATE SCOREBOARD', clientId);
 
     var clientLang = client.lang;
     var clientEvents = client.evts;
@@ -73,6 +75,8 @@ function createScoreboard(clientId, client, cb) {
 }
 
 function createScoreboards(cb) {
+    //remove stalled locks
+    lockedClients.length = 0;
     async.eachOf(options.clients, function (client, clientId, clientCb) {
         createScoreboard(clientId, client, clientCb);
     }, cb || noop);
@@ -175,7 +179,7 @@ function getEvent(id, lang, cb) {
         fs.readFile(__dirname + '/../../dist/data/competitions/' + id + '_' + lang + '.json', 'utf8', function (err, content) {
 
             var json = parseJSON(content, 'getEvent(' + id + ',' + lang + ')\n Err:' + err + ')');
-            if(err || typeof json === 'undefined'){
+            if (err || typeof json === 'undefined') {
                 return cb(eventsHash[key]);
             }
             eventsHash[key] = json;
