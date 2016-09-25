@@ -41,7 +41,6 @@ function createScoreboard(clientId, client, cb) {
         return cb();
     }
 
-
     lockedClients.push(clientId);
 
     var clientLang = client.lang;
@@ -154,7 +153,7 @@ function parseJSON(string, debug) {
     } catch (err) {
         var errorMessage = debug || 'err parsing json';
         errorMessage += '\n> ' + string;
-        throw new Error(errorMessage);
+        console.error(errorMessage);
     }
     return json;
 
@@ -174,7 +173,11 @@ function getEvent(id, lang, cb) {
     var key = id + '_' + lang;
     if (typeof eventsHash[key] === 'undefined') {
         fs.readFile(__dirname + '/../../dist/data/competitions/' + id + '_' + lang + '.json', 'utf8', function (err, content) {
+
             var json = parseJSON(content, 'getEvent(' + id + ',' + lang + ')\n Err:' + err + ')');
+            if(err || typeof json === 'undefined'){
+                return cb(eventsHash[key]);
+            }
             eventsHash[key] = json;
             cb(json);
         });
@@ -261,11 +264,7 @@ function archive(filename) {
 
 
 function parseNotifications(cb) {
-    cb = function () {
-        console.info('notification parsed');
-    };
-
-
+    cb = noop;
     fs.readdir(notificationsPath, function (err, files) {
 
         async.eachLimit(files, 100, function (filename, fileCb) {
@@ -305,6 +304,7 @@ function parseNotifications(cb) {
                         }
 
                         if (lockedMatches.indexOf(notification.Citius.MatchId) !== -1) {
+                            createScoreboardsWithEvent(notification.Citius.EvenementId, fileCb);
                             return fileCb();
                         } else {
                             lockedMatches.push(notification.Citius.MatchId);

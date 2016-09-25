@@ -27,3 +27,7 @@ socket.on('event', function (data) {
     console.info(data);
     playSound();
 });
+
+setTimeout(function(){
+    //$('');
+}, 30000);
