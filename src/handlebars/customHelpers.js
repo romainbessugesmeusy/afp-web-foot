@@ -145,8 +145,7 @@ Handlebars.registerHelper('joinScorerGoals', function (goals) {
 
 Handlebars.registerHelper('liveMatchTime', function (match, options) {
     if (match.status === constants.status.inProgress) {
-        var time = getRealTime(match);
-        return time;
+        return getRealTime(match);
     }
 
     if (match.status === constants.status.finished) {
