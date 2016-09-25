@@ -175,6 +175,15 @@ function processCompetition() {
             delete p.rankings;
         }
 
+        competition.matches.sort(function (a, b) {
+            var lA = competition.groups[a.group].label, lB = competition.groups[b.group].label;
+            if (lA && lB) {
+                var compare = lB.localeCompare(lA);
+                return (compare === 0) ? (b.date < a.date ? -1 : 1) : compare;
+            }
+            return a.group - b.group;
+        });
+
         return p;
     });
 

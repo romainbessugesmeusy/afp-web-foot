@@ -32,6 +32,14 @@ module.exports = function processCompetitionData(data) {
         match.time = matchDate.format('HH:mm');
     });
 
+    //data.matches.sort(function (a, b) {
+    //    var lA = data.groups[a.group].label, lB = data.groups[b.group].label;
+    //    if (lA && lB) {
+    //        return lA.localeCompare(lB);
+    //    }
+    //    return a.group - b.group;
+    //});
+
     if (data.phases.length > 1) {
         data.phases.forEach(function (phase) {
             if (phase.format === data.nearestPhase) {
@@ -41,6 +49,8 @@ module.exports = function processCompetitionData(data) {
     } else if (data.phases.length === 1) {
         data.phases[0].nearest = true;
     }
+
+    data.phases.reverse();
 
     unique(data.daysOfCompetition);
 
