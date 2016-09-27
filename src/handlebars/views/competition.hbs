@@ -2,17 +2,13 @@
     <div class="competitionWrapper">
         <header>
             <h1>{{label}}</h1>
-            <div class="logo"><img src="/data/events/{{id}}.png" alt="{{label}}"></div>
+            <div class="logo">
+                <img src="/data/events/{{id}}.png" alt="{{label}}">
+            </div>
             {{#ifEquals country 'ZZZ'}}
             {{else}}
                 {{countryBlock country}}
             {{/ifEquals}}
-            <p class="date">
-                {{t 'from' 'app.competition.dateRange' 'Du'}}
-                <span>{{absDate startDate 'dddd D MMMM YYYY'}}</span>
-                {{t 'to' 'app.competition.dateRange' 'au'}}
-                <span>{{absDate endDate 'dddd D MMMM YYYY'}}</span>
-            </p>
         </header>
         {{#switch type}}
             {{#case "TECOM"}}{{> cupCalendar }}{{/case}}

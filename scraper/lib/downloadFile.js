@@ -4,8 +4,9 @@ var fs = require('fs');
 
 module.exports = function downloadFile(uri, filename, callback) {
     fileExists(filename, function () {
-        setTimeout(function(){callback(null, true)}, 10);
+        callback(null, true);
     }, function () {
+        //console.info('downloading', uri);
         var req = request(uri);
         req.pause();
         req.on('error', function (err) {
