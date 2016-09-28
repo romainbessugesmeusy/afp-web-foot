@@ -34,15 +34,21 @@ function execEvent(id, lang, cb) {
 }
 
 function execMatch(eventId, id, lang, cb) {
-    if (registerHandler('match', id + '_' + lang, cb) === false) {
+    var k = id + '_' + lang
+    if (registerHandler('match', k, cb) === false) {
         return;
     }
 
     exec('node ' + __dirname + '/match.js ' + eventId + ' ' + id + ' ' + lang, function (err, stdout) {
-        var json = JSON.parse(stdout.substr(stdout.indexOf('$$') + 2));
-        json.now = new Date();
-        broadcast('match', json);
-        freeResource('match', id + '_' + lang);
+
+        if (matchHistory[k] != stdout) {
+            var json = JSON.parse(stdout.substr(stdout.indexOf('$$') + 2));
+            json.now = new Date();
+            broadcast('match', json);
+            matchHistory[k] = stdout;
+        }
+
+        freeResource('match', k);
     });
 }
 
@@ -51,13 +57,13 @@ var broadcast = require('../../socket/server');
 var events = [];
 var commentsMap = [];
 var lockedNotifications = [];
-var lockedEvents = [];
 var lockedMatches = [];
-var lockedClients = [];
 
 var lastNotification = new Date();
 var lastScoreboardBuild = {};
 var lastTick = new Date();
+
+var matchHistory = {};
 
 var TICK_TIMEOUT = 1000 * 60;
 var EXEC_TIMEOUT = 1000 * 30;
@@ -86,13 +92,11 @@ function logState() {
     var out = '';
     for (var type in state) {
         if (state.hasOwnProperty(type)) {
-            out += '\n[' + type + ']';
+            out += '\n[' + type + ']\n';
             for (var id in state[type]) {
                 if (state[type].hasOwnProperty(id)) {
-                    var length = state[type][id].listeners.length;
-                    var processing = state[type][id].processing ? 'PROCESSING' : 'IDLE      ';
-                    if(length > 0){
-                        out += '\n\t' + id + ' ' + processing + ' L: ' + length;
+                    if (state[type][id].listeners.length) {
+                        out += id + ', ';
                     }
                 }
             }

@@ -238,12 +238,17 @@ function getTeamStaff(team) {
     ret.players.shift();
     ret.players.reverse();
     return ret;
-
 }
 function getLiveMatch(cb) {
     fetch('xclivematch/:lang/:id', {id: match.id}, function (err, livematch) {
         var away = extend({}, match.Away);
+        away.TeamNbYellowCards = livematch.Away.TeamNbYellowCards;
+        away.TeamNbRedCards = livematch.Away.TeamNbRedCards;
+
         var home = extend({}, match.Home);
+        home.TeamNbYellowCards = livematch.Home.TeamNbYellowCards;
+        home.TeamNbRedCards = livematch.Home.TeamNbRedCards;
+
         extend(match, livematch);
         match.Away = away;
         match.Home = home;
@@ -261,7 +266,7 @@ function run() {
         var processedMatch = processMatch();
         writer('matches/' + processedMatch.id + '_' + lang, processedMatch, function () {
             process.stdout.write('$$');
-            process.stdout.write(JSON.stringify(createLightMatch(match.event, '', match)));
+            process.stdout.write(JSON.stringify(createLightMatch(match.competition, '', match)));
             process.exit();
         });
     });

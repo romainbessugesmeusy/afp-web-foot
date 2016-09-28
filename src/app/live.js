@@ -11,7 +11,7 @@ var playSound = function () {
     }
 }
 socket.on('match', function (data) {
-    console.info(data);
+    //console.info(data);
     playSound();
     var partial = data.status === 'EMNCO' ? 'upcomingMatch' : 'pastMatch';
     $('[data-match-id=' + data.id + ']').replaceWith(hb.partials[partial](data));
@@ -19,12 +19,12 @@ socket.on('match', function (data) {
 });
 
 socket.on('scoreboard', function (data) {
-    console.info(data);
+    //console.info(data);
     playSound()
 });
 
 socket.on('event', function (data) {
-    console.info(data);
+    //console.info(data);
     playSound();
 });
 

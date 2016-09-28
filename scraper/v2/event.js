@@ -156,7 +156,7 @@ function processCompetition() {
 
         if (Array.isArray(phase.matches)) {
             phase.matches.forEach(function eachMatch(match) {
-                var m = createLightMatch(event.id, phase.PhaseCompetCode, match);
+                var m = createLightMatch(competition, phase.PhaseCompetCode, match);
                 competition.matches.push(m);
             });
         } else {

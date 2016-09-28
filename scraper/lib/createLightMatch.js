@@ -1,12 +1,13 @@
 var setMatchWinner = require('../../src/app/setMatchWinner');
 var extractScoreboardTeamInfo = require('./extractScoreboardTeamInfo');
 
-module.exports = function createLightMatch(eventId, phaseCode, match) {
+module.exports = function createLightMatch(event, phaseCode, match) {
     var m = {
         id: match.Id,
         date: match.Date,
         time: match.Minute,
-        competition: eventId,
+        competition: event.id,
+        competitionName: event.label,
         phase: phaseCode,
         group: match.GroupId,
         status: match.StatusCode,

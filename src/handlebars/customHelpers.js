@@ -1,5 +1,5 @@
 var Handlebars = require('handlebars');
-var moment = window.moment;
+//var moment = window.moment;
 var constants = require('../app/constants');
 var groupBy = require('handlebars-group-by');
 var $ = require('jquery');
