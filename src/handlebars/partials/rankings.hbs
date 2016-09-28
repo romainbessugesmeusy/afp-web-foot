@@ -2,7 +2,13 @@
     <thead>
     <tr>
         {{#each this.cols}}
-            <th class="{{code}}"><abbr title="{{title}}">{{abbr}}</abbr></th>
+            <th class="{{code}}">
+                {{#if abbr}}
+                    <abbr title="{{title}}">{{abbr}}</abbr>
+                {{else}}
+                    {{title}}
+                {{/if}}
+            </th>
         {{/each}}
     </tr>
     </thead>

@@ -1,8 +1,8 @@
 var Handlebars = require('handlebars');
-var moment = require('moment');
+//var moment = require('moment');
+//var moment = window.moment;
 var constants = require('../app/constants');
 var groupBy = require('handlebars-group-by');
-var translations = require('../../dist/data/locale/fr.json');
 var $ = require('jquery');
 
 var enforceLeadingZero = function (value) {
@@ -49,9 +49,6 @@ var getRealTime = function (match) {
 
 groupBy.register(Handlebars);
 
-require('moment/locale/fr');
-
-moment.locale('fr');
 
 Handlebars.registerHelper('each_competition', function (dateObject, date, options) {
     if (typeof dateObject === 'undefined') {
@@ -210,15 +207,19 @@ Handlebars.registerHelper('teamCondensed', function (teamId, options) {
 });
 
 Handlebars.registerHelper('t', function (name, domainOrCount, defaultValue) {
+    var translations = window.translations || {};
+    var retDef = (typeof defaultValue === 'string') ? defaultValue : name;
+
     if (typeof domainOrCount === 'string') {
         name = domainOrCount + '.' + name;
     }
 
     if (typeof translations[name] === 'undefined') {
-        console.info('/*translation*/', '"' + name + '":"' + (defaultValue || name) + '",');
+        console.info('/*translation*/', '"' + name + '":"' + retDef + '",');
+        return retDef;
     }
 
-    return (typeof translations[name] !== 'undefined') ? translations[name] : defaultValue || name;
+    return translations[name];
 });
 
 Handlebars.registerHelper('countryBlock', function (code) {

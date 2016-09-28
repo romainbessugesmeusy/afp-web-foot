@@ -8,7 +8,7 @@ var page = require('page');
 // expose the light runtime for browser
 var handlebars = require('handlebars/runtime');
 // require the partials to be used in the views & the views
-var partials = require('../gen/partials');
+var partials = require('../gen/partials').partials;
 var views = require('../gen/views');
 // DOM
 var $page = $('#page'); // useless ?
@@ -57,6 +57,10 @@ var listenToUserEvents = require('./listenToUserEvents')(appCtx);
 var showPage = require('./showPage')(appCtx);
 
 var live = require('./live');
+var moment = require('moment');
+require('moment/locale/fr');
+require('moment/locale/es');
+require('moment/locale/en-gb');
 
 
 $('body').on('keyup', '.filter > input', function () {
@@ -127,17 +131,18 @@ page('/matches/:matchId/*', function (ctx, next) {
     }
 
     b('match getJSON');
-    $.getJSON('/data/matches/' + ctx.params.matchId + '_1.json', function (data) {
-        b('match process');
-        var match = processMatchData(data);
-        appCtx.currentMatchId = parseInt(ctx.params.matchId);
-        b('match markup');
-        var markup = views.match(match);
-        b('match append');
-        $pages.match.get(0).innerHTML = markup;
-        bs();
-        next()
-    });
+    $.getJSON('/data/matches/' + ctx.params.matchId + '_' + window.langId + '.json', function (data) {
+            b('match process');
+            var match = processMatchData(data);
+            appCtx.currentMatchId = parseInt(ctx.params.matchId);
+            b('match markup');
+            var markup = views.match(match);
+            b('match append');
+            $pages.match.get(0).innerHTML = markup;
+            bs();
+            next()
+        }
+    );
 }, showPage($pages.match, true));
 
 //
@@ -177,7 +182,7 @@ page('/competitions/:competitionId', function (ctx, next) {
     }
 
     b('competition getJSON');
-    $.getJSON('/data/competitions/' + ctx.params.competitionId + '_1.json', function (data) {
+    $.getJSON('/data/competitions/' + ctx.params.competitionId + '_' + window.langId + '.json', function (data) {
         b('competition process');
         var competition = processCompetitionData(data);
         b('competition markup');
@@ -191,7 +196,6 @@ page('/competitions/:competitionId', function (ctx, next) {
 }, handleCompetitionParams, showPage($pages.competition));
 
 var deparam = require('./deparam');
-var moment = require('moment');
 
 function handleCompetitionParams(ctx, next) {
     var params = (ctx.querystring) ? deparam(ctx.querystring) : {};
@@ -249,4 +253,14 @@ page('/players/:playerId', function (ctx, next) {
 
 }, showPage($pages.player));
 
-page();
+$.getJSON('/data/config.json', function (config) {
+    $.getJSON('/data/locale/' + config.locale + '.json', function (translations) {
+        window.translations = translations;
+        window.langId = config.lang;
+        window.locale = config.locale;
+        window.moment = moment;
+        moment.locale(config.locale);
+        $('body > header').append(partials.mainMenu());
+        page();
+    });
+});

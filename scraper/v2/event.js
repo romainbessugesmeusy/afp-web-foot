@@ -84,6 +84,7 @@ function getPhaseMatches(phase, cb) {
 function getClassementGroupe(groupe, cb) {
     fetch('xcclassementgroupe/:lang/:evenementId/:groupeId', {
         evenementId: event.id,
+        lang: lang,
         groupeId: groupe.GroupeId
     }, function (err, classement) {
         groupe.Classement = classement;

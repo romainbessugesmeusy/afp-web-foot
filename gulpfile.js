@@ -101,6 +101,10 @@ gulp.task('hbsPartials', function () {
 
 gulp.task('handlebars', ['hbsViews', 'hbsPartials']);
 
+gulp.task('locale', function(){
+    return gulp.src('')
+});
+
 gulp.task('watch', function () {
     gulp.watch(['./src/app/**/*.js'], ['javascript']);
     gulp.watch(['./src/stylus/**/*.styl'], ['stylus']);

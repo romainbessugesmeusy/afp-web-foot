@@ -4,6 +4,7 @@
   "repository": "https://github.com/romainbessugesmeusy/afp-web-foot",
   "version": "0.0.1",
   "license": "MIT",
+  "_install": "ln -s ./node_modules/moment/locale ./dist/data/locale/moment",
   "dependencies": {
     "array-unique": "*",
     "async": "^2.0.0-rc.6",

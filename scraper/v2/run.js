@@ -394,7 +394,10 @@ function createEventsFromOptions() {
     // Create unique couples [event ID / lang]
     for (var clientId in options.clients) {
         if (options.clients.hasOwnProperty(clientId)) {
+
             var client = options.clients[clientId];
+            writer('clients/' + clientId + '/config', client);
+
             client.evts.forEach(function (evt) {
                 events.push(evt + '_' + client.lang);
             })
