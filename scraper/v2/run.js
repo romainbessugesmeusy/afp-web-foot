@@ -5,6 +5,7 @@ var unique = require('array-unique');
 var async = require('async');
 var debounce = require('debounce');
 var mkdirp = require('mkdirp');
+var clear = require('clear');
 
 var writer = require('../writer');
 var fetch = require('./fetch');
@@ -28,11 +29,18 @@ var lockedEvents = [];
 var lockedMatches = [];
 var lockedClients = [];
 
+
 var TICK_TIMEOUT = 1000 * 60 * 3;
 
 var noop = function () {
 
 };
+
+setInterval(function () {
+    clear();
+    console.info('events', lockedEvents);
+    console.info('clients', lockedClients);
+}, 1000);
 
 function createScoreboard(clientId, client, cb) {
 
@@ -355,7 +363,11 @@ function watchForComments() {
     watch(commentsPath, {
         followSymLinks: true,
         recursive: true
-    }, function () {
+    }, function (filename) {
+        var find = filename.match(/comments\/([A-Z0-9a-z]+)\/([A-Z0-9a-z]+)\/xml\/commentslive-([a-z]+)-([0-9]+)\.xml/)
+        if (find !== null) {
+            //todo something
+        }
 
     });
 }
