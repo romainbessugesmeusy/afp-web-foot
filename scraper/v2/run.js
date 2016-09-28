@@ -117,7 +117,7 @@ function createMatches(cb) {
     }, function () {
         async.eachLimit(matches, 30, function (matchKey, matchCb) {
             var cmd = 'node ' + __dirname + '/match.js ' + matchKey.replace(/_/g, ' ');
-            exec(cmd, pipeResults(matchCb));
+            exec(cmd, pipeResults(matchCb, 'create matches ' + matchKey));
         }, cb);
     });
 }
@@ -133,7 +133,7 @@ function tick(cb) {
     cb = cb || noop;
     eachEvent(function (evt, eventCb) {
         var cmd = 'node ' + __dirname + '/event.js ' + evt.id + ' ' + evt.lang;
-        exec(cmd, pipeResults(eventCb));
+        exec(cmd, pipeResults(eventCb, 'tick event ' + evt.id + '_' + evt.lang));
     }, function () {
         async.parallel([
             // dès que les événemens ont été rechargés
@@ -208,7 +208,7 @@ function getEvent(id, lang, cb) {
     }
 }
 
-function pipeResults(cb) {
+function pipeResults(cb, debug) {
     var called = false;
     setTimeout(function () {
         if (!called) {
@@ -230,7 +230,7 @@ function pipeResults(cb) {
             called = true;
             return cb();
         } else {
-            console.info('TOO LATE MOTHERFUCKER')
+            console.info('TOO LATE MOTHERFUCKER', debug)
         }
     }
 }
@@ -265,7 +265,7 @@ function invalidateEvent(eventId, cb) {
             delete eventsHash[evt.id + '_' + evt.lang];
             lockedEvents.splice(lockedEvents.indexOf(evt.id + '_' + evt.lang), 1);
             eventCb();
-        }));
+        }, 'invalidate event ' + evt.id + ' ' + evt.lang));
     }, function () {
         broadcast('competition', {competition: eventId});
         createScoreboardsWithEvent(eventId);
