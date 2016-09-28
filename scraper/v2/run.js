@@ -33,7 +33,7 @@ var lastNotification = new Date();
 var lastScoreboardBuild = {};
 var lastTick = new Date();
 
-var TICK_TIMEOUT = 1000 * 60 * 3;
+var TICK_TIMEOUT = 1000 * 60;
 
 var noop = function () {
 
@@ -129,6 +129,7 @@ function createTeamsAndPlayers(cb) {
  * Mise à jour autonome des données
  */
 function tick(cb) {
+    cb = cb || noop;
     eachEvent(function (evt, eventCb) {
         var cmd = 'node ' + __dirname + '/event.js ' + evt.id + ' ' + evt.lang;
         exec(cmd, pipeResults(eventCb));
@@ -401,9 +402,10 @@ function getEventInfo(evt, cb) {
 }
 
 function clock() {
-    tick(function () {
-        setTimeout(clock, TICK_TIMEOUT)
-    });
+    setInterval(tick, TICK_TIMEOUT);
+    //tick(function () {
+    //    setTimeout(clock, TICK_TIMEOUT)
+    //});
 }
 
 function createEventsFromOptions() {
