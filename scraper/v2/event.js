@@ -75,9 +75,30 @@ function getClassementButeurs(phase, cb) {
 }
 
 function getPhaseMatches(phase, cb) {
+    var today = new Date();
     fetch('xcmatchesphase/:lang/:id', {id: phase.PhaseId, lang: lang}, function (err, matches) {
         phase.matches = matches.Matches;
-        cb();
+
+
+        async.forEach(phase.matches, function (m, matchCb) {
+            var matchDate = new Date(m.Date);
+            if (matchDate.toDateString() !== today.toDateString()) {
+                return matchCb();
+            } else {
+                fetch('xclivematch/:lang/:id', {id: m.Id, lang: lang}, function(err, match){
+                    m.Minute = match.Minute;
+                    m.StatusCode = match.StatusCode;
+                    ['Home', 'Away'].forEach(function(side){
+                        m[side].TeamNbYellowCards = match[side].TeamNbYellowCards;
+                        m[side].TeamNbRedCards = match[side].TeamNbRedCards;
+                        m[side].TeamScore = match[side].TeamScore;
+                        m[side].TeamTabScore = match[side].TeamTabScore;
+                    });
+                    return matchCb();
+                });
+            }
+
+        }, cb);
     }, true);
 }
 
