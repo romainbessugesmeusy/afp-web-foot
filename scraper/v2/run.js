@@ -34,6 +34,7 @@ var lastScoreboardBuild = {};
 var lastTick = new Date();
 
 var TICK_TIMEOUT = 1000 * 60;
+var EXEC_TIMEOUT = 1000 * 30;
 
 var noop = function () {
 
@@ -208,6 +209,14 @@ function getEvent(id, lang, cb) {
 }
 
 function pipeResults(cb) {
+    var called = false;
+    setTimeout(function () {
+        if (!called) {
+            called = true;
+            return cb();
+        }
+    }, EXEC_TIMEOUT);
+
     return function (err, stdout, stderr) {
         if (stdout) {
             console.info(stdout);
@@ -217,7 +226,12 @@ function pipeResults(cb) {
             console.error(stderr);
         }
 
-        return cb();
+        if (!called) {
+            called = true;
+            return cb();
+        } else {
+            console.info('TOO LATE MOTHERFUCKER')
+        }
     }
 }
 
