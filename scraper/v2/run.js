@@ -29,6 +29,8 @@ var lockedEvents = [];
 var lockedMatches = [];
 var lockedClients = [];
 
+var lastNotification = new Date();
+var lastScoreboardBuild = {};
 
 var TICK_TIMEOUT = 1000 * 60 * 3;
 
@@ -40,6 +42,8 @@ setInterval(function () {
     clear();
     console.info('events', lockedEvents);
     console.info('clients', lockedClients);
+    console.info('lastNotif', lastNotification);
+    console.info('lastNotif', lastScoreboardBuild);
 }, 1000);
 
 function createScoreboard(clientId, client, cb) {
@@ -74,6 +78,7 @@ function createScoreboard(clientId, client, cb) {
             eventCb();
         });
     }, function () {
+        lastScoreboardBuild[clientId] = new Date();
         writer('clients/' + clientId + '/scoreboard', scoreboard, function () {
             lockedClients.splice(lockedClients.indexOf(clientId), 1);
             broadcast('scoreboard', clientId);
@@ -277,6 +282,8 @@ function archive(filename) {
 
 function parseNotifications(cb) {
     cb = noop;
+    lastNotification = new Date();
+
     fs.readdir(notificationsPath, function (err, files) {
 
         async.eachLimit(files, 100, function (filename, fileCb) {
