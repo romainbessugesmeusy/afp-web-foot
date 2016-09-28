@@ -31,6 +31,7 @@ var lockedClients = [];
 
 var lastNotification = new Date();
 var lastScoreboardBuild = {};
+var lastTick = new Date();
 
 var TICK_TIMEOUT = 1000 * 60 * 3;
 
@@ -43,7 +44,8 @@ setInterval(function () {
     console.info('events', lockedEvents);
     console.info('clients', lockedClients);
     console.info('lastNotif', lastNotification);
-    console.info('lastNotif', lastScoreboardBuild);
+    console.info('lastScoreboardBuild', lastScoreboardBuild);
+    console.info('lastTick', lastTick);
 }, 1000);
 
 function createScoreboard(clientId, client, cb) {
@@ -82,6 +84,7 @@ function createScoreboard(clientId, client, cb) {
         writer('clients/' + clientId + '/scoreboard', scoreboard, function () {
             lockedClients.splice(lockedClients.indexOf(clientId), 1);
             broadcast('scoreboard', clientId);
+
             cb();
         });
     });
@@ -136,7 +139,7 @@ function tick(cb) {
             createScoreboards,
             // en parallèle, on charge tous les matches susceptibles d'avoir bougé
             createMatches,
-            createTeamsAndPlayers,
+            //createTeamsAndPlayers,
         ], cb);
     });
 }
