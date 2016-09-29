@@ -78,14 +78,14 @@ var noop = function () {
 
 };
 
-setInterval(function () {
-    clear();
-    console.info('lastNotif', lastNotification);
-    console.info('lastScoreboardBuild', lastScoreboardBuild);
-    console.info('lastTick', lastTick);
-
-    console.info('\nSTATE', logState());
-}, 1000);
+//setInterval(function () {
+//    clear();
+//    console.info('lastNotif', lastNotification);
+//    console.info('lastScoreboardBuild', lastScoreboardBuild);
+//    console.info('lastTick', lastTick);
+//
+//    console.info('\nSTATE', logState());
+//}, 1000);
 
 
 function logState() {
@@ -436,16 +436,33 @@ function watchForNotifications() {
     }, dParseNotifications);
 }
 
+function lang(locale) {
+    var map = {
+        fr: 1,
+        en: 2,
+        es: 3
+    };
+
+    return map[locale];
+}
+
 function watchForComments() {
     watch(commentsPath, {
         followSymLinks: true,
         recursive: true
     }, function (filename) {
-        var find = filename.match(/comments\/([A-Z0-9a-z]+)\/([A-Z0-9a-z]+)\/xml\/commentslive-([a-z]+)-([0-9]+)\.xml/)
-        if (find !== null) {
-            //todo something
+        var find = filename.match(/comments\/(\w+)\/(\w+)\/xml\/(\w+)\/comments\/commentslive-(\w+)-(\w+)\.xml$/);
+        if (find === null) {
+            return;
         }
+        var sport = find[1];
+        var competition = find[2];
+        var locale = find[3];
+        var matchId = find[5];
 
+        execMatch(getEventId(sport, competition), matchId, lang(locale), function () {
+            console.info('match done');
+        });
     });
 }
 
@@ -465,6 +482,16 @@ function getEventInfo(evt, cb) {
         });
         cb();
     });
+}
+
+function getEventId(discipline, codeFTP) {
+    var id;
+    commentsMap.forEach(function (item) {
+        if (item.discipline === discipline && item.codeFTP === codeFTP) {
+            id = item.eventId;
+        }
+    });
+    return id;
 }
 
 function clock() {
