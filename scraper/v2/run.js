@@ -65,7 +65,7 @@ var lastTick = new Date();
 
 var matchHistory = {};
 
-var TICK_TIMEOUT = 1000 * 60;
+var TICK_TIMEOUT = 1000 * 60 * 2;
 var EXEC_TIMEOUT = 1000 * 30;
 
 var state = {
@@ -200,6 +200,7 @@ function createMatches(cb) {
  * Mise à jour autonome des données
  */
 function tick(cb) {
+    lastTick = new Date();
     cb = cb || noop;
     eachEvent(function (evt, eventCb) {
         execEvent(evt.id, evt.lang, eventCb);
