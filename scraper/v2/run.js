@@ -78,14 +78,14 @@ var noop = function () {
 
 };
 
-//setInterval(function () {
-//    clear();
-//    console.info('lastNotif', lastNotification);
-//    console.info('lastScoreboardBuild', lastScoreboardBuild);
-//    console.info('lastTick', lastTick);
-//
-//    console.info('\nSTATE', logState());
-//}, 1000);
+setInterval(function () {
+    clear();
+    console.info('lastNotif', lastNotification);
+    console.info('lastScoreboardBuild', lastScoreboardBuild);
+    console.info('lastTick', lastTick);
+
+    console.info('\nSTATE', logState());
+}, 1000);
 
 
 function logState() {
