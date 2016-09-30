@@ -534,9 +534,9 @@ function writeClientsEvents(cb){
     async.forEachOf(options.clients, function(client, clientId, clientCb){
         console.info(clientId);
         var clientEvents = [];
-        async.forEach(client.evts, function(id, eventCb){
+        async.forEachOf(client.evts, function(id, index, eventCb){
             getEvent(id, client.lang, function(event){
-                var evt = {
+                clientEvents[index] = {
                     id: event.id,
                     label: event.label,
                     country: event.country,
@@ -545,7 +545,6 @@ function writeClientsEvents(cb){
                     endDate: event.endDate,
                     type: event.type
                 };
-                clientEvents.push(evt);
                 eventCb();
             });
         }, function(){

@@ -101,7 +101,7 @@ page('/', function (ctx, next) {
         return next();
     }
     b('scoreboard getJSON');
-    $.getJSON('/data/scoreboard.json', function (data) {
+    $.getJSON('/data/scoreboard.json?c=' + Date.now(), function (data) {
         b('scoreboard process');
         appCtx.data.scoreboard = processScoreboardData(data);
         b('scoreboard markup');
@@ -126,12 +126,8 @@ page.exit('/', function (ctx, next) {
 //
 
 page('/matches/:matchId/*', function (ctx, next) {
-    if (appCtx.currentMatchId === parseInt(ctx.params.matchId)) {
-        return next();
-    }
-
     b('match getJSON');
-    $.getJSON('/data/matches/' + ctx.params.matchId + '_' + window.langId + '.json', function (data) {
+    $.getJSON('/data/matches/' + ctx.params.matchId + '_' + window.langId + '.json?c=' + Date.now(), function (data) {
             b('match process');
             var match = processMatchData(data);
             appCtx.currentMatchId = parseInt(ctx.params.matchId);
@@ -160,7 +156,7 @@ page('/matches/:matchId/infos', activateMatchTab('infos'));
 page('/competitions', function (ctx, next) {
 
     b('competitions getJSON');
-    $.getJSON('/data/competitions.json', function (data) {
+    $.getJSON('/data/competitions.json?c=' + Date.now(), function (data) {
         b('competitions process');
         var competitions = processCompetitionsData(data);
         b('competitions markup');
@@ -177,12 +173,8 @@ page('/competitions', function (ctx, next) {
 //
 page('/competitions/:competitionId', function (ctx, next) {
 
-    if (appCtx.currentCompetitionId === parseInt(ctx.params.competitionId)) {
-        return next();
-    }
-
     b('competition getJSON');
-    $.getJSON('/data/competitions/' + ctx.params.competitionId + '_' + window.langId + '.json', function (data) {
+    $.getJSON('/data/competitions/' + ctx.params.competitionId + '_' + window.langId + '.json?c=' + Date.now(), function (data) {
         b('competition process');
         var competition = processCompetitionData(data);
         b('competition markup');
@@ -254,7 +246,7 @@ page('/players/:playerId', function (ctx, next) {
 }, showPage($pages.player));
 
 $.getJSON('/data/config.json', function (config) {
-    $.getJSON('/data/locale/' + config.locale + '.json', function (translations) {
+    $.getJSON('/data/locale/' + config.locale + '.json?c=' + Date.now(), function (translations) {
         window.translations = translations;
         window.langId = config.lang;
         window.locale = config.locale;
