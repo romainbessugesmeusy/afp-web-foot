@@ -264,10 +264,11 @@ function getEvent(id, lang, cb) {
     var key = id + '_' + lang;
     if (typeof eventsHash[key] === 'undefined') {
         fs.readFile(__dirname + '/../../dist/data/competitions/' + id + '_' + lang + '.json', 'utf8', function (err, content) {
-
             var json = parseJSON(content, 'getEvent(' + id + ',' + lang + ')\n Err:' + err + ')');
             if (err || typeof json === 'undefined') {
-                return cb(eventsHash[key]);
+                return execEvent(id, lang, function(){
+                    getEvent(id, lang, cb);
+                });
             }
             eventsHash[key] = json;
             cb(json);
@@ -503,7 +504,7 @@ function clock() {
     //});
 }
 
-function createEventsFromOptions() {
+function createEventsFromOptions(cb) {
 
     function parseKey(key) {
         var parts = key.split('_');
@@ -519,30 +520,60 @@ function createEventsFromOptions() {
 
             client.evts.forEach(function (evt) {
                 events.push(evt + '_' + client.lang);
-            })
+            });
+
         }
     }
     unique(events);
     events = events.map(parseKey);
+    cb();
 }
 
 
+function writeClientsEvents(cb){
+    async.forEachOf(options.clients, function(client, clientId, clientCb){
+        console.info(clientId);
+        var clientEvents = [];
+        async.forEach(client.evts, function(id, eventCb){
+            getEvent(id, client.lang, function(event){
+                var evt = {
+                    id: event.id,
+                    label: event.label,
+                    country: event.country,
+                    gender: event.gender,
+                    startDate: event.startDate,
+                    endDate: event.endDate,
+                    type: event.type
+                };
+                clientEvents.push(evt);
+                eventCb();
+            });
+        }, function(){
+            writer('clients/' + clientId + '/competitions', clientEvents, clientCb);
+        });
+    }, cb);
+}
 function run() {
 
-    createEventsFromOptions();
+    async.series([
+        createEventsFromOptions,
+        writeClientsEvents
+    ], function(){
+        // On récupère les infos des événements pour reconstituer
+        // le chemin vers les commentaires XML.
+        // On a besoin de la discipline et de la valeur EDFTP
+        // Une fois que le dictionnaire des événements est constitué
+        // on peut commencer à inspecter le dossier des commentaires
+        async.each(events, getEventInfo, watchForComments);
 
-    // On récupère les infos des événements pour reconstituer
-    // le chemin vers les commentaires XML.
-    // On a besoin de la discipline et de la valeur EDFTP
-    // Une fois que le dictionnaire des événements est constitué
-    // on peut commencer à inspecter le dossier des commentaires
-    async.each(events, getEventInfo, watchForComments);
+        // Pas besoin d'attendre pour regarder le dossier des notifications
+        watchForNotifications();
 
-    // Pas besoin d'attendre pour regarder le dossier des notifications
-    watchForNotifications();
+        // On démarre le "cron" qui va regénérer les événements toutes les X min
+        clock();
+    });
 
-    // On démarre le "cron" qui va regénérer les événements toutes les X min
-    clock();
+
 }
 
 run();
