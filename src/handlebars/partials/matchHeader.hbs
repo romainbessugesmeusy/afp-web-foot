@@ -1,4 +1,4 @@
-<header>
+<header class="bg">
     <div class="competitionWrapper">
         <a class="competition" href="/competitions/{{competition.id}}">
             {{competition.name}}
@@ -9,7 +9,7 @@
         {{matchStatus this}}
     </div>
     <div class="summaryPlaceholder"></div>
-    <div class="summaryMobile">
+    <div class="summaryMobile bg">
         <div class="row">
             <div class="team home {{#if home.winner}}winner{{/if}} {{#if home.qualified}}qualified{{/if}}">
                 <h3><a href="/teams/{{home.id}}">{{home.name}}</a></h3>
@@ -39,7 +39,7 @@
             </div>
         </div>
     </div>
-    <div class="summary">
+    <div class="summary bg">
         <div class="team home {{#if home.winner}}winner{{/if}} {{#if home.qualified}}qualified{{/if}}">
             <h3><a href="/teams/{{home.id}}">{{home.name}}</a></h3>
             {{> matchScorers home}}

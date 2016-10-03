@@ -14,6 +14,8 @@ var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var merge = require('merge-stream');
 var path = require('path');
+var async = require('async');
+var glob = require('glob');
 
 function onError(err) {
     console.log(err);
@@ -53,6 +55,25 @@ gulp.task('stylus', function () {
         }))
         .pipe(gulp.dest('./dist/css'))
         .on('error', onError);
+});
+
+gulp.task('client-stylus', function (cb) {
+    glob(__dirname + '/dist/data/clients/**/client.styl', function (err, files) {
+        async.forEach(files, function (filename, fileCb) {
+            gulp.src(filename)
+                .pipe(stylus({
+                    compress: true,
+                    'include css': true
+                }))
+                .pipe(autoprefixer({
+                    browsers: ['last 2 versions'],
+                    cascade: false
+                }))
+                .pipe(gulp.dest(path.dirname(filename)))
+                .on('error', onError)
+                .on('end', fileCb);
+        }, cb)
+    });
 });
 
 gulp.task('hbsViews', function () {
@@ -101,15 +122,16 @@ gulp.task('hbsPartials', function () {
 
 gulp.task('handlebars', ['hbsViews', 'hbsPartials']);
 
-gulp.task('locale', function(){
+gulp.task('locale', function () {
     return gulp.src('')
 });
 
 gulp.task('watch', function () {
     gulp.watch(['./src/app/**/*.js'], ['javascript']);
     gulp.watch(['./src/stylus/**/*.styl'], ['stylus']);
+    gulp.watch(['./dist/data/clients/**/*.styl'], ['client-stylus']);
     gulp.watch(['./src/handlebars/**/*.hbs'], ['javascript']);
     gulp.watch(['./src/handlebars/customHelpers.js'], ['javascript']);
 });
 
-gulp.task('default', ['javascript', 'stylus', 'watch']);
+gulp.task('default', ['javascript', 'client-stylus', 'stylus', 'watch']);
