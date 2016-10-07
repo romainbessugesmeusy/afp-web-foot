@@ -31,9 +31,9 @@ async.eachOf(options.clients, function (client, clientId, clientCb) {
 
                             async.eachLimit(staffData.Staff, 30, function (member, staffMemberCb) {
 
-                                if(players[member.Id]){
-                                    return staffMemberCb();
-                                }
+                                //if(players[member.Id]){
+                                //    return staffMemberCb();
+                                //}
 
                                 players[member.Id] = {
                                     id: member.Id,
@@ -53,7 +53,7 @@ async.eachOf(options.clients, function (client, clientId, clientCb) {
                                 });
 
                             }, equipeCb);
-                        });
+                        }, true);
                     }, phaseCb);
                 }, true);
             }, evtCb);

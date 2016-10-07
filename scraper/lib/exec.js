@@ -17,11 +17,12 @@ module.exports = function (broadcast) {
                 processing: false
             }
         }
-
         state[type][id].listeners.push(cb);
-        if (state[type][id].processing) {
+
+        if (state[type][id].processing === true) {
             return false;
         }
+
         state[type][id].processing = true;
         return true;
     }
@@ -40,11 +41,12 @@ module.exports = function (broadcast) {
 
     function execEvent(id, lang, cb) {
         var key = id + '_' + lang;
+
         if (registerHandler('event', key, cb) === false) {
             return;
         }
-        var cmd = 'node ' + __dirname + '/event.js ' + id + ' ' + lang;
-        exec(cmd, function () {
+        var cmd = 'node ' + __dirname + '/../v2/event.js ' + id + ' ' + lang;
+        exec(cmd, function (/*err, stdout, stderr*/) {
             freeResource('event', key);
         });
     }
@@ -54,8 +56,9 @@ module.exports = function (broadcast) {
         if (registerHandler('match', k, cb) === false) {
             return;
         }
-
-        exec('node ' + __dirname + '/../v2/match.js ' + eventId + ' ' + id + ' ' + lang, function (err, stdout) {
+        var cmd = 'node ' + __dirname + '/../v2/match.js ' + eventId + ' ' + id + ' ' + lang;
+        console.info('EXEC', cmd);
+        exec(cmd, function (err, stdout) {
 
             if (matchHistory[k] != stdout) {
                 var json = JSON.parse(stdout.substr(stdout.indexOf('$$') + 2));
@@ -68,9 +71,45 @@ module.exports = function (broadcast) {
         });
     }
 
+    function execScoreboard(clientId, cb) {
+        if (registerHandler('scoreboard', clientId, cb) === false) {
+            return;
+        }
+        var cmd = 'node ' + __dirname + '/../v2/scoreboard.js ' + clientId;
+        console.info('EXEC', cmd);
+        exec(cmd, function (err) {
+            if (err !== null) {
+                broadcast('scoreboard', clientId);
+            }
+            freeResource('scoreboard', clientId);
+        });
+
+    }
+
+
+    function log() {
+        var out = '';
+        for (var type in state) {
+            if (state.hasOwnProperty(type)) {
+                out += '\n[' + type + ']\n';
+                for (var id in state[type]) {
+                    if (state[type].hasOwnProperty(id)) {
+                        if (state[type][id].listeners.length) {
+                            out += id + ', ';
+                        }
+                    }
+                }
+            }
+        }
+        return out;
+    }
+
+
     return {
         match: execMatch,
         event: execEvent,
-        state: state
+        scoreboard: execScoreboard,
+        state: state,
+        log: log
     }
 };

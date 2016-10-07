@@ -17,62 +17,21 @@ var commentsPath = path.join(__dirname, '/../../dist/data/comments');
 var dump = require('../lib/dump');
 var getEvenementMetadata = require('../lib/getEvenementMetadata');
 
-var options = require('../options');
-var exec = require('child_process').exec;
-
-
-function execEvent(id, lang, cb) {
-    var key = id + '_' + lang;
-    if (registerHandler('event', key, cb) === false) {
-        return;
-    }
-    delete eventsHash[key];
-    var cmd = 'node ' + __dirname + '/event.js ' + id + ' ' + lang;
-    exec(cmd, function () {
-        freeResource('event', key);
-    });
-}
-
-function execMatch(eventId, id, lang, cb) {
-    var k = id + '_' + lang
-    if (registerHandler('match', k, cb) === false) {
-        return;
-    }
-
-    exec('node ' + __dirname + '/match.js ' + eventId + ' ' + id + ' ' + lang, function (err, stdout) {
-
-        if (matchHistory[k] != stdout) {
-            var json = JSON.parse(stdout.substr(stdout.indexOf('$$') + 2));
-            json.now = new Date();
-            broadcast('match', json);
-            matchHistory[k] = stdout;
-        }
-
-        freeResource('match', k);
-    });
-}
-
+var options = require('../options.json');
+var getEvent = require('../lib/getEvent');
 var broadcast = require('../../socket/server');
+var exec = require('../lib/exec')(broadcast);
+
 
 var events = [];
 var commentsMap = [];
 var lockedNotifications = [];
+
 var lockedMatches = [];
-
 var lastNotification = new Date();
-var lastScoreboardBuild = {};
+
 var lastTick = new Date();
-
-var matchHistory = {};
-
 var TICK_TIMEOUT = 1000 * 60 * 2;
-var EXEC_TIMEOUT = 1000 * 30;
-
-var state = {
-    scoreboard: {},
-    match: {},
-    event: {}
-};
 
 var noop = function () {
 
@@ -81,102 +40,21 @@ var noop = function () {
 setInterval(function () {
     clear();
     console.info('lastNotif', lastNotification);
-    console.info('lastScoreboardBuild', lastScoreboardBuild);
     console.info('lastTick', lastTick);
+    console.info('\nSTATE', exec.log());
+}, 2000);
 
-    console.info('\nSTATE', logState());
-}, 1000);
-
-
-function logState() {
-    var out = '';
-    for (var type in state) {
-        if (state.hasOwnProperty(type)) {
-            out += '\n[' + type + ']\n';
-            for (var id in state[type]) {
-                if (state[type].hasOwnProperty(id)) {
-                    if (state[type][id].listeners.length) {
-                        out += id + ', ';
-                    }
-                }
-            }
-        }
-    }
-    return out;
-}
-function registerHandler(type, id, cb) {
-    if (typeof state[type][id] === 'undefined') {
-        state[type][id] = {
-            listeners: [],
-            processing: false
-        }
-    }
-
-    state[type][id].listeners.push(cb);
-    if (state[type][id].processing) {
-        return false;
-    }
-    state[type][id].processing = true;
-    return true;
-}
-
-function freeResource(type, id) {
-    if (typeof state[type][id] === 'undefined') {
-        console.error('undefined resource', type, id);
-        return false;
-    }
-    state[type][id].processing = false;
-    state[type][id].listeners.forEach(function (listener) {
-        listener();
-    });
-    state[type][id].listeners.length = 0;
-}
-
-function createScoreboard(clientId, client, cb) {
-
-    if (registerHandler('scoreboard', clientId, cb) === false) {
-        return;
-    }
-
-    var clientLang = client.lang;
-    var clientEvents = client.evts;
-    var scoreboard = {dates: {}, competitions: {}};
-    async.each(clientEvents, function (eventId, eventCb) {
-        getEvent(eventId, clientLang, function (competition) {
-            scoreboard.competitions[eventId] = {
-                id: competition.id,
-                label: competition.label,
-                country: competition.country
-            };
-            competition.matches.forEach(function (match) {
-                match.now = new Date();
-                var day = match.date.substring(0, 10);
-                if (typeof scoreboard.dates[day] === 'undefined') {
-                    scoreboard.dates[day] = []
-                }
-                scoreboard.dates[day].push(match);
-            });
-            eventCb();
-        });
-    }, function () {
-        lastScoreboardBuild[clientId] = new Date();
-        writer('clients/' + clientId + '/scoreboard', scoreboard, function () {
-            broadcast('scoreboard', clientId);
-            freeResource('scoreboard', clientId);
-        });
-    });
-}
 
 function createScoreboards(cb) {
     async.eachOf(options.clients, function (client, clientId, clientCb) {
-        createScoreboard(clientId, client, clientCb);
+        exec.scoreboard(clientId, clientCb);
     }, cb || noop);
 }
 
 function createScoreboardsWithEvent(eventId, cb) {
     async.eachOf(options.clients, function (client, clientId, clientCb) {
         if (client.evts.indexOf(eventId) > -1) {
-            createScoreboard(clientId, client, clientCb);
+            exec.scoreboard(clientId, clientCb);
         }
     }, cb || noop);
 }
@@ -191,7 +69,7 @@ function createMatches(cb) {
     }, function () {
         async.eachLimit(matches, 30, function (matchKey, matchCb) {
             var parts = matchKey.split('_');
-            execMatch(parts[0], parts[1], parts[2], matchCb);
+            exec.match(parts[0], parts[1], parts[2], matchCb);
         }, cb);
     });
 }
@@ -203,7 +81,7 @@ function tick(cb) {
     lastTick = new Date();
     cb = cb || noop;
     eachEvent(function (evt, eventCb) {
-        execEvent(evt.id, evt.lang, eventCb);
+        exec.event(evt.id, evt.lang, eventCb);
     }, function () {
         async.parallel([
             // dès que les événemens ont été rechargés
@@ -251,66 +129,12 @@ function parseJSON(string, debug) {
 }
 
 
-var eventsHash = {};
-
-/**
- * Charge le contenu du fichier JSON et le passe au callback
- * Attention, il faut que le fichier existe
- * @param id
- * @param lang
- * @param cb
- */
-function getEvent(id, lang, cb) {
-    var key = id + '_' + lang;
-    if (typeof eventsHash[key] === 'undefined') {
-        fs.readFile(__dirname + '/../../dist/data/competitions/' + id + '_' + lang + '.json', 'utf8', function (err, content) {
-            var json = parseJSON(content, 'getEvent(' + id + ',' + lang + ')\n Err:' + err + ')');
-            if (err || typeof json === 'undefined') {
-                return execEvent(id, lang, function(){
-                    getEvent(id, lang, cb);
-                });
-            }
-            eventsHash[key] = json;
-            cb(json);
-        });
-    } else {
-        return cb(eventsHash[key]);
-    }
-}
-
-function pipeResults(cb, debug) {
-    var called = false;
-    setTimeout(function () {
-        if (!called) {
-            called = true;
-            return cb();
-        }
-    }, EXEC_TIMEOUT);
-
-    return function (err, stdout, stderr) {
-        if (stdout) {
-            console.info(stdout);
-        }
-
-        if (stderr) {
-            console.error(stderr);
-        }
-
-        if (!called) {
-            called = true;
-            return cb();
-        } else {
-            console.info('TOO LATE MOTHERFUCKER', debug)
-        }
-    }
-}
-
 function invalidateMatch(eventId, matchId, cb) {
     eachEvent(function (evt, eventCb) {
         if (evt.id != eventId) {
             return eventCb();
         }
-        execMatch(evt.id, matchId, evt.lang, eventCb);
+        exec.match(evt.id, matchId, evt.lang, eventCb);
     }, cb);
 }
 
@@ -319,9 +143,8 @@ function invalidateEvent(eventId, cb) {
         if (evt.id != eventId) {
             return eventCb();
         }
-        execEvent(evt.id, evt.lang, eventCb);
+        exec.event(evt.id, evt.lang, eventCb);
     }, function () {
-        broadcast('competition', {competition: eventId});
         createScoreboardsWithEvent(eventId);
         cb();
     });
@@ -462,7 +285,7 @@ function watchForComments() {
         var locale = find[3];
         var matchId = find[5];
 
-        execMatch(getEventId(sport, competition), matchId, lang(locale), function () {
+        exec.match(getEventId(sport, competition), matchId, lang(locale), function () {
             console.info('match done');
         });
     });
@@ -487,7 +310,7 @@ function getEventInfo(evt, cb) {
 }
 
 function getEventId(discipline, codeFTP) {
-    var id;
+    var id = null;
     commentsMap.forEach(function (item) {
         if (item.discipline === discipline && item.codeFTP === codeFTP) {
             id = item.eventId;
@@ -530,12 +353,12 @@ function createEventsFromOptions(cb) {
 }
 
 
-function writeClientsEvents(cb){
-    async.forEachOf(options.clients, function(client, clientId, clientCb){
+function writeClientsEvents(cb) {
+    async.forEachOf(options.clients, function (client, clientId, clientCb) {
         console.info(clientId);
         var clientEvents = [];
-        async.forEachOf(client.evts, function(id, index, eventCb){
-            getEvent(id, client.lang, function(event){
+        async.forEachOf(client.evts, function (id, index, eventCb) {
+            getEvent(id, client.lang, function (event) {
                 clientEvents[index] = {
                     id: event.id,
                     label: event.label,
@@ -547,7 +370,7 @@ function writeClientsEvents(cb){
                 };
                 eventCb();
             });
-        }, function(){
+        }, function () {
             writer('clients/' + clientId + '/competitions', clientEvents, clientCb);
         });
     }, cb);
@@ -557,7 +380,7 @@ function run() {
     async.series([
         createEventsFromOptions,
         writeClientsEvents
-    ], function(){
+    ], function () {
         // On récupère les infos des événements pour reconstituer
         // le chemin vers les commentaires XML.
         // On a besoin de la discipline et de la valeur EDFTP

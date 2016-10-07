@@ -2,6 +2,7 @@ var $ = require('jquery');
 var paginateNavbar = require('./paginateNavbar');
 var deparam = require('./deparam');
 var views = require('../gen/views');
+var sortMatchesByDate = require('./sortMatchesByDate');
 
 module.exports = function (appCtx) {
 
@@ -13,6 +14,7 @@ module.exports = function (appCtx) {
         };
 
         $.each(competitionsThisDay, function (competitionId, matches) {
+            matches.sort(sortMatchesByDate);
             viewParams.competitions.push({
                 competition: appCtx.data.scoreboard.competitions[competitionId],
                 matches: matches
@@ -30,6 +32,7 @@ module.exports = function (appCtx) {
         };
 
         $.each(competitionsThisDay, function (competitionId, matches) {
+            matches.sort(sortMatchesByDate);
             viewParams.competitions.push({
                 competition: appCtx.data.scoreboard.competitions[competitionId],
                 matches: matches

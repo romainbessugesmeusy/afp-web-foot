@@ -71,7 +71,7 @@ function getClassementButeurs(phase, cb) {
         }
         phase.classementButeurs = classementButeursJson.TopScorers;
         return cb();
-    });
+    }, true);
 }
 
 function getPhaseMatches(phase, cb) {

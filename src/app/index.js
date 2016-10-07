@@ -42,7 +42,6 @@ var appCtx = window.appCtx = {
     }
 };
 
-// functions
 var processScoreboardData = require('./processScoreboardData');
 var processMatchData = require('./processMatchData');
 var processCompetitionData = require('./processCompetitionData');
@@ -138,7 +137,9 @@ page('/matches/:matchId/*', function (ctx, next) {
             bs();
             next()
         }
-    );
+    ).fail(function () {
+        page('/')
+    });
 }, showPage($pages.match, true));
 
 //

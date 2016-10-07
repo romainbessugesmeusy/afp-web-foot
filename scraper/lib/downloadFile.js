@@ -6,7 +6,7 @@ module.exports = function downloadFile(uri, filename, callback) {
     fileExists(filename, function () {
         callback(null, true);
     }, function () {
-        //console.info('downloading', uri);
+        console.info('downloading', uri);
         var req = request(uri);
         req.pause();
         req.on('error', function (err) {
