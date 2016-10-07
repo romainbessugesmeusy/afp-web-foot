@@ -286,7 +286,7 @@ function watchForComments() {
         var matchId = find[5];
 
         exec.match(getEventId(sport, competition), matchId, lang(locale), function () {
-            console.info('match done');
+            broadcast('comments', matchId);
         });
     });
 }

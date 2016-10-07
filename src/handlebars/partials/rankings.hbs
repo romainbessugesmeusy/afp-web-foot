@@ -19,7 +19,7 @@
                 {{#ifEquals col.code "CCEQU"}}
                     <td class="teamName">{{teamCondensed row.teamId}}</td>
                 {{else}}
-                    <td>{{lookup row col.code}}</td>
+                    <td class="{{col.code}}">{{lookup row col.code}}</td>
                 {{/ifEquals}}
             {{/each}}
         </tr>

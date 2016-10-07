@@ -127,17 +127,16 @@ page.exit('/', function (ctx, next) {
 page('/matches/:matchId/*', function (ctx, next) {
     b('match getJSON');
     $.getJSON('/data/matches/' + ctx.params.matchId + '_' + window.langId + '.json?c=' + Date.now(), function (data) {
-            b('match process');
-            var match = processMatchData(data);
-            appCtx.currentMatchId = parseInt(ctx.params.matchId);
-            b('match markup');
-            var markup = views.match(match);
-            b('match append');
-            $pages.match.get(0).innerHTML = markup;
-            bs();
-            next()
-        }
-    ).fail(function () {
+        b('match process');
+        var match = processMatchData(data);
+        appCtx.currentMatchId = parseInt(ctx.params.matchId);
+        b('match markup');
+        var markup = views.match(match);
+        b('match append');
+        $pages.match.get(0).innerHTML = markup;
+        bs();
+        next()
+    }).fail(function () {
         page('/')
     });
 }, showPage($pages.match, true));
