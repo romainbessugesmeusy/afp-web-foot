@@ -61,6 +61,10 @@ module.exports = function processCompetitionData(data) {
         }
     });
 
+    data.daysOfCompetition.sort(function (a, b) {
+        return parseInt(a.value) - parseInt(b.value);
+    });
+
     data.teamCountries = [];
     data.teams.forEach(function (team) {
         if (data.teamCountries.indexOf(team.country) === -1) {

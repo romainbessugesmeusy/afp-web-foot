@@ -85,10 +85,10 @@ function getPhaseMatches(phase, cb) {
             if (matchDate.toDateString() !== today.toDateString()) {
                 return matchCb();
             } else {
-                fetch('xclivematch/:lang/:id', {id: m.Id, lang: lang}, function(err, match){
+                fetch('xclivematch/:lang/:id', {id: m.Id, lang: lang}, function (err, match) {
                     m.Minute = match.Minute;
                     m.StatusCode = match.StatusCode;
-                    ['Home', 'Away'].forEach(function(side){
+                    ['Home', 'Away'].forEach(function (side) {
                         m[side].TeamNbYellowCards = match[side].TeamNbYellowCards;
                         m[side].TeamNbRedCards = match[side].TeamNbRedCards;
                         m[side].TeamScore = match[side].TeamScore;
@@ -198,12 +198,19 @@ function processCompetition() {
         }
 
         competition.matches.sort(function (a, b) {
-            var lA = competition.groups[a.group].label, lB = competition.groups[b.group].label;
+            var lA = competition.groups[a.group].label,
+                lB = competition.groups[b.group].label,
+                dA = new Date(a.date),
+                dB = new Date(b.date);
+
             if (lA && lB) {
-                var compare = lB.localeCompare(lA);
-                return (compare === 0) ? (b.date < a.date ? -1 : 1) : compare;
+                var sortByGroupLabel = lB.localeCompare(lA);
+                return (sortByGroupLabel === 0) ? dA - dB : sortByGroupLabel;
             }
-            return a.group - b.group;
+
+            var sortByGroupId = a.group - b.group;
+
+            return (sortByGroupId === 0) ? dA - dB : sortByGroupId;
         });
 
         return p;
