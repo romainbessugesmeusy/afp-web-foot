@@ -99,22 +99,27 @@ var relativeDate = function (date, format) {
     format = format || 'dddd D MMM';
     date = moment(date, 'YYYY-MM-DD');
     var diff = now.diff(date, 'days');
+
+    function defaultCase(){
+        if (typeof format !== 'string') {
+            format = (date.year() === now.year()) ? 'dddd D MMM' : 'D MMM YYYY';
+        }
+        return moment(date, 'YYYY-MM-DD').format(format);
+    }
+
     switch (diff) {
         case 1:
-            return 'hier';
+            return translations['relativeDate.yesterday'] || defaultCase();
         case 2:
-            return 'avant-hier';
+            return translations['relativeDate.beforeYesterday'] || defaultCase();
         case 0:
-            return 'aujourd\'hui';
+            return translations['relativeDate.today'] || defaultCase();
         case -1:
-            return 'demain';
+            return translations['relativeDate.tomorrow'] || defaultCase();
         case -2:
-            return 'après-demain';
+            return translations['relativeDate.afterTomorrow'] || defaultCase();
         default :
-            if (typeof format !== 'string') {
-                format = (date.year() === now.year()) ? 'dddd D MMM' : 'D MMM YYYY';
-            }
-            return moment(date, 'YYYY-MM-DD').format(format);
+            return defaultCase();
     }
 };
 
