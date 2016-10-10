@@ -9,7 +9,8 @@ var processMatchData = require('./processMatchData');
 var ctx = window.appCtx;
 var playSound = function () {
     try {
-        //audio.play();
+        audioElement.currentTime = 0;
+        audio.play();
     } catch (err) {
         console.err(err);
     }
@@ -48,7 +49,6 @@ function reloadMatch(matchId) {
     $.getJSON('/data/matches/' + matchId + '_' + window.langId + '.json?c=' + Date.now(), function (data) {
         var match = processMatchData(data);
         var $shadow = $('<div>').append(views.match(match));
-        console.info($shadow);
         var $match = ctx.currentPage;
         window.requestAnimationFrame(function () {
 

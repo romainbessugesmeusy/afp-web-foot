@@ -145,6 +145,11 @@ function processCompetition() {
             });
         });
 
+        // limite des buteurs à 20
+        if (p.topScorers.length > 20) {
+            p.topScorers.length = 20;
+        }
+
         phase.Groupes.forEach(function eachGroup(group) {
             competition.groups[group.GroupeId] = {
                 id: group.GroupeId,
