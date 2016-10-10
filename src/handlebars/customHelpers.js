@@ -109,15 +109,15 @@ var relativeDate = function (date, format) {
 
     switch (diff) {
         case 1:
-            return translations['relativeDate.yesterday'] || defaultCase();
+            return translations['app.relativeDate.yesterday'] || defaultCase();
         case 2:
-            return translations['relativeDate.beforeYesterday'] || defaultCase();
+            return translations['app.relativeDate.beforeYesterday'] || defaultCase();
         case 0:
-            return translations['relativeDate.today'] || defaultCase();
+            return translations['app.relativeDate.today'] || defaultCase();
         case -1:
-            return translations['relativeDate.tomorrow'] || defaultCase();
+            return translations['app.relativeDate.tomorrow'] || defaultCase();
         case -2:
-            return translations['relativeDate.afterTomorrow'] || defaultCase();
+            return translations['app.relativeDate.afterTomorrow'] || defaultCase();
         default :
             return defaultCase();
     }
