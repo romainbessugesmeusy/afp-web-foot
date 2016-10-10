@@ -316,7 +316,7 @@ Handlebars.registerHelper('regularSeasonRankings', function (phase, options) {
 
 Handlebars.registerHelper('matchStatus', function (match, options) {
     if (match.status === constants.status.upcoming || match.status === constants.status.finished) {
-        return relativeDate(match.date, 'dddd DD MMMM Y') + ' à ' + moment(match.date).format('H[h]mm');
+        return relativeDate(match.date, 'dddd DD MMMM Y') + ' - ' + moment(match.date).format('H[h]mm');
     }
     return translations['const.' + match.status];
 });
