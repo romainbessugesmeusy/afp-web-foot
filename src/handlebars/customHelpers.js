@@ -245,17 +245,11 @@ Handlebars.registerHelper('countryInline', function (code) {
 Handlebars.registerHelper('matchTime', function (match, options) {
     switch (match.status) {
         case constants.status.upcoming :
-            return '—';
         case constants.status.paused :
-            return 'MI-TEMPS';
         case constants.status.finished :
-            return 'TERMINÉ';
+            return translations['const.' + match.status];
     }
-
     return getRealTime(match);
-
-    //console.info(match.time, match.now, delta);
-    //return match.minute ? match.minute : match.time;
 });
 
 
