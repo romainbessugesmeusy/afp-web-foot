@@ -3,7 +3,11 @@
     {{#if winner}}winner{{/if}}
     {{#if qualified}}qualified{{/if}}">
     <span class="goals fontFigures">
-        {{goals}}
+        {{#if goals}}
+            {{goals}}
+        {{else}}
+            &nbsp;
+        {{/if}}
     </span>
     <span class="penaltyShootout fontFigures">
         {{penaltyShootoutGoals}}

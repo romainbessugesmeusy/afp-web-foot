@@ -29,10 +29,10 @@ function getEvenement(cb) {
 }
 
 function getMatchDetail(cb) {
-    fetch('xcmatchdetail/:lang/:id', {id: match.id}, function (err, matchDetail) {
+    fetch('xcmatchdetail/:lang/:id', {id: match.id, lang: lang}, function (err, matchDetail) {
         extend(match, matchDetail);
         cb();
-    }, true);
+    }, false);
 }
 
 function getMatchComments(cb) {
