@@ -1,24 +1,30 @@
 var socket = io(':5000');
 var hb = require('../gen/partials');
 var $ = require('jquery');
-var audio = new Audio('sound.mp3');
+var debounce =  require('debounce');
+
 // require the partials to be used in the views & the views
 var partials = require('../gen/partials').partials;
 var views = require('../gen/views');
 var processMatchData = require('./processMatchData');
 var ctx = window.appCtx;
 var playSound = function () {
+    var audio = $('#notificationSound').get(0);
+    audio.volume = 0.5;
     try {
-        audioElement.currentTime = 0;
+        audio.pause();
+        audio.currentTime = 0;
         audio.play();
     } catch (err) {
-        console.err(err);
+        console.error(err);
     }
 };
 
+var dPlaySound = debounce(playSound, 1000, true);
+
 socket.on('match', function (data) {
-    console.info(data);
-    playSound();
+    console.info('match', data);
+    dPlaySound();
     var partial = data.status === 'EMNCO' ? 'upcomingMatch' : 'pastMatch';
     $('[data-match-id=' + data.id + ']').replaceWith(hb.partials[partial](data));
     $('[data-livematch-id=' + data.id + ']').replaceWith(hb.partials.liveMatch(data));
@@ -29,19 +35,20 @@ socket.on('match', function (data) {
 });
 
 socket.on('comments', function (matchId) {
+    console.info('comments', matchId);
     if (ctx.currentMatchId === matchId && ctx.currentPage.attr('id') === 'match') {
         reloadMatch(matchId);
     }
 });
 
 socket.on('scoreboard', function (data) {
-    //console.info(data);
-    //playSound()
+    console.info('scoreboard', data);
+    //dPlaySound()
 });
 
 socket.on('event', function (data) {
-    //console.info(data);
-    //playSound();
+    console.info('event', data);
+    //dPlaySound();
 });
 
 
@@ -71,5 +78,5 @@ function reloadMatch(matchId) {
         });
     });
 }
-
+window.dPlaySound = dPlaySound;
 window.reloadMatch = reloadMatch;

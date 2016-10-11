@@ -78,7 +78,7 @@ module.exports = function (broadcast) {
         var cmd = 'node ' + __dirname + '/../v2/scoreboard.js ' + clientId;
         console.info('EXEC', cmd);
         exec(cmd, function (err) {
-            if (err !== null) {
+            if (err === null) {
                 broadcast('scoreboard', clientId);
             }
             freeResource('scoreboard', clientId);
