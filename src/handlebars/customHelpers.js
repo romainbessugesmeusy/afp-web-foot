@@ -319,5 +319,12 @@ Handlebars.registerHelper('matchStatus', function (match, options) {
 
 Handlebars.registerHelper('upper', function (str) {
     return str.toUpperCase();
-})
+});
+
+Handlebars.registerHelper('displayGoals', function (val) {
+    if (val.toString() !== '') {
+        return val;
+    }
+    return '&nbsp;';
+});
 module.exports = Handlebars;

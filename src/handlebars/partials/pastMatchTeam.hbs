@@ -2,13 +2,7 @@
     {{#if penaltyShootoutGoals}}withPenaltyShootout{{/if}}
     {{#if winner}}winner{{/if}}
     {{#if qualified}}qualified{{/if}}">
-    <span class="goals fontFigures">
-        {{#if goals}}
-            {{goals}}
-        {{else}}
-            &nbsp;
-        {{/if}}
-    </span>
+    <span class="goals fontFigures">{{displayGoals goals}}</span>
     <span class="penaltyShootout fontFigures">
         {{penaltyShootoutGoals}}
     </span>
