@@ -18,13 +18,20 @@ var formatTime = function (date) {
 
 
 var getRealTime = function (match) {
-    if (typeof match.time === 'undefined') {
-        return '';
+    if (typeof match.time === 'undefined' || match.time === '') {
+        return formatTime(match.date);
+        //return new Handlebars.SafeString('&nbsp;');
     }
     var delta = moment().diff(match.now, 'minutes');
     var parts = match.time.replace('\'', '').split('+').map(function (part) {
-        return parseInt(part);
+        var intval = parseInt(part);
+        return isNaN(intval) ? null : intval;
     });
+
+    if(parts[0] === null){
+        console.info(match);
+        return match.time;
+    }
 
     if (parts.length > 1) {
         parts[1] += delta;
@@ -325,6 +332,6 @@ Handlebars.registerHelper('displayGoals', function (val) {
     if (typeof val !== 'undefined') {
         return val;
     }
-    return '&nbsp;';
+    return new Handlebars.SafeString('&nbsp;');
 });
 module.exports = Handlebars;
