@@ -78,8 +78,6 @@ function getPhaseMatches(phase, cb) {
     var today = new Date();
     fetch('xcmatchesphase/:lang/:id', {id: phase.PhaseId, lang: lang}, function (err, matches) {
         phase.matches = matches.Matches;
-
-
         async.forEach(phase.matches, function (m, matchCb) {
             var matchDate = new Date(m.Date);
             if (matchDate.toDateString() !== today.toDateString()) {
@@ -95,7 +93,7 @@ function getPhaseMatches(phase, cb) {
                         m[side].TeamTabScore = match[side].TeamTabScore;
                     });
                     return matchCb();
-                });
+                }, true);
             }
 
         }, cb);
