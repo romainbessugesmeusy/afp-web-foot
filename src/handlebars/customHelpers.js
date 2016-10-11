@@ -100,7 +100,7 @@ var relativeDate = function (date, format) {
     date = moment(date, 'YYYY-MM-DD');
     var diff = now.diff(date, 'days');
 
-    function defaultCase(){
+    function defaultCase() {
         if (typeof format !== 'string') {
             format = (date.year() === now.year()) ? 'dddd D MMM' : 'D MMM YYYY';
         }
@@ -309,10 +309,12 @@ Handlebars.registerHelper('regularSeasonRankings', function (phase, options) {
 });
 
 Handlebars.registerHelper('matchStatus', function (match, options) {
+    var translations = window.translations || {};
+
     if (match.status === constants.status.upcoming || match.status === constants.status.finished) {
-        return relativeDate(match.date, 'dddd DD MMMM Y') + ' - ' + moment(match.date).format('H[h]mm');
+        return relativeDate(match.date, 'dddd DD MMMM Y') + ' - ' + moment(new Date(match.date + 'Z')).format('H[h]mm');
     }
-    return translations['const.' + match.status];
+    return translations['const.' + match.status] || 'const.' + match.status;
 });
 
 Handlebars.registerHelper('upper', function (str) {
