@@ -322,7 +322,7 @@ Handlebars.registerHelper('upper', function (str) {
 });
 
 Handlebars.registerHelper('displayGoals', function (val) {
-    if (val.toString() !== '') {
+    if (typeof val !== 'undefined') {
         return val;
     }
     return '&nbsp;';
