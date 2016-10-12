@@ -10,51 +10,42 @@
         {{/ifEquals}}
     </div>
 </header>
-{{#if staff}}
-    <div class="pageWrapper">
-        <div class="players">
-            <h2>{{t 'staff.title' 'app.team' 'Staff'}}</h2>
-            <div class="wrapper">
-                {{#group staff by="position"}}
-                    <div class="position">
-                        <h3>{{t value 'const'}}</h3>
-                        {{#each items}}
-                            <a class="member" href="/players/{{id}}">
-                                {{> faceshot }}
-                                <span class="name">{{fullname}}</span>
-                            </a>
-                        {{/each}}
-                    </div>
-                {{/group}}
-            </div>
+<div class="tabs">
+    <nav class="sectionNavbar">
+        <div class="wrapper">
+            <p>
+                {{#each competitions as |competition competitionId|}}
+                    {{#if competition.staff}}
+                        <a class="competition {{#if competition.isCurrent}}current{{/if}}" href="#"
+                           data-param="competition"
+                           data-value="{{competitionId}}">
+                            {{competition.label}}
+                        </a>
+                    {{/if}}
+                {{/each}}
+            </p>
         </div>
-    </div>
-{{/if}}
-<!--
-<div class="matches">
-    <h2>{{t 'matches.title' 'app.team' 'Matches'}}</h2>
-    <div class="competitionWrapper">
-        {{#each competitions}}
-            <article class="competition pastMatches">
-                {{> scoreboardCompetitionHeader }}
-                <div class="matchesWrapper">
-                    <ul>
-                        {{#each matches}}
-                            <li>
-                                {{#ifTimeOfMatchIsDefined}}
-                                    <h6>{{relativeDate date}}</h6>
-                                {{/ifTimeOfMatchIsDefined}}
-                                {{#ifEquals status "EMNCO"}}
-                                    {{> upcomingMatch }}
-                                {{else}}
-                                    {{> pastMatch }}
-                                {{/ifEquals}}
-                            </li>
-                        {{/each}}
-                    </ul>
+    </nav>
+    <div class="pageWrapper">
+        {{#each competitions as |competition competitionId|}}
+            <div class="competition tab" data-competition="{{competitionId}}">
+                <div class="staff">
+                    <h2>{{t 'staff.title' 'app.team' 'Staff'}}</h2>
+                    <div class="wrapper">
+                        {{#group competition.staff by="position"}}
+                            <div class="position">
+                                <h3>{{t value 'const'}}</h3>
+                                {{#each items}}
+                                    <a class="member" href="/players/{{id}}">
+                                        {{> faceshot }}
+                                        <span class="name">{{fullname}}</span>
+                                    </a>
+                                {{/each}}
+                            </div>
+                        {{/group}}
+                    </div>
                 </div>
-            </article>
+            </div>
         {{/each}}
     </div>
 </div>
--->

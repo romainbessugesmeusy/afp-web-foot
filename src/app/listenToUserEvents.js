@@ -53,6 +53,18 @@ module.exports = function listenToUserEvents(appCtx) {
         return false;
     });
 
+    $page.on('click', '#team .sectionNavbar a', function(){
+        var pathname = window.location.pathname;
+        if (pathname.substr(-1) === '/') {
+            pathname = pathname.substr(0, pathname.length - 1);
+        }
+        var data = $(this).data();
+        var params = {};
+        params[data.param] = data.value;
+        page(pathname + '/?' + $.param(params));
+        return false;
+    });
+
     $page.on('click', '#toggleComments', function () {
         var $btn = $(this);
         var state = $btn.attr('data-state');

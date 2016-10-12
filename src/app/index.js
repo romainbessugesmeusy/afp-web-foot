@@ -233,8 +233,23 @@ page('/teams/:teamId', function (ctx, next) {
         $pages.team.empty().append(views.team(team));
         next();
     });
-}, showPage($pages.team));
+}, handleParams, showPage($pages.team));
 
+function handleParams(ctx, next) {
+    var defaultValue = $('a.current[data-param=competition]').eq(0).attr('data-value');
+
+    var params = (ctx.querystring) ? deparam(ctx.querystring) : {competition: defaultValue};
+    for (var k in params) {
+        if (params.hasOwnProperty(k)) {
+            $('.sectionNavbar a').removeClass('active');
+            $('.sectionNavbar a[data-param=' + k + '][data-value=' + params[k] + ']').addClass('active');
+            $('.tab').removeClass('active');
+            $('.tab[data-' + k + '="' + params[k] + '"]').addClass('active');
+        }
+    }
+    next();
+
+}
 
 page('/players/:playerId', function (ctx, next) {
     $.getJSON('/data/players/' + ctx.params.playerId + '.json', function (data) {

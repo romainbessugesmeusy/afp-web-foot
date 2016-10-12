@@ -37,7 +37,7 @@ gulp.task('javascript', ['handlebars'], function () {
         .pipe(buffer())
         //.pipe(sourcemaps.init({loadMaps: true}))
         // Add transformation tasks to the pipeline here.
-        .pipe(uglify())
+        //.pipe(uglify())
         .on('error', onError)
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./dist/js/'));

@@ -12,88 +12,98 @@ var fetch = require('./fetch');
 var download = require('../lib/downloadFile');
 
 var dump = require('../lib/dump');
-
 var unique = require('array-unique');
 
+var getFaceshots = (process.argv[2] === '-f' || process.argv[2] === '--with-faceshots');
 
 function run() {
     async.each(events, function (key, clientCb) {
         var parts = key.split('_');
         var eventId = parts[0];
         var lang = parts[1];
-        fetch('xcphases/:lang/:id', {id: eventId, lang: lang}, function (err, phasesData) {
-            async.each(phasesData.Phases, function (phase, phaseCb) {
-                fetch('xcequipes/:lang/:event/:phase', {
-                    lang: lang,
-                    event: eventId,
-                    phase: phase.PhaseId
-                }, function (err, equipesData) {
-                    async.eachLimit(equipesData.Equipes, 5, function (equipe, equipeCb) {
+        fetch('aaevenementinfo/:lang/:id', {id: eventId, lang: lang}, function (eventErr, eventInfo) {
 
-                        var k = equipe.Id + '_' + lang;
+            fetch('xcphases/:lang/:id', {id: eventId, lang: lang}, function (err, phasesData) {
+                async.each(phasesData.Phases, function (phase, phaseCb) {
+                    fetch('xcequipes/:lang/:event/:phase', {
+                        lang: lang,
+                        event: eventId,
+                        phase: phase.PhaseId
+                    }, function (err, equipesData) {
+                        async.eachLimit(equipesData.Equipes, 5, function (equipe, equipeCb) {
 
-                        if (typeof teams[k] === 'undefined') {
-                            teams[k] = {
-                                id: equipe.Id,
-                                name: equipe.NomAffichable,
-                                type: equipe.TeamType,
-                                country: equipe.PaysIso,
-                                staffMap: {},
-                                staffPerEvent: {}
-                            };
-                        }
+                            var k = equipe.Id + '_' + lang;
 
-                        if (typeof teams[k].staffPerEvent[eventId] === 'undefined') {
-                            teams[k].staffPerEvent[eventId] = [];
-                        }
-
-                        fetch('xcequipestaff/:lang/:event/:team', {
-                            lang: lang,
-                            event: eventId,
-                            team: equipe.Id
-                        }, function (err, staffData) {
-                            if (err || typeof staffData === 'undefined') {
-                                return equipeCb();
-                            }
-                            async.eachLimit(staffData.Staff, 5, function (member, staffMemberCb) {
-
-                                players[member.Id] = {
-                                    id: member.Id,
-                                    name: member.NomCourt,
-                                    position: member.PositionCode,
-                                    fullname: member.NomLong,
-                                    number: member.Bib,
-                                    height: member.Taille,
-                                    weight: member.Poids,
-                                    birthDate: member.DateDeNaissance,
-                                    representCountry: member.PaysRepresenteIso,
-                                    birthCountry: member.PaysNaissanceIso,
-                                    city: member.VilleNom
+                            if (typeof teams[k] === 'undefined') {
+                                teams[k] = {
+                                    id: equipe.Id,
+                                    name: equipe.NomAffichable,
+                                    type: equipe.TeamType,
+                                    country: equipe.PaysIso,
+                                    staffMap: {},
+                                    competitions: {}
                                 };
+                            }
 
-                                teams[k].staffMap[member.Id] = players[member.Id];
-                                //teams[k].staffPerEvent[eventId].push(players[member.Id]);
-                                //staffMemberCb();
-                                getFaceshot(players[member.Id], function () {
-                                    writer('players/' + member.Id, players[member.Id], staffMemberCb);
-                                });
-                            }, equipeCb);
-                        }, false);
-                    }, phaseCb);
-                }, false);
-            }, clientCb);
+                            if (typeof teams[k].competitions[eventId] === 'undefined') {
+                                teams[k].competitions[eventId] = {
+                                    id: eventId,
+                                    label: eventInfo.Label,
+                                    type: eventInfo.TypeEvenement,
+                                    startDate: new Date(eventInfo.DateDeb),
+                                    endDate: new Date(eventInfo.DateFin),
+                                    staff: []
+                                };
+                            }
+
+                            fetch('xcequipestaff/:lang/:event/:team', {
+                                lang: lang,
+                                event: eventId,
+                                team: equipe.Id
+                            }, function (err, staffData) {
+                                if (err || typeof staffData === 'undefined') {
+                                    return equipeCb();
+                                }
+                                async.eachLimit(staffData.Staff, 5, function (member, staffMemberCb) {
+
+                                    players[member.Id] = {
+                                        id: member.Id,
+                                        name: member.NomCourt,
+                                        position: member.PositionCode,
+                                        fullname: member.NomLong,
+                                        number: member.Bib,
+                                        height: member.Taille,
+                                        weight: member.Poids,
+                                        birthDate: member.DateDeNaissance,
+                                        representCountry: member.PaysRepresenteIso,
+                                        birthCountry: member.PaysNaissanceIso,
+                                        city: member.VilleNom
+                                    };
+
+                                    teams[k].staffMap[member.Id] = players[member.Id];
+                                    teams[k].competitions[eventId].staff.push(member.Id);
+                                    if (getFaceshots) {
+                                        getFaceshot(players[member.Id], function () {
+                                            writer('players/' + member.Id, players[member.Id], staffMemberCb);
+                                        });
+                                    } else {
+                                        staffMemberCb();
+                                    }
+                                }, equipeCb);
+                            }, false);
+                        }, phaseCb);
+                    }, false);
+                }, clientCb);
+            });
         });
     }, function () {
         console.info('PLAYERS DONE');
         async.forEachOf(teams, function (team, idAndLang, teamCb) {
-            team.staff = [];
-            for (var id in team.staffMap) {
-                if (team.staffMap.hasOwnProperty(id)) {
-                    team.staff.push(team.staffMap[id]);
+            for (var eventId in team.competitions) {
+                if (team.competitions.hasOwnProperty(eventId)) {
+                    team.competitions[eventId].staff = unique(team.competitions[eventId].staff);
                 }
             }
-
-            delete team.staffMap;
             writer('teams/' + idAndLang, team, teamCb);
         });
     });
@@ -108,7 +118,6 @@ fs.readFile(path.join(__dirname, '/../options.json'), 'utf8', function (err, con
             });
         }
     }
-
     events = unique(events).sort();
     run();
 });
