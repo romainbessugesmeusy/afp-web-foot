@@ -85,3 +85,5 @@ var fetch = function (resource, params, callback, compareFn) {
 };
 
 module.exports = fetch;
+
+module.exports.INVALIDATE = true;

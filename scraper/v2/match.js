@@ -32,7 +32,7 @@ function getMatchDetail(cb) {
     fetch('xcmatchdetail/:lang/:id', {id: match.id, lang: lang}, function (err, matchDetail) {
         extend(match, matchDetail);
         cb();
-    }, false);
+    }, fetch.INVALIDATE);
 }
 
 function getMatchComments(cb) {
@@ -253,7 +253,7 @@ function getLiveMatch(cb) {
         match.Away = away;
         match.Home = home;
         cb();
-    }, true);
+    }, fetch.INVALIDATE);
 }
 
 function run() {
