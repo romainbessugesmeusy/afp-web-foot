@@ -76,7 +76,8 @@ function run() {
                                         birthDate: member.DateDeNaissance,
                                         representCountry: member.PaysRepresenteIso,
                                         birthCountry: member.PaysNaissanceIso,
-                                        city: member.VilleNom
+                                        city: member.VilleNom,
+                                        faceshot: true
                                     };
 
                                     teams[k].staffMap[member.Id] = players[member.Id];
@@ -125,7 +126,7 @@ function getFaceshot(player, cb) {
     var uri = options.root + 'aaheadshot/' + player.id;
     var filename = path.join(__dirname, '../../dist/data/players/faceshots', player.id + '.jpg');
     download(uri, filename, function (err) {
-        if (!err) player.faceshot = true;
+        player.faceshot = (!err);
         cb();
     });
 }
