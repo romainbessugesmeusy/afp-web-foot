@@ -266,6 +266,8 @@ $.getJSON('/data/config.json', function (config) {
         window.langId = config.lang;
         window.locale = config.locale;
         window.moment = moment;
+        window.config = config;
+
         moment.locale(config.locale);
         $('body > header').append(partials.mainMenu());
         page();

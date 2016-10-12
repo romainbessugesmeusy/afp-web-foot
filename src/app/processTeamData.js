@@ -1,12 +1,20 @@
 module.exports = function processTeamData(data) {
 
-    for(var eventId in data.competitions){
-        if(!data.competitions.hasOwnProperty(eventId)){
+    var competitionsToRemove = [];
+
+    for (var eventId in data.competitions) {
+        if (!data.competitions.hasOwnProperty(eventId)) {
             continue;
         }
 
+        if (window.config.evts.indexOf(parseInt(eventId)) === -1) {
+            competitionsToRemove.push(eventId);
+            continue;
+        }
+
+
         var competition = data.competitions[eventId];
-        competition.staff = competition.staff.map(function(playerId){
+        competition.staff = competition.staff.map(function (playerId) {
             return data.staffMap[playerId];
         });
 
@@ -14,5 +22,8 @@ module.exports = function processTeamData(data) {
         competition.isCurrent = new Date(competition.startDate) < now && new Date(competition.endDate) > now;
     }
 
+    competitionsToRemove.forEach(function (id) {
+        delete data.competitions[id];
+    });
     return data;
 };
