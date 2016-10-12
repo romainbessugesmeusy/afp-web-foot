@@ -41,14 +41,13 @@ var fetch = function (resource, params, callback, compareFn) {
     fileExists(cacheFilename, function () {
         fs.readFile(cacheFilename, 'utf8', function (readFileError, data) {
             if (readFileError) {
-                console.error(readFileError);
                 return invalidate();
             }
 
             try {
                 json = JSON.parse(data);
             } catch (jsonParseError) {
-                console.error(jsonParseError);
+                console.info(data);
                 return invalidate();
             }
             //var json = require(cacheFilename);
@@ -70,6 +69,7 @@ var fetch = function (resource, params, callback, compareFn) {
             try {
                 json = JSON.parse(body);
             } catch (err) {
+                console.error('error parsing ' + uri);
                 return callback(err);
             }
 

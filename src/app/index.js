@@ -227,7 +227,7 @@ function handleCompetitionParams(ctx, next) {
 // INDIVIDUAL TEAM
 //
 page('/teams/:teamId', function (ctx, next) {
-    $.getJSON('/data/teams/' + ctx.params.teamId + '.json', function (data) {
+    $.getJSON('/data/teams/' + ctx.params.teamId + '_' + window.langId + '.json?c=' + Date.now(), function (data) {
         var team = processTeamData(data);
         console.info('processedTeamData', team);
         $pages.team.empty().append(views.team(team));

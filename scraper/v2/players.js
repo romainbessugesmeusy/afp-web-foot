@@ -1,8 +1,9 @@
-var options = require('../options');
+var events = [];
+
+var fs = require('fs');
 var async = require('async');
 var path = require('path');
 
-var events = [];
 var teams = {};
 var players = {};
 
@@ -10,34 +11,56 @@ var writer = require('../writer');
 var fetch = require('./fetch');
 var download = require('../lib/downloadFile');
 
-async.eachOf(options.clients, function (client, clientId, clientCb) {
-    async.each(client.evts, function (eventId, evtCb) {
-        if (events.indexOf(eventId) > -1) {
-            return evtCb();
-        }
-        fetch('xcphases/:lang/:id', {id: eventId, lang: 1}, function (err, phasesData) {
+var dump = require('../lib/dump');
+
+var unique = require('array-unique');
+
+
+function run() {
+    async.each(events, function (key, clientCb) {
+        var parts = key.split('_');
+        var eventId = parts[0];
+        var lang = parts[1];
+        fetch('xcphases/:lang/:id', {id: eventId, lang: lang}, function (err, phasesData) {
             async.each(phasesData.Phases, function (phase, phaseCb) {
                 fetch('xcequipes/:lang/:event/:phase', {
-                    lang: 1,
+                    lang: lang,
                     event: eventId,
                     phase: phase.PhaseId
                 }, function (err, equipesData) {
-                    async.each(equipesData.Equipes, function (equipe, equipeCb) {
+                    async.eachLimit(equipesData.Equipes, 5, function (equipe, equipeCb) {
+
+                        var k = equipe.Id + '_' + lang;
+
+                        if (typeof teams[k] === 'undefined') {
+                            teams[k] = {
+                                id: equipe.Id,
+                                name: equipe.NomAffichable,
+                                type: equipe.TeamType,
+                                country: equipe.PaysIso,
+                                staffMap: {},
+                                staffPerEvent: {}
+                            };
+                        }
+
+                        if (typeof teams[k].staffPerEvent[eventId] === 'undefined') {
+                            teams[k].staffPerEvent[eventId] = [];
+                        }
+
                         fetch('xcequipestaff/:lang/:event/:team', {
-                            lang: 1,
+                            lang: lang,
                             event: eventId,
                             team: equipe.Id
                         }, function (err, staffData) {
-
-                            async.eachLimit(staffData.Staff, 30, function (member, staffMemberCb) {
-
-                                //if(players[member.Id]){
-                                //    return staffMemberCb();
-                                //}
+                            if (err || typeof staffData === 'undefined') {
+                                return equipeCb();
+                            }
+                            async.eachLimit(staffData.Staff, 5, function (member, staffMemberCb) {
 
                                 players[member.Id] = {
                                     id: member.Id,
                                     name: member.NomCourt,
+                                    position: member.PositionCode,
                                     fullname: member.NomLong,
                                     number: member.Bib,
                                     height: member.Taille,
@@ -48,21 +71,46 @@ async.eachOf(options.clients, function (client, clientId, clientCb) {
                                     city: member.VilleNom
                                 };
 
+                                teams[k].staffMap[member.Id] = players[member.Id];
+                                //teams[k].staffPerEvent[eventId].push(players[member.Id]);
+                                //staffMemberCb();
                                 getFaceshot(players[member.Id], function () {
                                     writer('players/' + member.Id, players[member.Id], staffMemberCb);
                                 });
-
                             }, equipeCb);
-                        }, true);
+                        }, false);
                     }, phaseCb);
-                }, true);
-            }, evtCb);
+                }, false);
+            }, clientCb);
         });
+    }, function () {
+        console.info('PLAYERS DONE');
+        async.forEachOf(teams, function (team, idAndLang, teamCb) {
+            team.staff = [];
+            for (var id in team.staffMap) {
+                if (team.staffMap.hasOwnProperty(id)) {
+                    team.staff.push(team.staffMap[id]);
+                }
+            }
 
+            delete team.staffMap;
+            writer('teams/' + idAndLang, team, teamCb);
+        });
+    });
+}
 
-    }, clientCb);
-}, function () {
+fs.readFile(path.join(__dirname, '/../options.json'), 'utf8', function (err, content) {
+    var options = JSON.parse(content);
+    for (var clientId in options.clients) {
+        if (options.clients.hasOwnProperty(clientId)) {
+            options.clients[clientId].evts.forEach(function (eventId) {
+                events.push(eventId + '_' + options.clients[clientId].lang);
+            });
+        }
+    }
 
+    events = unique(events).sort();
+    run();
 });
 
 function getFaceshot(player, cb) {

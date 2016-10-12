@@ -71,6 +71,20 @@ module.exports = function (broadcast) {
         });
     }
 
+    function execTeam(team, lang, cb){
+        var k = team.id + '_' + lang;
+        if (registerHandler('team', k, cb) === false) {
+            return;
+        }
+
+        var cmd = 'node ' + __dirname + '/../v2/team.js ' + JSON.stringify(team) + ' ' + lang;
+        console.info('EXEC', cmd);
+        exec(cmd, function (err, stdout) {
+            freeResource('team', k);
+        });
+
+    }
+
     function execScoreboard(clientId, cb) {
         if (registerHandler('scoreboard', clientId, cb) === false) {
             return;
@@ -109,6 +123,7 @@ module.exports = function (broadcast) {
         match: execMatch,
         event: execEvent,
         scoreboard: execScoreboard,
+        team: execTeam,
         state: state,
         log: log
     }

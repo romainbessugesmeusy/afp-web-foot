@@ -7,7 +7,8 @@ module.exports = function downloadFile(uri, filename, callback) {
         callback(null, true);
     }, function () {
         console.info('downloading', uri);
-        var req = request(uri);
+        var req = request({uri: uri, timeout: 1000});
+        //var req = request({uri: uri, timeout: 1000});
         req.pause();
         req.on('error', function (err) {
             console.error('Error downloading ', uri);
