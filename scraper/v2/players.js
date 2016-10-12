@@ -22,7 +22,6 @@ function run() {
         var eventId = parts[0];
         var lang = parts[1];
         fetch('aaevenementinfo/:lang/:id', {id: eventId, lang: lang}, function (eventErr, eventInfo) {
-
             fetch('xcphases/:lang/:id', {id: eventId, lang: lang}, function (err, phasesData) {
                 async.each(phasesData.Phases, function (phase, phaseCb) {
                     fetch('xcequipes/:lang/:event/:phase', {
@@ -90,9 +89,9 @@ function run() {
                                         staffMemberCb();
                                     }
                                 }, equipeCb);
-                            }, false);
+                            }, fetch.INVALIDATE);
                         }, phaseCb);
-                    }, false);
+                    }, fetch.INVALIDATE);
                 }, clientCb);
             });
         });
