@@ -6,6 +6,7 @@ var async = require('async');
 var debounce = require('debounce');
 var mkdirp = require('mkdirp');
 var clear = require('clear');
+var request = require('request');
 
 var writer = require('../writer');
 var fetch = require('./fetch');
@@ -36,13 +37,6 @@ var TICK_TIMEOUT = 1000 * 60 * 2;
 var noop = function () {
 
 };
-
-setInterval(function () {
-    clear();
-    console.info('lastNotif', lastNotification);
-    console.info('lastTick', lastTick);
-    console.info('\nSTATE', exec.log());
-}, 2000);
 
 
 function createScoreboards(cb) {
@@ -376,7 +370,6 @@ function writeClientsEvents(cb) {
     }, cb);
 }
 function run() {
-
     async.series([
         createEventsFromOptions,
         writeClientsEvents
@@ -394,8 +387,23 @@ function run() {
         // On démarre le "cron" qui va regénérer les événements toutes les X min
         clock();
     });
-
-
 }
 
-run();
+
+var createOptions = require('./createOptions');
+
+createOptions(function(opts){
+    options = opts;
+    run();
+});
+
+(function (log) {
+    if (log) {
+        setInterval(function () {
+            clear();
+            console.info('lastNotif', lastNotification);
+            console.info('lastTick', lastTick);
+            console.info('\nSTATE', exec.log());
+        }, 2000)
+    }
+})(true);

@@ -1,0 +1,76 @@
+$bgColor = #FFF
+$lightBgColor = #EEE
+$textColor = #333
+$borderColor = #EEE
+
+$imageBackground = $bgColor
+$font = 'Lato', "Gill Sans", Helvetica, Arial, sans-serif
+
+
+$scoreboardLiveBackground = "../../../img/grass-light.jpg"
+$teamBackground = "../../../img/stadium-crowd.jpg"
+$matchHeaderBackground = "../../../img/Euro-2016-Credit-Remy-Martineau.jpg"
+
+/* VARS */
+
+body
+  font-family $font
+  color $textColor
+  background $imageBackground
+
+.bg
+  background $imageBackground
+
+.bglight
+  background $lightBgColor
+
+a
+  color $textColor
+
+article.competition header, .liveMatchScoreboard
+  a
+    color $textColor
+
+article.competition
+  border-color $borderColor
+
+#liveMatch .tab
+  background $imageBackground
+
+table td, .infosWrapper, .referees, .stadium, .periods, .infosWrapper h3, .calendar, table th, .calendarWrapper .group, .compositionWrapper .line
+  border-color $borderColor
+
+.infosWrapper h3
+  background linear-gradient(darken($bgColor, 5), rgba(darken($bgColor, 5), 0))
+  color $textColor
+
+.calendarWrapper .group
+  background $bgColor
+
+.sectionNavbar.light
+  border-color $borderColor
+  background linear-gradient(lighten($bgColor, 10), $bgColor)
+  a
+    color $textColor
+    &:hover
+      border-color $borderColor
+    &.active
+      border-color lighten($borderColor, 10)
+
+.liveMatchScoreboard footer
+  background darken($bgColor, 10)
+
+#competitions .wrapper a
+  background $lightBgColor
+
+#today .matches.highlighted
+  background linear-gradient(rgba(40,67,0,0.9),rgba(40,67,0,0)),url($scoreboardLiveBackground)
+
+#team > header
+  background-image url($teamBackground)
+
+#liveMatch > header
+  background-image url($matchHeaderBackground)
+
+a.button
+  color #FFF

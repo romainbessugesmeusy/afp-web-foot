@@ -7,13 +7,13 @@ var writer = require('../writer');
 
 var clientId = process.argv[2];
 
-fs.readFile(path.join(__dirname, '/../options.json'), 'utf8', function (err, content) {
-    var options = JSON.parse(content);
+var createOptions = require('./createOptions');
+
+createOptions(function(options){
     var client = options.clients[clientId] || {};
     var clientLang = client.lang;
     var clientEvents = client.evts;
     var scoreboard = {dates: {}, competitions: {}};
-
 
     async.each(clientEvents, function (eventId, eventCb) {
         getEvent(eventId, clientLang, function (competition) {

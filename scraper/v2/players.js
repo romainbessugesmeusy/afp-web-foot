@@ -109,8 +109,9 @@ function run() {
     });
 }
 
-fs.readFile(path.join(__dirname, '/../options.json'), 'utf8', function (err, content) {
-    var options = JSON.parse(content);
+var createOptions = require('./createOptions');
+
+createOptions(function(options){
     for (var clientId in options.clients) {
         if (options.clients.hasOwnProperty(clientId)) {
             options.clients[clientId].evts.forEach(function (eventId) {
@@ -121,6 +122,7 @@ fs.readFile(path.join(__dirname, '/../options.json'), 'utf8', function (err, con
     events = unique(events).sort();
     run();
 });
+
 
 function getFaceshot(player, cb) {
     var uri = options.root + 'aaheadshot/' + player.id;

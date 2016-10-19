@@ -61,17 +61,21 @@ module.exports = function (broadcast) {
         exec(cmd, function (err, stdout) {
 
             if (matchHistory[k] != stdout) {
-                var json = JSON.parse(stdout.substr(stdout.indexOf('$$') + 2));
-                json.now = new Date();
-                broadcast('match', json);
-                matchHistory[k] = stdout;
+                try {
+                    var json = JSON.parse(stdout.substr(stdout.indexOf('$$') + 2));
+                    json.now = new Date();
+                    broadcast('match', json);
+                    matchHistory[k] = stdout;
+                } catch (err) {
+                    console.error('could not broadcast', stdout);
+                }
             }
 
             freeResource('match', k);
         });
     }
 
-    function execTeam(team, lang, cb){
+    function execTeam(team, lang, cb) {
         var k = team.id + '_' + lang;
         if (registerHandler('team', k, cb) === false) {
             return;

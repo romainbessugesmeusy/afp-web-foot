@@ -58,12 +58,17 @@ module.exports = function (appCtx) {
         var pastMatchesMarkup = getPastMatchesForDate(params.pastDate);
         var upcomingMatchesMarkup = getUpcomingMatchesForDate(params.upcomingDate);
 
+
         // in the same rendering frame
         // we activate the tab and link for both
         window.requestAnimationFrame(function () {
 
-            $pastMatchesTabs.find('> .competitions').get(0).innerHTML = pastMatchesMarkup;
-            $upcomingMatchesTabs.find('> .competitions').get(0).innerHTML = upcomingMatchesMarkup;
+            if ($pastMatchesTabs.length > 0) {
+                $pastMatchesTabs.find('> .competitions').get(0).innerHTML = pastMatchesMarkup;
+            }
+            if ($upcomingMatchesTabs.length > 0) {
+                $upcomingMatchesTabs.find('> .competitions').get(0).innerHTML = upcomingMatchesMarkup;
+            }
 
             if (appCtx.scoreboard.upcomingDate !== params.upcomingDate) {
                 $('a[data-param="upcomingDate"]').removeClass('active');

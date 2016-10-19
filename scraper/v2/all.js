@@ -132,4 +132,9 @@ function run() {
     });
 }
 
-run();
+var createOptions = require('./createOptions');
+
+createOptions(function(opts){
+    options = opts;
+    run();
+});
