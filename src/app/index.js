@@ -262,6 +262,11 @@ page('/players/:playerId', function (ctx, next) {
 
 $.getJSON('/data/config.json', function (config) {
     $.getJSON('/data/locale/' + config.locale + '.json?c=' + Date.now(), function (translations) {
+
+        config.evts = config.evts.map(function (evt) {
+            return parseInt(evt);
+        });
+
         window.translations = translations;
         window.langId = config.lang;
         window.locale = config.locale;
