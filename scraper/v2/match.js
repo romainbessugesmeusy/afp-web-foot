@@ -1,5 +1,15 @@
 var match = {event: process.argv[2], id: process.argv[3]};
 var lang = process.argv[4] || '1';
+var localeMap = {
+    1: 'fr',
+    2: 'en',
+    3: 'es',
+    108: 'br',
+    136: 'de'
+};
+var locale = localeMap[lang];
+
+
 var dump = require('../lib/dump');
 
 var async = require('async');
@@ -38,8 +48,14 @@ function getMatchDetail(cb) {
 function getMatchComments(cb) {
     var filename = path.join(
         __dirname,
-        '../../dist/data/comments/' + match.competition.sport + '/' + match.competition.code + '/xml/fr/comments/commentslive-fr-' + match.id + '.xml'
+        '../../dist/data/comments',
+        match.competition.sport,
+        match.competition.code,
+        'xml',
+        locale,
+        'comments/commentslive-' + locale + '-' + match.id + '.xml'
     );
+
     parseCommentFile(filename, function (comments) {
         match.Comments = comments;
         cb();
