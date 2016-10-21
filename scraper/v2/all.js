@@ -71,30 +71,7 @@ function parseJSON(string, debug) {
 }
 
 
-var eventsHash = {};
-
-/**
- * Charge le contenu du fichier JSON et le passe au callback
- * Attention, il faut que le fichier existe
- * @param id
- * @param lang
- * @param cb
- */
-function getEvent(id, lang, cb) {
-    var key = id + '_' + lang;
-    if (typeof eventsHash[key] === 'undefined') {
-        fs.readFile(__dirname + '/../../dist/data/competitions/' + id + '_' + lang + '.json', 'utf8', function (err, content) {
-            var json = parseJSON(content, 'getEvent(' + id + ',' + lang + ')\n Err:' + err + ')');
-            if (err || typeof json === 'undefined') {
-                return cb(eventsHash[key]);
-            }
-            eventsHash[key] = json;
-            cb(json);
-        });
-    } else {
-        return cb(eventsHash[key]);
-    }
-}
+var getEvent = require('../lib/getEvent');
 
 function createEventsFromOptions() {
 
@@ -123,18 +100,14 @@ function createEventsFromOptions() {
 
 function run() {
     createEventsFromOptions();
-    eachEvent(function (evt, eventCb) {
-        exec.event(evt.id, evt.lang, eventCb);
-    }, function () {
-        createMatches(function () {
-            console.info('done');
-        });
+    createMatches(function () {
+        console.info('done');
     });
 }
 
 var createOptions = require('./createOptions');
 
-createOptions(function(opts){
+createOptions(function (opts) {
     options = opts;
     run();
 });
