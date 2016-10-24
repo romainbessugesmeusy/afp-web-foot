@@ -28,7 +28,7 @@ var getRealTime = function (match) {
         return isNaN(intval) ? null : intval;
     });
 
-    if(parts[0] === null){
+    if (parts[0] === null) {
         console.info(match);
         return match.time;
     }
@@ -182,21 +182,13 @@ Handlebars.registerHelper('getCompoLineLabel', function (team, index, opts) {
 
     return team.lines[index];
 });
-//
-//Handlebars.registerHelper('getPlayer', function (team, playerId, opts) {
-//    var player = {};
-//    $(team.players).each(function (i, line) {
-//        $(line).each(function (j, p) {
-//            if (p.id === playerId) {
-//                player = p;
-//            }
-//        });
-//    });
-//    return player;
-//});
+
 Handlebars.registerHelper('age', function (date, format) {
+    var age, fmt;
     if (date && parseInt(date) !== 0) {
-        return Math.abs(moment(date, format).diff(moment(), 'years')) + ' ans';
+        age = Math.abs(moment(date, format).diff(moment(), 'years'));
+        fmt = translate('age', 'app.format', '% ans');
+        return fmt.replace('%', age);
     }
     return ''
 });
@@ -217,7 +209,9 @@ Handlebars.registerHelper('teamCondensed', function (teamId, options) {
     return new Handlebars.SafeString(ret);
 });
 
-Handlebars.registerHelper('t', function (name, domainOrCount, defaultValue) {
+Handlebars.registerHelper('t', translate);
+
+function translate(name, domainOrCount, defaultValue){
     var translations = window.translations || {};
     var retDef = (typeof defaultValue === 'string') ? defaultValue : name;
 
@@ -231,7 +225,7 @@ Handlebars.registerHelper('t', function (name, domainOrCount, defaultValue) {
     }
 
     return translations[name];
-});
+}
 
 Handlebars.registerHelper('countryBlock', function (code) {
     var countryName = Handlebars.Utils.escapeExpression(translations['country.' + code]);
