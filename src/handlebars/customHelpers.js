@@ -11,7 +11,7 @@ var enforceLeadingZero = function (value) {
 var formatTime = function (date) {
     var d = new Date(date);
     if (d.getHours() + d.getMinutes() === 0) {
-        return moment(d).format('DD/MM/YY')
+        return moment(d).format(translate('date', 'app.format', 'DD/MM/YY'));
     }
     return enforceLeadingZero(d.getHours()) + ':' + enforceLeadingZero(d.getMinutes());
 };
@@ -20,7 +20,6 @@ var formatTime = function (date) {
 var getRealTime = function (match) {
     if (typeof match.time === 'undefined' || match.time === '') {
         return formatTime(match.date);
-        //return new Handlebars.SafeString('&nbsp;');
     }
     var delta = moment().diff(match.now, 'minutes');
     var parts = match.time.replace('\'', '').split('+').map(function (part) {
@@ -29,7 +28,6 @@ var getRealTime = function (match) {
     });
 
     if (parts[0] === null) {
-        console.info(match);
         return match.time;
     }
 
@@ -103,13 +101,15 @@ Handlebars.registerHelper('absDate', function (date, format) {
 
 var relativeDate = function (date, format) {
     var now = moment(new Date().toJSON().slice(0, 10));
-    format = format || 'dddd D MMM';
     date = moment(date, 'YYYY-MM-DD');
     var diff = now.diff(date, 'days');
 
+    var currentYearFmt = translate('currentYearDate', 'app.format', 'dddd D MMM');
+    var otherYearFmt = translate('otherYearDate', 'app.format', 'D MMM YYYY');
+
     function defaultCase() {
-        if (typeof format !== 'string') {
-            format = (date.year() === now.year()) ? 'dddd D MMM' : 'D MMM YYYY';
+        if (typeof format === 'undefined') {
+            format = (date.year() === now.year()) ? currentYearFmt : otherYearFmt;
         }
         return moment(date, 'YYYY-MM-DD').format(format);
     }
@@ -211,7 +211,7 @@ Handlebars.registerHelper('teamCondensed', function (teamId, options) {
 
 Handlebars.registerHelper('t', translate);
 
-function translate(name, domainOrCount, defaultValue){
+function translate(name, domainOrCount, defaultValue) {
     var translations = window.translations || {};
     var retDef = (typeof defaultValue === 'string') ? defaultValue : name;
 
