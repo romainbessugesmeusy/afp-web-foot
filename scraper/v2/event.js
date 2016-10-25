@@ -24,14 +24,14 @@ function getEquipes(cb) {
     fetch('xcequipes/:lang/:id/0', {id: event.id, lang: lang}, function (err, data) {
         event.Equipes = data.Equipes;
         cb();
-    });
+    }, true);
 }
 
 function getEvenementInfos(cb) {
     fetch('aaevenementinfo/:lang/:id', {id: event.id, lang: lang}, function (err, evenementInfos) {
         extend(event, evenementInfos);
         cb();
-    });
+    }, true);
 }
 
 function getPhases(cb) {

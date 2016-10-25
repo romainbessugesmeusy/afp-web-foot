@@ -108,7 +108,8 @@ var relativeDate = function (date, format) {
     var otherYearFmt = translate('otherYearDate', 'app.format', 'D MMM YYYY');
 
     function defaultCase() {
-        if (typeof format !== 'string') {
+        if (
+            typeof format !== 'string') {
             format = (date.year() === now.year()) ? currentYearFmt : otherYearFmt;
         }
         return moment(date, 'YYYY-MM-DD').format(format);
