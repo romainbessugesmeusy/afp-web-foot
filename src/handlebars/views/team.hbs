@@ -34,7 +34,7 @@
                     <div class="wrapper">
                         {{#group competition.staff by="position"}}
                             <div class="position">
-                                <h3>{{t value 'const'}}</h3>
+                                <h3>{{t value 'app.team.positions' value}}</h3>
                                 {{#each items}}
                                     <a class="member" href="/players/{{id}}">
                                         {{> faceshot }}
