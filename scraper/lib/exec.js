@@ -1,4 +1,5 @@
 var exec = require('child_process').exec;
+var pool = require('workerpool').pool(__dirname + '/../v2/workers');
 
 module.exports = function (broadcast) {
 
@@ -45,10 +46,14 @@ module.exports = function (broadcast) {
         if (registerHandler('event', key, cb) === false) {
             return;
         }
-        var cmd = 'node ' + __dirname + '/../v2/event.js ' + id + ' ' + lang;
-        exec(cmd, function (/*err, stdout, stderr*/) {
+        //var cmd = 'node ' + __dirname + '/../v2/event.js ' + id + ' ' + lang;
+        //exec(cmd, function (/*err, stdout, stderr*/) {
+        //    freeResource('event', key);
+        //});
+
+        pool.exec('event', [id, lang]).then(function () {
             freeResource('event', key);
-        });
+        })
     }
 
     function execMatch(eventId, id, lang, cb) {
@@ -56,10 +61,11 @@ module.exports = function (broadcast) {
         if (registerHandler('match', k, cb) === false) {
             return;
         }
-        var cmd = 'node ' + __dirname + '/../v2/match.js ' + eventId + ' ' + id + ' ' + lang;
-        console.info('EXEC', cmd);
-        exec(cmd, function (err, stdout) {
+        //var cmd = 'node ' + __dirname + '/../v2/match.js ' + eventId + ' ' + id + ' ' + lang;
+        //console.info('EXEC', cmd);
+        //exec(cmd, function (err, stdout) {
 
+        pool.exec('match', [eventId, id, lang]).then(function (stdout) {
             if (matchHistory[k] != stdout) {
                 try {
                     var json = JSON.parse(stdout.substr(stdout.indexOf('$$') + 2));
@@ -93,15 +99,15 @@ module.exports = function (broadcast) {
         if (registerHandler('scoreboard', clientId, cb) === false) {
             return;
         }
-        var cmd = 'node ' + __dirname + '/../v2/scoreboard.js ' + clientId;
-        console.info('EXEC', cmd);
-        exec(cmd, function (err) {
+        //var cmd = 'node ' + __dirname + '/../v2/scoreboard.js ' + clientId;
+        //console.info('EXEC', cmd);
+        //exec(cmd, function (err) {
+        pool.exec('scoreboard', [clientId], function () {
             if (err === null) {
                 broadcast('scoreboard', clientId);
             }
             freeResource('scoreboard', clientId);
         });
-
     }
 
 
