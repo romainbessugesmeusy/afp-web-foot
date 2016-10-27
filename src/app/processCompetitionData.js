@@ -52,6 +52,8 @@ module.exports = function processCompetitionData(data) {
 
     data.phases.reverse();
 
+    data.matches.reverse();
+
     unique(data.daysOfCompetition);
 
     data.daysOfCompetition = data.daysOfCompetition.map(function (day) {

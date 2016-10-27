@@ -147,7 +147,6 @@ Handlebars.registerHelper('matchPlayerName', function (playerId, options) {
 
 // todo CSC
 Handlebars.registerHelper('joinScorerGoals', function (goals) {
-    console.info('goals', goals);
     var penalty = ' <strong>' + translate('penaltyIndicator', 'app.match.scorers', 'P') + '</strong>';
     var ownGoal = ' <strong>' + translate('ownGoalIndicator', 'app.match.scorers', 'CSC') + '</strong>';
 
@@ -199,6 +198,16 @@ Handlebars.registerHelper('age', function (date, format) {
         return fmt.replace('%', age);
     }
     return ''
+});
+
+Handlebars.registerHelper('formatWeight', function (weight) {
+    var fmt = translate('weight', 'app.format', '% kg');
+    return fmt.replace('%', weight);
+});
+
+Handlebars.registerHelper('formatHeight', function (height) {
+    var fmt = translate('height', 'app.format', '% m');
+    return fmt.replace('%', height);
 });
 
 Handlebars.registerHelper('teamCondensed', function (teamId, options) {

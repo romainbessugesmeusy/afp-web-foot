@@ -4,18 +4,19 @@
             <img src="/data/players/faceshots/{{id}}.jpg" alt="{{name}}" width="200">
         </div>
         <dl>
-            <dt>
-                {{t 'age' 'app.player.infos' 'Âge'}}
-            </dt>
+            <dt>{{t 'age' 'app.player.infos' 'Âge'}}</dt>
             <dd>{{age birthDate 'YYYYMMDD'}}</dd>
+
             {{#if height}}
                 <dt>{{t 'height' 'app.player.infos' 'Taille'}}</dt>
-                <dd>{{height}} m</dd>
+                <dd>{{formatHeight height}}</dd>
             {{/if}}
+
             {{#if weight}}
                 <dt>{{t 'poids' 'app.player.infos' 'Poids'}}</dt>
-                <dd>{{weight}} Kg</dd>
+                <dd>{{formatWeight weight}}</dd>
             {{/if}}
+
             {{#ifEquals birthCountry representCountry}}
                 <dt>{{t 'country' 'app.player.infos' 'Nationalité'}}</dt>
                 <dd>{{countryBlock birthCountry}}</dd>
