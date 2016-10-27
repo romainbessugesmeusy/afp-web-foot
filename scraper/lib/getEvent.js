@@ -33,6 +33,7 @@ module.exports = function getEvent(id, lang, cb) {
         fs.readFile(__dirname + '/../../dist/data/competitions/' + id + '_' + lang + '.json', 'utf8', function (err, content) {
             var json = parseJSON(content, 'getEvent(' + id + ',' + lang + ')\n Err:' + err + ')');
             if (err || typeof json === 'undefined') {
+                console.info('exec event');
                 return exec.event(id, lang, function () {
                     getEvent(id, lang, cb);
                 });
