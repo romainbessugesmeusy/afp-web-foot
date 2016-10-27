@@ -52,3 +52,5 @@ function run(clientId) {
 if (process.argv.length > 2) {
     run(process.argv[2]);
 }
+
+module.exports = run;
