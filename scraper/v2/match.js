@@ -285,9 +285,9 @@ function run(eventId, matchId, lang, cb) {
                 process.stdout.write('$$');
                 process.stdout.write(json);
                 if (cb) {
-                    cb(json);
+                    cb('$$' + json);
                 }
-                resolve(json);
+                resolve('$$' + json);
             });
         });
     });
