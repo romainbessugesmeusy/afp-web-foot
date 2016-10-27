@@ -116,110 +116,110 @@ function run(eventId, lang) {
             groups: {}
         };
 
-
-        competition.phases = event.Phases.map(function eachPhase(phase) {
-            var p = {
-                format: phase.PhaseCompetCode,
-                type: phase.TypePhaseCode
-            };
-
-            p.topScorers = [];
-            phase.classementButeurs.forEach(function (topScorer, i) {
-                p.topScorers.push({
-                    pos: i + 1,
-                    playerId: topScorer.PlayerId,
-                    teamId: topScorer.TeamId,
-                    goals: topScorer.NbGoals,
-                    name: topScorer.PlayerNomCourt
-                });
-            });
-
-            // limite des buteurs à 20
-            if (p.topScorers.length > 20) {
-                p.topScorers.length = 20;
-            }
-
-            phase.Groupes.forEach(function eachGroup(group) {
-                competition.groups[group.GroupeId] = {
-                    id: group.GroupeId,
-                    label: group.GroupeLabel,
-                    name: group.GroupeNom,
-                    isClass: group.IsClass
+        if (event.Phases) {
+            competition.phases = event.Phases.map(function eachPhase(phase) {
+                var p = {
+                    format: phase.PhaseCompetCode,
+                    type: phase.TypePhaseCode
                 };
-            });
 
-            if (Array.isArray(phase.matches)) {
-                phase.matches.forEach(function eachMatch(match) {
-                    if(match.Id == 173806){
-                        console.info(match);
-                    }
-                    var m = createLightMatch(competition, phase.PhaseCompetCode, match);
-                    competition.matches.push(m);
+                p.topScorers = [];
+                phase.classementButeurs.forEach(function (topScorer, i) {
+                    p.topScorers.push({
+                        pos: i + 1,
+                        playerId: topScorer.PlayerId,
+                        teamId: topScorer.TeamId,
+                        goals: topScorer.NbGoals,
+                        name: topScorer.PlayerNomCourt
+                    });
                 });
-            } else {
-                console.warn('phase.matches is undefined', event.id);
-            }
-            p.rankings = {};
 
-            var hasRankings = false;
-            phase.Groupes.forEach(function eachGroupClassement(groupe) {
-                if (groupe.Classement.Classements.length) {
-                    hasRankings = true;
-                    var props = {};
-                    groupe.Classement.Colonnes.forEach(function (colonne) {
-                        props[colonne.DataTypeId] = colonne.DataTypeCode;
-                    });
-                    p.rankings[groupe.GroupeId] = {
-                        rows: [],
-                        cols: groupe.Classement.Colonnes.map(function (col) {
-                            return {
-                                abbr: col.DataTypeAbrev,
-                                code: col.DataTypeCode,
-                                title: col.DataTypeLabel
-                            }
-                        })
+                // limite des buteurs à 20
+                if (p.topScorers.length > 20) {
+                    p.topScorers.length = 20;
+                }
+
+                phase.Groupes.forEach(function eachGroup(group) {
+                    competition.groups[group.GroupeId] = {
+                        id: group.GroupeId,
+                        label: group.GroupeLabel,
+                        name: group.GroupeNom,
+                        isClass: group.IsClass
                     };
+                });
 
-                    p.rankings[groupe.GroupeId].rows = groupe.Classement.Classements[0].Classement.map(function (team) {
-                        var teamRanking = {teamId: team.TeamId};
-                        team.Colonnes.forEach(function (col) {
-                            teamRanking[props[col.DataTypeId]] = col.Value;
-                        });
-                        return teamRanking
+                if (Array.isArray(phase.matches)) {
+                    phase.matches.forEach(function eachMatch(match) {
+                        if (match.Id == 173806) {
+                            console.info(match);
+                        }
+                        var m = createLightMatch(competition, phase.PhaseCompetCode, match);
+                        competition.matches.push(m);
                     });
+                } else {
+                    console.warn('phase.matches is undefined', event.id);
                 }
-            });
+                p.rankings = {};
 
-            if (hasRankings === false) {
-                delete p.rankings;
-            }
+                var hasRankings = false;
+                phase.Groupes.forEach(function eachGroupClassement(groupe) {
+                    if (groupe.Classement.Classements.length) {
+                        hasRankings = true;
+                        var props = {};
+                        groupe.Classement.Colonnes.forEach(function (colonne) {
+                            props[colonne.DataTypeId] = colonne.DataTypeCode;
+                        });
+                        p.rankings[groupe.GroupeId] = {
+                            rows: [],
+                            cols: groupe.Classement.Colonnes.map(function (col) {
+                                return {
+                                    abbr: col.DataTypeAbrev,
+                                    code: col.DataTypeCode,
+                                    title: col.DataTypeLabel
+                                }
+                            })
+                        };
 
-            var now = new Date();
-            competition.matches.forEach(function (m) {
-                if (m.status === 'EMENC' || m.status === 'EMPAU') {
-                    m.now = now;
+                        p.rankings[groupe.GroupeId].rows = groupe.Classement.Classements[0].Classement.map(function (team) {
+                            var teamRanking = {teamId: team.TeamId};
+                            team.Colonnes.forEach(function (col) {
+                                teamRanking[props[col.DataTypeId]] = col.Value;
+                            });
+                            return teamRanking
+                        });
+                    }
+                });
+
+                if (hasRankings === false) {
+                    delete p.rankings;
                 }
+
+                var now = new Date();
+                competition.matches.forEach(function (m) {
+                    if (m.status === 'EMENC' || m.status === 'EMPAU') {
+                        m.now = now;
+                    }
+                });
+
+                competition.matches.sort(function (a, b) {
+                    var lA = competition.groups[a.group].label,
+                        lB = competition.groups[b.group].label,
+                        dA = new Date(a.date),
+                        dB = new Date(b.date);
+
+                    if (lA && lB) {
+                        var sortByGroupLabel = lB.localeCompare(lA);
+                        return (sortByGroupLabel === 0) ? dA - dB : sortByGroupLabel;
+                    }
+
+                    var sortByGroupId = a.group - b.group;
+
+                    return (sortByGroupId === 0) ? dA - dB : sortByGroupId;
+                });
+
+                return p;
             });
-
-            competition.matches.sort(function (a, b) {
-                var lA = competition.groups[a.group].label,
-                    lB = competition.groups[b.group].label,
-                    dA = new Date(a.date),
-                    dB = new Date(b.date);
-
-                if (lA && lB) {
-                    var sortByGroupLabel = lB.localeCompare(lA);
-                    return (sortByGroupLabel === 0) ? dA - dB : sortByGroupLabel;
-                }
-
-                var sortByGroupId = a.group - b.group;
-
-                return (sortByGroupId === 0) ? dA - dB : sortByGroupId;
-            });
-
-            return p;
-        });
-
+        }
         competition.teams = event.Equipes.map(function eachEquipe(equipe) {
             return {
                 name: equipe.NomAffichable,

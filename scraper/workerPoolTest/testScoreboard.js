@@ -1,5 +1,5 @@
-var pool = require('workerpool').pool(require('../v2/workrs'));
+var pool = require('workerpool').pool(__dirname  + '/../v2/workers');
 
-pool.exec('scoreboard', ['demo'], function(result){
+pool.exec('scoreboard', ['gdn'], function(result){
     console.info(result);
 });
