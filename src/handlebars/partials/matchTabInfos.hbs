@@ -34,7 +34,7 @@
         {{/if}}
         {{#if referees}}
             <div class="referees">
-                <h3>Arbitres</h3>
+                <h3>{{t 'referees.title' 'app.match.infos' 'Arbitres'}}</h3>
                 <ul class="refereesWrapper">
                     {{#each referees}}
                         <li class="referee">
@@ -47,13 +47,12 @@
             </div>
         {{/if}}
         <div class="stadium">
-            <h3>Stade</h3>
+            <h3>{{t 'stadium.title' 'app.match.infos' 'Stade'}}</h3>
             <div class="stadiumFile">
                 <p class="name">{{stadium.name}}</p>
                 <p class="city">{{stadium.city}}</p>
                 {{countryBlock stadium.country}}
             </div>
         </div>
-
     </div>
 </div>

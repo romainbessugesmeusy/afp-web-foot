@@ -4,16 +4,17 @@ var constants = require('../app/constants');
 var groupBy = require('handlebars-group-by');
 var $ = require('jquery');
 
-var enforceLeadingZero = function (value) {
-    return value < 10 ? '0' + String(value) : String(value);
-};
+//var enforceLeadingZero = function (value) {
+//    return value < 10 ? '0' + String(value) : String(value);
+//};
 
 var formatTime = function (date) {
     var d = new Date(date);
     if (d.getHours() + d.getMinutes() === 0) {
         return moment(d).format(translate('date', 'app.format', 'DD/MM/YY'));
     }
-    return enforceLeadingZero(d.getHours()) + ':' + enforceLeadingZero(d.getMinutes());
+
+    return moment(d).format(translate('time', 'app.format', 'H:mm'));
 };
 
 
@@ -146,8 +147,9 @@ Handlebars.registerHelper('matchPlayerName', function (playerId, options) {
 
 // todo CSC
 Handlebars.registerHelper('joinScorerGoals', function (goals) {
+    var penalty = ' <strong>' + translate('penaltyIndicator', 'app.match.scorers', 'P') + '</strong>';
     var strings = goals.map(function (g) {
-        return g.penalty ? g.time + ' <strong>P</strong>' : g.time;
+        return g.penalty ? g.time + penalty : g.time;
     });
     return new Handlebars.SafeString('(' + strings.join(', ') + ')');
 });
@@ -156,11 +158,6 @@ Handlebars.registerHelper('liveMatchTime', function (match, options) {
     if (match.status === constants.status.inProgress) {
         return getRealTime(match);
     }
-
-    if (match.status === constants.status.finished) {
-        return '—';
-    }
-
     return formatTime(match.date);
 });
 
@@ -314,7 +311,8 @@ Handlebars.registerHelper('matchStatus', function (match, options) {
     var translations = window.translations || {};
 
     if (match.status === constants.status.upcoming || match.status === constants.status.finished) {
-        return relativeDate(match.date, 'dddd DD MMMM Y') + ' - ' + moment(new Date(match.date + 'Z')).format('H[h]mm');
+        var dateAndTime = moment(match.date + 'Z').format(translate('dateAndTime', 'app.format', 'dddd <b>DD MMMM</b> Y à <b>H[h]mm</b>'));
+        return new Handlebars.SafeString(dateAndTime);
     }
     return translations['const.' + match.status] || 'const.' + match.status;
 });

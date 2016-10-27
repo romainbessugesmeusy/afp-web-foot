@@ -111,7 +111,13 @@ page('/', function (ctx, next) {
         next();
     });
 
-}, handleDateParams, showPage($pages.scoreboard));
+}, handleDateParams, showPage($pages.scoreboard, true), function () {
+    if (window.location.hash) {
+        requestAnimationFrame(function () {
+            $('html,body').animate({scrollTop: $(window.location.hash).offset().top}, 'fast');
+        });
+    }
+});
 //
 // SCOREBOARD EXIT (reset date params in context)
 page.exit('/', function (ctx, next) {
@@ -203,7 +209,7 @@ function handleCompetitionParams(ctx, next) {
 
     window.requestAnimationFrame(function () {
 
-        if (appCtx.competition.phase !== params.phase) {
+        if (params.phase) {
             $('a[data-param="phase"]').removeClass('active');
             $('.calendarWrapper').find('.wrapper[data-phase]').removeClass('active');
             $('a[data-param="phase"][data-value="' + params.phase + '"]').addClass('active');
@@ -212,7 +218,7 @@ function handleCompetitionParams(ctx, next) {
             appCtx.competition.phase = params.phase;
         }
 
-        if (appCtx.competition.day !== params.day) {
+        if (params.day) {
             $('a[data-param="day"]').removeClass('active');
             $('.calendarWrapper').find('.wrapper[data-day]').removeClass('active');
             $('a[data-param="day"][data-value="' + params.day + '"]').addClass('active');
