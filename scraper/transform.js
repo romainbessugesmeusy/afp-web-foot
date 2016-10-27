@@ -88,12 +88,17 @@ function getTeamDetail(evenement, phase, match, team) {
     if (teamDetail.goals > 0) {
         teamDetail.scorers = [];
         match.Events.forEach(function (event) {
-            if (event.TeamId === teamDetail.id && (event.TypeEvtCode === 'VTBUT' || event.TypeEvtCode === 'VTPEN')) {
+            console.info(event.TypeEvtCode);
+            if(event.TypeEvtCode === 'VTCSC'){
+                console.info(event, teamDetail.id);
+            }
+            if (event.TeamId === teamDetail.id && ['VTBUT', 'VTPEN', 'VTCSC'].indexOf(event.TypeEvtCode) > -1) {
                 teamDetail.scorers.push({
                     time: event.Minute,
                     player: event.PlayerId1,
-                    penalty: event.TypeEvtCode === 'VTPEN'
-                })
+                    penalty: event.TypeEvtCode === 'VTPEN',
+                    og: event.TypeEvtCode === 'VTCSC'
+                });
             }
         });
         teamDetail.scorers.reverse()

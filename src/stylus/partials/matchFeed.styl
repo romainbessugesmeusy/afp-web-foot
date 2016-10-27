@@ -15,6 +15,26 @@
   .row.home
     text-align left
 
+  .event:before
+    position absolute
+    content attr(title)
+    background white
+    z-index -1
+    color black
+    display inline-block
+    padding .2em .5em
+    font-size .8em;
+    top 0
+    margin-top -1em
+    height 1.5em
+    left 0
+    opacity 0
+    transition opacity .15s ease-in, margin-top .1s ease-out
+
+
+  .event:hover:before
+    opacity 1
+    margin-top -1.5em
   .event
     min-width 300px
     position relative
@@ -24,10 +44,13 @@
     display inline-block
     padding 1em
 
+
     img.type
       position absolute
       top 0
       height 3.5em
+      display block
+
 
     p
       display inline-flex
@@ -62,6 +85,9 @@
         right 0
       .time
         margin-right 1em
+      &:before
+        left inherit
+        right 0
 
     &.both
       max-width 500px

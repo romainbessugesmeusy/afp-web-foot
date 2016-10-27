@@ -59,8 +59,8 @@ var live = require('./live');
 var moment = require('moment');
 require('moment/locale/fr');
 require('moment/locale/es');
+require('moment/locale/de');
 require('moment/locale/en-gb');
-
 
 $('body').on('keyup', '.filter > input', function () {
     var styleEl = $('#filterRules');

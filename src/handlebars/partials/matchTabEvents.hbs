@@ -18,8 +18,8 @@
                         {{/each}}
                     </div>
                 {{else}}
-                    <div class="event {{type}} {{side}} {{#if comment}}withComment{{/if}}">
-                        <p>
+                    <div class="event {{type}} {{side}} {{#if comment}}withComment{{/if}}" title="{{t type 'const'}}">
+                        <p class="eventType">
                             <span class="time fontFigures">{{time}}'</span>
                             <a href="/players/{{players.0.id}}" class="player">{{players.0.name}}</a>
                             {{#if players.1.name}}

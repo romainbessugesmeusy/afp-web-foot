@@ -147,9 +147,19 @@ Handlebars.registerHelper('matchPlayerName', function (playerId, options) {
 
 // todo CSC
 Handlebars.registerHelper('joinScorerGoals', function (goals) {
+    console.info('goals', goals);
     var penalty = ' <strong>' + translate('penaltyIndicator', 'app.match.scorers', 'P') + '</strong>';
+    var ownGoal = ' <strong>' + translate('ownGoalIndicator', 'app.match.scorers', 'CSC') + '</strong>';
+
     var strings = goals.map(function (g) {
-        return g.penalty ? g.time + penalty : g.time;
+        var ret = String(g.time);
+        if (g.penalty) {
+            ret += penalty;
+        }
+        if (g.og) {
+            ret += ownGoal;
+        }
+        return ret;
     });
     return new Handlebars.SafeString('(' + strings.join(', ') + ')');
 });
