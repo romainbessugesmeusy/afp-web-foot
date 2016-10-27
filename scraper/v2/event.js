@@ -87,7 +87,6 @@ function run(eventId, lang) {
                         return matchCb();
                     }, true);
                 }
-
             }, cb);
         }, true);
     }
@@ -151,6 +150,9 @@ function run(eventId, lang) {
 
             if (Array.isArray(phase.matches)) {
                 phase.matches.forEach(function eachMatch(match) {
+                    if(match.Id == 173806){
+                        console.info(match);
+                    }
                     var m = createLightMatch(competition, phase.PhaseCompetCode, match);
                     competition.matches.push(m);
                 });
@@ -191,6 +193,13 @@ function run(eventId, lang) {
             if (hasRankings === false) {
                 delete p.rankings;
             }
+
+            var now = new Date();
+            competition.matches.forEach(function (m) {
+                if (m.status === 'EMENC' || m.status === 'EMPAU') {
+                    m.now = now;
+                }
+            });
 
             competition.matches.sort(function (a, b) {
                 var lA = competition.groups[a.group].label,

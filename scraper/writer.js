@@ -35,20 +35,22 @@ function processQueue() {
             });
         };
 
-        fileExists(file.filename, function () {
-            fs.readFile(file.filename, 'utf-8', function (err, content) {
-                if (content == contents) {
-                    // todo https://www.npmjs.com/package/crc
-                    file.callback();
-                    isWriting = false;
-                    file = null;
-                    contents = null;
-                    processQueue();
-                } else {
-                    writeFile();
-                }
-            });
-        }, writeFile);
+        //fileExists(file.filename, function () {
+        //    return writeFile();
+        //    fs.readFile(file.filename, 'utf-8', function (err, content) {
+        //        if (content == contents) {
+        //             todo https://www.npmjs.com/package/crc
+                    //file.callback();
+                    //isWriting = false;
+                    //file = null;
+                    //contents = null;
+                    //processQueue();
+                //} else {
+                //    writeFile();
+                //}
+            //});
+        //}, writeFile);
+        writeFile();
     }
 }
 

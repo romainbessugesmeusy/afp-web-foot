@@ -103,9 +103,7 @@ module.exports = function (broadcast) {
         //console.info('EXEC', cmd);
         //exec(cmd, function (err) {
         pool.exec('scoreboard', [clientId], function () {
-            if (err === null) {
-                broadcast('scoreboard', clientId);
-            }
+            broadcast('scoreboard', clientId);
             freeResource('scoreboard', clientId);
         });
     }
