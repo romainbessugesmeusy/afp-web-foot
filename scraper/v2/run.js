@@ -205,6 +205,10 @@ function parseNotifications(cb) {
                         var pre = notification.Citius.Matches[0];
                         var post = notification.Citius.Matches[1];
 
+                        if(typeof pre === 'undefined' || typeof post === 'undefined'){
+                            return fileCb();
+                        }
+
                         if (pre.HomeScore === post.HomeScore
                             && pre.AwayScore === post.AwayScore
                             && pre.Status === post.Status) {

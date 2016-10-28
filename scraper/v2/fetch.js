@@ -6,7 +6,7 @@ var fileExists = require('../lib/fileExists');
 var fetch = function (resource, params, callback, compareFn) {
     if (typeof this.options === 'undefined') {
         this.options = {
-            root: 'http://bdsports.afp.com:80/bdsapi/api/',
+            root: 'http://bdsports.afp.com/bdsapi/api/',
             lang: '1'
         };
     }
@@ -63,13 +63,16 @@ var fetch = function (resource, params, callback, compareFn) {
         });
     }, function () {
         request(apiUri(uri), function (error, response, body) {
-            if (error) {
-                return callback(error);
+            if (error || parseInt(response.statusCode) !== 200) {
+                console.error(error ? error.message : 'GET ' + uri + ' ' + response.statusCode);
+                return callback();
             }
             try {
                 json = JSON.parse(body);
             } catch (err) {
                 console.error('error parsing ' + uri);
+                console.error(response.statusCode);
+                console.error(body);
                 return callback(err);
             }
 

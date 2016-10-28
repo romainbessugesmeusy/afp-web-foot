@@ -62,6 +62,8 @@ function run(eventId, matchId, lang, cb) {
     function processMatch() {
         match.Arbitres = match.Arbitres || [];
         match.Events = match.Events || [];
+        match.Periods = match.Periods || [];
+        match.Stadium = match.Stadium || {};
 
         var data = {
             now: new Date(),
@@ -256,7 +258,12 @@ function run(eventId, matchId, lang, cb) {
     }
 
     function getLiveMatch(cb) {
-        fetch('xclivematch/:lang/:id', {id: match.id}, function (err, livematch) {
+        fetch('xclivematch/:lang/:id', {id: match.id, lang: lang}, function (err, livematch) {
+
+            if (typeof livematch === 'undefined') {
+                console.error('undefined Away and Home. id: ' + match.id + ' lang: ' + lang);
+                return cb();
+            }
             var away = extend({}, match.Away);
             away.TeamNbYellowCards = livematch.Away.TeamNbYellowCards;
             away.TeamNbRedCards = livematch.Away.TeamNbRedCards;

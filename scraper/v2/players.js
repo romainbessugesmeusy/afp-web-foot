@@ -29,6 +29,10 @@ function run() {
                         event: eventId,
                         phase: phase.PhaseId
                     }, function (err, equipesData) {
+                        if(typeof equipesData === 'undefined'){
+                            console.error(err);
+                            process.exit();
+                        }
                         async.eachLimit(equipesData.Equipes, 5, function (equipe, equipeCb) {
 
                             var k = equipe.Id + '_' + lang;
