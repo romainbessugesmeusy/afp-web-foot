@@ -124,6 +124,7 @@ function run(eventId, lang) {
                 };
 
                 p.topScorers = [];
+                phase.classementButeurs = phase.classementButeurs || [];
                 phase.classementButeurs.forEach(function (topScorer, i) {
                     p.topScorers.push({
                         pos: i + 1,
