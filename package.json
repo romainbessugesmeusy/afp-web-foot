@@ -6,6 +6,7 @@
   "license": "MIT",
   "_install": "ln -s ./node_modules/moment/locale ./dist/data/locale/moment",
   "dependencies": {
+    "analytics.js": "^2.9.1",
     "array-unique": "*",
     "async": "^2.0.0-rc.6",
     "browserify": "^13.0.1",

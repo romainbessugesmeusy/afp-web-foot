@@ -23,6 +23,7 @@ var $pages = {
 };
 
 var appCtx = window.appCtx = {
+    analyticsWriteKey: '4r6War8hzqL0U5r9hkA6UjcQzuwSyGpA',
     currentPage: '',
     scoreboard: {
         upcomingDate: null,
@@ -57,6 +58,9 @@ var showPage = require('./showPage')(appCtx);
 
 var live = require('./live');
 var moment = require('moment');
+
+
+
 require('moment/locale/fr');
 require('moment/locale/es');
 require('moment/locale/de');
