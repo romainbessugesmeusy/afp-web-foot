@@ -32,7 +32,7 @@ var lockedMatches = [];
 var lastNotification = new Date();
 
 var lastTick = new Date();
-var TICK_TIMEOUT = 1000 * 60 * 2;
+var TICK_TIMEOUT = 1000 * 60 * 2.5;
 
 var noop = function () {
 
@@ -74,6 +74,7 @@ function createMatches(cb) {
 function tick(cb) {
     lastTick = new Date();
     cb = cb || noop;
+    console.info('TICK', new Date());
     eachEvent(function (evt, eventCb) {
         exec.event(evt.id, evt.lang, eventCb);
     }, function () {
@@ -205,7 +206,7 @@ function parseNotifications(cb) {
                         var pre = notification.Citius.Matches[0];
                         var post = notification.Citius.Matches[1];
 
-                        if(typeof pre === 'undefined' || typeof post === 'undefined'){
+                        if (typeof pre === 'undefined' || typeof post === 'undefined') {
                             return fileCb();
                         }
 
@@ -392,7 +393,7 @@ function run() {
 
 var createOptions = require('./createOptions');
 
-createOptions(function(opts){
+createOptions(function (opts) {
     options = opts;
     run();
 });
