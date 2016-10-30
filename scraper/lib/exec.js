@@ -61,9 +61,6 @@ module.exports = function (broadcast) {
         if (registerHandler('match', k, cb) === false) {
             return;
         }
-        //var cmd = 'node ' + __dirname + '/../v2/match.js ' + eventId + ' ' + id + ' ' + lang;
-        //console.info('EXEC', cmd);
-        //exec(cmd, function (err, stdout) {
 
         pool.exec('match', [eventId, id, lang]).then(function (stdout) {
             if (matchHistory[k] != stdout) {
@@ -82,27 +79,14 @@ module.exports = function (broadcast) {
     }
 
     function execTeam(team, lang, cb) {
-        var k = team.id + '_' + lang;
-        if (registerHandler('team', k, cb) === false) {
-            return;
-        }
-
-        var cmd = 'node ' + __dirname + '/../v2/team.js ' + JSON.stringify(team) + ' ' + lang;
-        console.info('EXEC', cmd);
-        exec(cmd, function (err, stdout) {
-            freeResource('team', k);
-        });
-
+        cb();
     }
 
     function execScoreboard(clientId, cb) {
         if (registerHandler('scoreboard', clientId, cb) === false) {
             return;
         }
-        //var cmd = 'node ' + __dirname + '/../v2/scoreboard.js ' + clientId;
-        //console.info('EXEC', cmd);
-        //exec(cmd, function (err) {
-        pool.exec('scoreboard', [clientId], function () {
+        pool.exec('scoreboard', [clientId]).then(function () {
             broadcast('scoreboard', clientId);
             freeResource('scoreboard', clientId);
         });

@@ -21,9 +21,6 @@ function run(clientId) {
                         country: competition.country
                     };
                     competition.matches.forEach(function (match) {
-                        if(match.id == 173806){
-                            console.info(match);
-                        }
                         match.now = new Date();
                         var day = match.date.substring(0, 10);
                         if (typeof scoreboard.dates[day] === 'undefined') {
@@ -43,7 +40,7 @@ function run(clientId) {
                     }
                 }
                 writer('clients/' + clientId + '/scoreboard', scoreboard, function () {
-                    console.info('scoreboard', clientId, 'done');
+                    console.info('$$SCOREBOARD', clientId);
                     resolve();
                 });
             });

@@ -10,6 +10,9 @@ var writer = require('../writer');
 
 
 function run(eventId, lang) {
+
+    console.info('$$ EVENT', eventId, 'LANG', lang);
+
     var event = {id: eventId};
 
     function getEquipes(cb) {
