@@ -320,9 +320,6 @@ function getEventId(discipline, codeFTP) {
 function clock() {
     setInterval(tick, TICK_TIMEOUT);
     tick();
-    //tick(function () {
-    //    setTimeout(clock, TICK_TIMEOUT)
-    //});
 }
 
 function createEventsFromOptions(cb) {
@@ -353,7 +350,6 @@ function createEventsFromOptions(cb) {
 
 function writeClientsEvents(cb) {
     async.forEachOf(options.clients, function (client, clientId, clientCb) {
-        console.info(clientId);
         var clientEvents = [];
         async.forEachOf(client.evts, function (id, index, eventCb) {
             getEvent(id, client.lang, function (event) {
@@ -410,6 +406,6 @@ createOptions(function(opts){
             console.info('\nSTATE', exec.log());
         }, 2000)
     }
-})(true);
+})(false);
 
 

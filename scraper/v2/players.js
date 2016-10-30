@@ -14,9 +14,7 @@ var download = require('../lib/downloadFile');
 var dump = require('../lib/dump');
 var unique = require('array-unique');
 
-var getFaceshots = (process.argv[2] === '-f' || process.argv[2] === '--with-faceshots');
-
-function run() {
+function run(runCb) {
     async.each(events, function (key, clientCb) {
         var parts = key.split('_');
         var eventId = parts[0];
@@ -29,7 +27,7 @@ function run() {
                         event: eventId,
                         phase: phase.PhaseId
                     }, function (err, equipesData) {
-                        if(typeof equipesData === 'undefined'){
+                        if (typeof equipesData === 'undefined') {
                             console.error(err);
                             process.exit();
                         }
@@ -86,13 +84,9 @@ function run() {
 
                                     teams[k].staffMap[member.Id] = players[member.Id];
                                     teams[k].competitions[eventId].staff.push(member.Id);
-                                    if (getFaceshots) {
-                                        getFaceshot(players[member.Id], function () {
-                                            writer('players/' + member.Id, players[member.Id], staffMemberCb);
-                                        });
-                                    } else {
-                                        staffMemberCb();
-                                    }
+                                    getFaceshot(players[member.Id], function () {
+                                        writer('players/' + member.Id, players[member.Id], staffMemberCb);
+                                    });
                                 }, equipeCb);
                             }, fetch.INVALIDATE);
                         }, phaseCb);
@@ -109,30 +103,38 @@ function run() {
                 }
             }
             writer('teams/' + idAndLang, team, teamCb);
-        });
+        }, runCb);
     });
 }
 
 var createOptions = require('./createOptions');
 
-createOptions(function(options){
-    for (var clientId in options.clients) {
-        if (options.clients.hasOwnProperty(clientId)) {
-            options.clients[clientId].evts.forEach(function (eventId) {
-                events.push(eventId + '_' + options.clients[clientId].lang);
-            });
-        }
-    }
-    events = unique(events).sort();
-    run();
-});
+function start() {
+    console.info('PLAYERS');
+    return new Promise(function (resolve) {
+        createOptions(function (options) {
+            for (var clientId in options.clients) {
+                if (options.clients.hasOwnProperty(clientId)) {
+                    options.clients[clientId].evts.forEach(function (eventId) {
+                        events.push(eventId + '_' + options.clients[clientId].lang);
+                    });
+                }
+            }
+            events = unique(events).sort();
+            run(resolve);
+        });
+    })
+}
 
 
 function getFaceshot(player, cb) {
     var uri = options.root + 'aaheadshot/' + player.id;
     var filename = path.join(__dirname, '../../dist/data/players/faceshots', player.id + '.jpg');
-    download(uri, filename, function (err) {
-        player.faceshot = (!err);
-        cb();
-    });
+    download(uri, filename, cb);
 }
+
+if(process.argv[1].indexOf('workers') === -1){
+    start();
+}
+
+module.exports = start;

@@ -151,9 +151,6 @@ function run(eventId, lang) {
 
                 if (Array.isArray(phase.matches)) {
                     phase.matches.forEach(function eachMatch(match) {
-                        if (match.Id == 173806) {
-                            console.info(match);
-                        }
                         var m = createLightMatch(competition, phase.PhaseCompetCode, match);
                         competition.matches.push(m);
                     });
