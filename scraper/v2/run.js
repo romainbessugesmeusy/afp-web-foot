@@ -158,6 +158,11 @@ function today() {
 
 
 function archive(filename) {
+
+    if(filename === 'archive'){
+        return;
+    }
+
     var archiveDir = path.join(notificationsPath, 'archive', today());
     mkdirp(archiveDir, function () {
         fs.rename(path.join(notificationsPath, filename), path.join(archiveDir, filename), function (err) {
