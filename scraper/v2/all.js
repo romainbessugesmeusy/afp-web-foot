@@ -1,14 +1,6 @@
-var watch = require('node-watch');
-var path = require('path');
-var fs = require('fs');
 var unique = require('array-unique');
 var async = require('async');
-var debounce = require('debounce');
-var mkdirp = require('mkdirp');
-var clear = require('clear');
 var writer = require('../writer');
-var fetch = require('./fetch');
-var dump = require('../lib/dump');
 var options = require('../options');
 var getEvent = require('../lib/getEvent');
 var exec = require('../lib/exec')(function () {
