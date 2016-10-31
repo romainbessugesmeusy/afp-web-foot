@@ -78,6 +78,7 @@ var fetch = function (resource, params, callback, compareFn) {
 
             fs.writeFile(cacheFilename, body, function (err) {
                 if (err) {
+                    console.error('error writing ' + uri);
                     return callback(err, json);
                 }
                 json.__new = true;
@@ -90,3 +91,4 @@ var fetch = function (resource, params, callback, compareFn) {
 module.exports = fetch;
 
 module.exports.INVALIDATE = true;
+module.exports.CACHE = false;

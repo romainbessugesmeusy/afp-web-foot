@@ -14,6 +14,8 @@ var download = require('../lib/downloadFile');
 var dump = require('../lib/dump');
 var unique = require('array-unique');
 
+var teamIds = [];
+
 function run(runCb) {
     async.each(events, function (key, clientCb) {
         var parts = key.split('_');
@@ -32,9 +34,8 @@ function run(runCb) {
                             process.exit();
                         }
                         async.eachLimit(equipesData.Equipes, 5, function (equipe, equipeCb) {
-                            getTeamLogo(equipe.Id);
+                            teamIds.push(parseInt(equipe.Id));
                             var k = equipe.Id + '_' + lang;
-
                             if (typeof teams[k] === 'undefined') {
                                 teams[k] = {
                                     id: equipe.Id,
@@ -87,12 +88,13 @@ function run(runCb) {
                                     getFaceshot(players[member.Id], function () {
                                         writer('players/' + member.Id, players[member.Id], staffMemberCb);
                                     });
+                                    //staffMemberCb();
                                 }, equipeCb);
-                            }, fetch.INVALIDATE);
+                            }, fetch.CACHE);
                         }, phaseCb);
-                    }, fetch.INVALIDATE);
+                    }, fetch.CACHE);
                 }, clientCb);
-            });
+            }, fetch.CACHE);
         });
     }, function () {
         console.info('PLAYERS DONE');
@@ -103,7 +105,13 @@ function run(runCb) {
                 }
             }
             writer('teams/' + idAndLang, team, teamCb);
-        }, runCb);
+        }, function () {
+            teamIds = unique.immutable(teamIds);
+            console.info('teams', teamIds.length);
+            async.eachLimit(teamIds, 50, function (teamId, teamLogoCb) {
+                getTeamLogo(teamId, teamLogoCb);
+            }, runCb)
+        });
     });
 }
 
@@ -135,8 +143,8 @@ function getFaceshot(player, cb) {
 
 function getTeamLogo(teamId, cb) {
     var uri = 'http://bdsports.afp.com/SPA-IMAGES/team/' + teamId + '.png';
-    var filename = path.join(__dirname, '../../dist/data/teams/logos', teamId + '.jpg');
-    download(uri, filename, function(){});
+    var filename = path.join(__dirname, '../../dist/data/teams/logos', teamId + '.png');
+    download(uri, filename, cb);
     //cb();
 }
 
