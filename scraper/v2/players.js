@@ -32,7 +32,7 @@ function run(runCb) {
                             process.exit();
                         }
                         async.eachLimit(equipesData.Equipes, 5, function (equipe, equipeCb) {
-
+                            getTeamLogo(equipe.Id);
                             var k = equipe.Id + '_' + lang;
 
                             if (typeof teams[k] === 'undefined') {
@@ -128,12 +128,19 @@ function start() {
 
 
 function getFaceshot(player, cb) {
-    var uri = options.root + 'aaheadshot/' + player.id;
+    var uri = 'http://bdsports.afp.com/bdsapi/api/aaheadshot/' + player.id;
     var filename = path.join(__dirname, '../../dist/data/players/faceshots', player.id + '.jpg');
     download(uri, filename, cb);
 }
 
-if(process.argv[1].indexOf('workers') === -1){
+function getTeamLogo(teamId, cb) {
+    var uri = 'http://bdsports.afp.com/SPA-IMAGES/team/' + teamId + '.png';
+    var filename = path.join(__dirname, '../../dist/data/teams/logos', teamId + '.jpg');
+    download(uri, filename, function(){});
+    //cb();
+}
+
+if (process.argv[1].indexOf('workers') === -1) {
     start();
 }
 
