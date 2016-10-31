@@ -36,6 +36,7 @@
     "node-watch": "^0.4.0",
     "request": "^2.72.0",
     "socket.io": "^1.4.8",
+    "stylus": "^0.54.5",
     "workerpool": "^2.1.0",
     "xml-stream": "^0.4.5"
   }

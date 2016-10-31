@@ -6,7 +6,6 @@ var path = require('path');
 var fs = require('fs');
 var stylus = require('stylus');
 
-
 function ClientStylesheet(client, cb) {
 
     var self = this;
