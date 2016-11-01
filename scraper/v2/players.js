@@ -15,6 +15,7 @@ var dump = require('../lib/dump');
 var unique = require('array-unique');
 
 var teamIds = [];
+var playerIds = [];
 
 function run(runCb) {
     async.each(events, function (key, clientCb) {
@@ -85,11 +86,8 @@ function run(runCb) {
 
                                     teams[k].staffMap[member.Id] = players[member.Id];
                                     teams[k].competitions[eventId].staff.push(member.Id);
-
-                                    getFaceshot(players[member.Id], function () {
-                                        writer('players/' + member.Id, players[member.Id], staffMemberCb);
-                                    });
-                                    //staffMemberCb();
+                                    playerIds.push(member.Id);
+                                    staffMemberCb();
                                 }, equipeCb);
                             }, fetch.CACHE);
                         }, phaseCb);
@@ -108,13 +106,19 @@ function run(runCb) {
             writer('teams/' + idAndLang, team, teamCb);
         }, function () {
             teamIds = unique.immutable(teamIds);
-            console.info('how many teams', teamIds.length);
-            async.eachLimit(teamIds, 20, function (teamId, teamLogoCb) {
-                getTeamLogo(teamId, teamLogoCb);
-            }, function(){
-                console.info('DOWNLOAD teams done');
-                runCb();
-            });
+            async.series([
+                function (downloadFaceshotsCb) {
+                    async.eachLimit(playerIds, 20, function (playerId, playerCb) {
+                        getFaceshot(players[member.Id], playerCb);
+                    }, downloadFaceshotsCb);
+                },
+                function (downloadTeamLogosCb) {
+                    async.eachLimit(teamIds, 20, function (teamId, teamLogoCb) {
+                        getTeamLogo(teamId, teamLogoCb);
+                    }, downloadTeamLogosCb);
+                }
+            ], runCb)
+
         });
     });
 }

@@ -30,7 +30,6 @@ module.exports = function downloadFile(uri, filename, callback) {
     isDownloading[uri].push(callback);
 
     fileExists(filename, function () {
-        console.info(uri, 'EXISTS');
         release(uri, null, true);
     }, function () {
         console.info(uri, 'DOWNLOAD');
