@@ -3,13 +3,30 @@ var events = [];
 var fs = require('fs');
 var async = require('async');
 var path = require('path');
+var http = require('http');
 
 var teams = {};
 var players = {};
 
 var writer = require('../writer');
 var fetch = require('./fetch');
-var download = require('../lib/downloadFile');
+//var download = require('../lib/downloadFile');
+
+var request = require('request');
+var download = function(url, dest, cb) {
+    var file = fs.createWriteStream(dest);
+
+    http.get(url, function(response) {
+        response.pipe(file);
+        file.on('finish', function() {
+            console.info('wrote', url, dest);
+            file.close(cb);  // close() is async, call cb after close completes.
+        });
+    }).on('error', function(err) { // Handle errors
+        fs.unlink(dest); // Delete the file async. (But we don't check the result)
+        if (cb) cb(err.message);
+    });
+};
 
 var dump = require('../lib/dump');
 var unique = require('array-unique');
@@ -86,53 +103,57 @@ function run(runCb) {
 
                                     teams[k].staffMap[member.Id] = players[member.Id];
                                     teams[k].competitions[eventId].staff.push(member.Id);
-                                    playerIds.push(parseInt(member.Id));
+                                    if(playerIds.indexOf(parseInt(member.Id)) === -1){
+                                        playerIds.push(parseInt(member.Id));
+                                    }
                                     staffMemberCb();
                                 }, equipeCb);
-                            }, fetch.CACHE);
+                            }, cachePolicy);
                         }, phaseCb);
-                    }, fetch.CACHE);
+                    }, cachePolicy);
                 }, clientCb);
-            }, fetch.CACHE);
+            }, cachePolicy);
         });
     }, function () {
         console.info('Data extracted');
-        async.series([
-            function (createPlayerFilesCb) {
-                console.info('Creating player files');
-                async.forEachOf(players, function (player, id, playerCb) {
-                    writer('players/' + id, player, playerCb);
-                }, createPlayerFilesCb)
-            },
-            function (createTeamFilesCb) {
-                console.info('Creating team files');
-                async.forEachOf(teams, function (team, idAndLang, teamCb) {
-                    for (var eventId in team.competitions) {
-                        if (team.competitions.hasOwnProperty(eventId)) {
-                            team.competitions[eventId].staff = unique(team.competitions[eventId].staff);
-                        }
-                    }
-                    writer('teams/' + idAndLang, team, teamCb);
-                }, createTeamFilesCb)
-            },
-            function (downloadTeamLogosCb) {
-                console.info('Downloading Teams\' logos');
-                teamIds = unique.immutable(teamIds);
-                async.eachLimit(teamIds, 20, function (teamId, teamLogoCb) {
-                    getTeamLogo(teamId, teamLogoCb);
-                }, downloadTeamLogosCb);
-            },
-            function (downloadFaceshotsCb) {
-                console.info('Downloading Players\' faceshots');
-                console.info(playerIds.length);
-                playerIds = unique(playerIds);
-                async.eachLimit(playerIds, 20, function (playerId, playerCb) {
-                    getFaceshot(players[playerId], playerCb);
-                }, downloadFaceshotsCb);
-            }
-        ], runCb)
-
+        async.parallel(tasks, runCb)
     });
+}
+
+function createPlayerFiles(cb){
+    console.info('Creating player files');
+    async.forEachOf(players, function (player, id, playerCb) {
+        writer('players/' + id, player, playerCb);
+    }, cb)
+}
+
+function downloadFaceshots(cb){
+    console.info('Downloading Players\' faceshots');
+    console.info('Before dedup', playerIds.length);
+    playerIds = unique(playerIds);
+    console.info('After', playerIds.length);
+    async.eachLimit(playerIds, 20, function (playerId, playerCb) {
+        getFaceshot(players[playerId], playerCb);
+    }, cb);
+}
+function createTeamFiles(cb){
+    console.info('Creating team files');
+    async.forEachOf(teams, function (team, idAndLang, teamCb) {
+        for (var eventId in team.competitions) {
+            if (team.competitions.hasOwnProperty(eventId)) {
+                team.competitions[eventId].staff = unique(team.competitions[eventId].staff);
+            }
+        }
+        writer('teams/' + idAndLang, team, teamCb);
+    }, cb)
+}
+function downloadTeamLogos(cb){
+
+    console.info('Downloading Teams\' logos');
+    teamIds = unique.immutable(teamIds);
+    async.eachLimit(teamIds, 20, function (teamId, teamLogoCb) {
+        getTeamLogo(teamId, teamLogoCb);
+    }, cb);
 }
 
 var createOptions = require('./createOptions');
@@ -167,7 +188,28 @@ function getTeamLogo(teamId, cb) {
     download(uri, filename, cb);
 }
 
+function opt(option){
+    return process.argv.indexOf('--' + option) > -1
+}
+var tasks = [];
+var cachePolicy = fetch.INVALIDATE;
+
 if (process.argv[1].indexOf('workers') === -1) {
+    if(opt('players')){
+        tasks.push(createPlayerFiles);
+    }
+    if(opt('teams')){
+        tasks.push(createTeamFiles);
+    }
+    if(opt('faceshots')){
+        tasks.push(downloadFaceshots);
+    }
+    if(opt('logos')){
+        tasks.push(downloadTeamLogos);
+    }
+    if(opt('cache')){
+        cachePolicy = fetch.CACHE;
+    }
     start();
 }
 

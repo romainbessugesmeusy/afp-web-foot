@@ -39,8 +39,7 @@ module.exports = function downloadFile(uri, filename, callback) {
             console.error('Error downloading ', uri);
             console.error(err);
             release(uri, err);
-        });
-        req.on('response', function (res) {
+        }).on('response', function (res) {
             if (res.statusCode === 200) {
                 req.pipe(fs.createWriteStream(filename));
                 req.resume();
@@ -51,7 +50,6 @@ module.exports = function downloadFile(uri, filename, callback) {
         }).on('close', function () {
             console.info('Finished downloading', uri);
             release(uri, null, true);
-        });
-        req.resume();
+        }).resume();
     })
 };
