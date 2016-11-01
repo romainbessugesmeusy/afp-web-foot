@@ -10,21 +10,23 @@ var players = {};
 
 var writer = require('../writer');
 var fetch = require('./fetch');
+var fileExists = require('../lib/fileExists');
 //var download = require('../lib/downloadFile');
 
 var request = require('request');
-var download = function(url, dest, cb) {
-    var file = fs.createWriteStream(dest);
-
-    http.get(url, function(response) {
-        response.pipe(file);
-        file.on('finish', function() {
-            console.info('wrote', url, dest);
-            file.close(cb);  // close() is async, call cb after close completes.
+var download = function (url, dest, cb) {
+    fileExists(dest, cb, function () {
+        var file = fs.createWriteStream(dest);
+        http.get(url, function (response) {
+            response.pipe(file);
+            file.on('finish', function () {
+                console.info('wrote', url, dest);
+                file.close(cb);  // close() is async, call cb after close completes.
+            });
+        }).on('error', function (err) { // Handle errors
+            fs.unlink(dest); // Delete the file async. (But we don't check the result)
+            if (cb) cb(err.message);
         });
-    }).on('error', function(err) { // Handle errors
-        fs.unlink(dest); // Delete the file async. (But we don't check the result)
-        if (cb) cb(err.message);
     });
 };
 
@@ -103,7 +105,7 @@ function run(runCb) {
 
                                     teams[k].staffMap[member.Id] = players[member.Id];
                                     teams[k].competitions[eventId].staff.push(member.Id);
-                                    if(playerIds.indexOf(parseInt(member.Id)) === -1){
+                                    if (playerIds.indexOf(parseInt(member.Id)) === -1) {
                                         playerIds.push(parseInt(member.Id));
                                     }
                                     staffMemberCb();
@@ -120,14 +122,14 @@ function run(runCb) {
     });
 }
 
-function createPlayerFiles(cb){
+function createPlayerFiles(cb) {
     console.info('Creating player files');
     async.forEachOf(players, function (player, id, playerCb) {
         writer('players/' + id, player, playerCb);
     }, cb)
 }
 
-function downloadFaceshots(cb){
+function downloadFaceshots(cb) {
     console.info('Downloading Players\' faceshots');
     console.info('Before dedup', playerIds.length);
     playerIds = unique(playerIds);
@@ -136,7 +138,7 @@ function downloadFaceshots(cb){
         getFaceshot(players[playerId], playerCb);
     }, cb);
 }
-function createTeamFiles(cb){
+function createTeamFiles(cb) {
     console.info('Creating team files');
     async.forEachOf(teams, function (team, idAndLang, teamCb) {
         for (var eventId in team.competitions) {
@@ -147,7 +149,7 @@ function createTeamFiles(cb){
         writer('teams/' + idAndLang, team, teamCb);
     }, cb)
 }
-function downloadTeamLogos(cb){
+function downloadTeamLogos(cb) {
 
     console.info('Downloading Teams\' logos');
     teamIds = unique.immutable(teamIds);
@@ -188,26 +190,26 @@ function getTeamLogo(teamId, cb) {
     download(uri, filename, cb);
 }
 
-function opt(option){
+function opt(option) {
     return process.argv.indexOf('--' + option) > -1
 }
 var tasks = [];
 var cachePolicy = fetch.INVALIDATE;
 
 if (process.argv[1].indexOf('workers') === -1) {
-    if(opt('players')){
+    if (opt('players')) {
         tasks.push(createPlayerFiles);
     }
-    if(opt('teams')){
+    if (opt('teams')) {
         tasks.push(createTeamFiles);
     }
-    if(opt('faceshots')){
+    if (opt('faceshots')) {
         tasks.push(downloadFaceshots);
     }
-    if(opt('logos')){
+    if (opt('logos')) {
         tasks.push(downloadTeamLogos);
     }
-    if(opt('cache')){
+    if (opt('cache')) {
         cachePolicy = fetch.CACHE;
     }
     start();
