@@ -105,14 +105,17 @@ function run(runCb) {
             }
             writer('teams/' + idAndLang, team, teamCb);
         }, function () {
-            teamIds = unique.immutable(teamIds);
             async.series([
                 function (downloadFaceshotsCb) {
+                    console.info('Downloading Players\' faceshots');
+                    playerIds = unique.immutable(playerIds);
                     async.eachLimit(playerIds, 20, function (playerId, playerCb) {
                         getFaceshot(players[playerId], playerCb);
                     }, downloadFaceshotsCb);
                 },
                 function (downloadTeamLogosCb) {
+                    console.info('Downloading Teams\' logos');
+                    teamIds = unique.immutable(teamIds);
                     async.eachLimit(teamIds, 20, function (teamId, teamLogoCb) {
                         getTeamLogo(teamId, teamLogoCb);
                     }, downloadTeamLogosCb);

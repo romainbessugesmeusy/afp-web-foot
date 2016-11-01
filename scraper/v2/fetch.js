@@ -64,7 +64,7 @@ var fetch = function (resource, params, callback, compareFn) {
     }, function () {
         request(apiUri(uri), function (error, response, body) {
             if (error || parseInt(response.statusCode) !== 200) {
-                console.error(error ? error.message : 'GET ' + uri + ' ' + response.statusCode);
+                console.error(error ? error.message + ' ' + apiUri(uri) : 'GET ' + uri + ' ' + response.statusCode);
                 return callback();
             }
             try {
