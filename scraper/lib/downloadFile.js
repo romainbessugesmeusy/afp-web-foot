@@ -30,11 +30,11 @@ module.exports = function downloadFile(uri, filename, callback) {
     isDownloading[uri].push(callback);
 
     fileExists(filename, function () {
+        console.info(uri, 'EXISTS');
         release(uri, null, true);
     }, function () {
-        console.info('downloading', uri);
-        var req = request({uri: uri, timeout: 1000});
-        //var req = request({uri: uri, timeout: 1000});
+        console.info(uri, 'DOWNLOAD');
+        var req = request(uri);
         req.pause();
         req.on('error', function (err) {
             console.error('Error downloading ', uri);
@@ -46,10 +46,13 @@ module.exports = function downloadFile(uri, filename, callback) {
                 req.pipe(fs.createWriteStream(filename));
                 req.resume();
             } else {
+                console.error('Error downloading', uri, res.statusCode);
                 release(uri, {statusCode: res.statusCode})
             }
         }).on('close', function () {
+            console.info('Finished downloading', uri);
             release(uri, null, true);
         });
+        req.resume();
     })
 };

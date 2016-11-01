@@ -85,6 +85,7 @@ function run(runCb) {
 
                                     teams[k].staffMap[member.Id] = players[member.Id];
                                     teams[k].competitions[eventId].staff.push(member.Id);
+
                                     getFaceshot(players[member.Id], function () {
                                         writer('players/' + member.Id, players[member.Id], staffMemberCb);
                                     });
@@ -107,10 +108,13 @@ function run(runCb) {
             writer('teams/' + idAndLang, team, teamCb);
         }, function () {
             teamIds = unique.immutable(teamIds);
-            console.info('teams', teamIds.length);
-            async.eachLimit(teamIds, 50, function (teamId, teamLogoCb) {
+            console.info('how many teams', teamIds.length);
+            async.eachLimit(teamIds, 20, function (teamId, teamLogoCb) {
                 getTeamLogo(teamId, teamLogoCb);
-            }, runCb)
+            }, function(){
+                console.info('DOWNLOAD teams done');
+                runCb();
+            });
         });
     });
 }
@@ -118,7 +122,7 @@ function run(runCb) {
 var createOptions = require('./createOptions');
 
 function start() {
-    console.info('PLAYERS');
+    console.info('Update players and team');
     return new Promise(function (resolve) {
         createOptions(function (options) {
             for (var clientId in options.clients) {
@@ -145,7 +149,6 @@ function getTeamLogo(teamId, cb) {
     var uri = 'http://bdsports.afp.com/SPA-IMAGES/team/' + teamId + '.png';
     var filename = path.join(__dirname, '../../dist/data/teams/logos', teamId + '.png');
     download(uri, filename, cb);
-    //cb();
 }
 
 if (process.argv[1].indexOf('workers') === -1) {
