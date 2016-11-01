@@ -89,11 +89,11 @@ function run(runCb) {
                                     playerIds.push(member.Id);
                                     staffMemberCb();
                                 }, equipeCb);
-                            }, fetch.CACHE);
+                            }, fetch.INVALIDATE);
                         }, phaseCb);
-                    }, fetch.CACHE);
+                    }, fetch.INVALIDATE);
                 }, clientCb);
-            }, fetch.CACHE);
+            }, fetch.INVALIDATE);
         });
     }, function () {
         console.info('PLAYERS DONE');
@@ -109,7 +109,7 @@ function run(runCb) {
             async.series([
                 function (downloadFaceshotsCb) {
                     async.eachLimit(playerIds, 20, function (playerId, playerCb) {
-                        getFaceshot(players[member.Id], playerCb);
+                        getFaceshot(players[playerId], playerCb);
                     }, downloadFaceshotsCb);
                 },
                 function (downloadTeamLogosCb) {
