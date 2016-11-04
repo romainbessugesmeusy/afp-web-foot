@@ -96,7 +96,7 @@ function getMatches(evt, cb) {
         event.matches.forEach(function (match) {
             var matchDate = new Date(match.date);
             var diff = (matchDate - now) / (1000 * 60 * 60 * 24);
-            if (diff < 2 && diff > -1) {
+            if (diff < 2 && diff > -2) {
                 matchesForEvent.push(evt.id + '_' + match.id + '_' + evt.lang);
             }
         });
