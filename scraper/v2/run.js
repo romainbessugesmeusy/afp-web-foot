@@ -290,7 +290,7 @@ function watchForComments() {
         var matchId = find[5];
 
         exec.match(getEventId(sport, competition), matchId, lang(locale), function () {
-            broadcast('comments', matchId);
+            broadcast('comments', {match: matchId, lang: lang(locale)});
         });
     });
 }

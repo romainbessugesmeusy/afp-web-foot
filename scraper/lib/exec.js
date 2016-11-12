@@ -67,6 +67,7 @@ module.exports = function (broadcast) {
                 try {
                     var json = JSON.parse(stdout.substr(stdout.indexOf('$$') + 2));
                     json.now = new Date();
+                    json.lang = lang;
                     broadcast('match', json);
                     matchHistory[k] = stdout;
                 } catch (err) {

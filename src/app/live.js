@@ -29,14 +29,14 @@ socket.on('match', function (data) {
     $('[data-match-id=' + data.id + ']').replaceWith(hb.partials[partial](data));
     $('[data-livematch-id=' + data.id + ']').replaceWith(hb.partials.liveMatch(data));
 
-    if (ctx.currentMatchId === data.id && ctx.currentPage.attr('id') === 'match') {
+    if (ctx.currentMatchId === data.id && ctx.currentPage.attr('id') === 'match' && ctx.lang === data.lang) {
         reloadMatch(data.id);
     }
 });
 
-socket.on('comments', function (matchId) {
-    console.info('comments', matchId);
-    if (ctx.currentMatchId === matchId && ctx.currentPage.attr('id') === 'match') {
+socket.on('comments', function (payload) {
+    console.info('comments', payload);
+    if (ctx.currentMatchId === payload.matchId && ctx.currentPage.attr('id') === 'match' && payload.lang === ctx.lang) {
         reloadMatch(matchId);
     }
 });

@@ -279,7 +279,7 @@ $.getJSON('/data/config.json', function (config) {
         window.locale = config.locale;
         window.moment = moment;
         window.config = config;
-
+        appCtx.lang = config.lang;
         moment.locale(config.locale);
         $('body > header').append(partials.mainMenu());
         page();
