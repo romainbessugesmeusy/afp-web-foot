@@ -2,7 +2,7 @@
   "name": "afp-web-foot",
   "description": "WebApp that displays information about Football",
   "repository": "https://github.com/romainbessugesmeusy/afp-web-foot",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "_install": "ln -s ./node_modules/moment/locale ./dist/data/locale/moment",
   "devDependencies": {
