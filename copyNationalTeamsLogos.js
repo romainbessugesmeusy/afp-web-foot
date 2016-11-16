@@ -37,6 +37,8 @@ glob(pattern, {}, function (err, files) {
                 } else {
                     console.info('OK', country, teamId);
                 }
+
+                teamCb();
             });
         }, function(){
             console.info('done');
