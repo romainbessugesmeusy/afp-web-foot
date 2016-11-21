@@ -17,7 +17,7 @@ function run(eventId, lang) {
 
     function getEquipes(cb) {
         fetch('xcequipes/:lang/:id/0', {id: event.id, lang: lang}, function (err, data) {
-            event.Equipes = data.Equipes;
+            event.Equipes = data ? data.Equipes : [];
             cb();
         }, true);
     }
