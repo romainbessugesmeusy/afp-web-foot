@@ -31,7 +31,7 @@ function run(eventId, lang) {
 
     function getPhases(cb) {
         fetch('xcphases/:lang/:id', {id: event.id, lang: lang}, function (err, phasesJson) {
-            if (err) {
+            if (err || typeof phasesJson === 'undefined') {
                 console.error(err);
                 return cb();
             }
