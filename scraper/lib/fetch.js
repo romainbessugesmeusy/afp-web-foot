@@ -58,7 +58,14 @@ module.exports = function (options) {
             });
         }, function () {
             console.info('downloading:', uri);
-            request(apiUri(uri), function (error, response, body) {
+            request({
+                url : apiUri(uri),
+                timeout: 1000,
+                agentOptions: {
+                    maxSockets: 100,
+                    keepAlive: true
+                }
+            }, function (error, response, body) {
                 if (error) {
                     console.error(error);
                     return callback(error);

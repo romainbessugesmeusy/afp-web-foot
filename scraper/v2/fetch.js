@@ -62,8 +62,17 @@ var fetch = function (resource, params, callback, compareFn) {
             return callback(null, json);
         });
     }, function () {
-        request(apiUri(uri), function (error, response, body) {
+        request({
+            url : apiUri(uri),
+            timeout: 3000,
+            agentOptions: {
+                maxSockets: 2,
+                keepAlive: false
+            }
+        }, function (error, response, body) {
             if (error || parseInt(response.statusCode) !== 200) {
+                console.dir(error);
+                console.dir(response);
                 console.error(error ? error.message + ' ' + apiUri(uri) : 'GET ' + uri + ' ' + response.statusCode);
                 return callback();
             }
