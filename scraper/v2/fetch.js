@@ -66,13 +66,11 @@ var fetch = function (resource, params, callback, compareFn) {
             url : apiUri(uri),
             timeout: 3000,
             agentOptions: {
-                maxSockets: 2,
+                maxSockets: 40,
                 keepAlive: false
             }
         }, function (error, response, body) {
             if (error || parseInt(response.statusCode) !== 200) {
-                console.dir(error);
-                console.dir(response);
                 console.error(error ? error.message + ' ' + apiUri(uri) : 'GET ' + uri + ' ' + response.statusCode);
                 return callback();
             }
