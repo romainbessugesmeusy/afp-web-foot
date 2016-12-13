@@ -64,9 +64,9 @@ var fetch = function (resource, params, callback, compareFn) {
     }, function () {
         request({
             url : apiUri(uri),
-            timeout: 3000,
+            timeout: 2500,
             agentOptions: {
-                maxSockets: 40,
+                maxSockets: 30,
                 keepAlive: false
             }
         }, function (error, response, body) {
