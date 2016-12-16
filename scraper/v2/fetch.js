@@ -63,17 +63,24 @@ var fetch = function (resource, params, callback, compareFn) {
         });
     }, function () {
         request({
-            url : apiUri(uri),
+            url: apiUri(uri),
             timeout: 2500,
             agentOptions: {
                 maxSockets: 30,
                 keepAlive: false
             }
         }, function (error, response, body) {
-            if (error || parseInt(response.statusCode) !== 200) {
-                console.error(error ? error.message + ' ' + apiUri(uri) : 'GET ' + uri + ' ' + response.statusCode);
+            var now = new Date();
+            if (error) {
+                console.error(now.toJSON() + ' ; ' + apiUri(uri) + ' ; ' + error.message);
                 return callback();
             }
+
+            if (parseInt(response.statusCode) !== 200) {
+                console.error(now.toJSON() + ' ; ' + apiUri(uri) + ' ; ' + response.statusCode + ' ; ' + body);
+                return callback();
+            }
+
             try {
                 json = JSON.parse(body);
             } catch (err) {
