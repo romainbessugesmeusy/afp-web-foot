@@ -13,7 +13,6 @@ var fetch = require('./fetch');
 
 var notificationsPath = path.join(__dirname, '/../../dist/data/notifications');
 var commentsPath = path.join(__dirname, '/../../dist/data/comments');
-//var cachePath = path.join(__dirname, '/../../dist/data/cache');
 
 var dump = require('../lib/dump');
 var getEvenementMetadata = require('../lib/getEvenementMetadata');

@@ -31,7 +31,7 @@ var fetch = function (resource, params, callback, compareFn) {
     };
 
     var uri = uriParams(resource, params);
-    var cacheFilename = path.join(__dirname, '../../dist/data/cache/' + uri.replace(/\//g, '_') + '.json');
+    var cacheFilename = path.join(__dirname, '../../dist/data/push/' + uri.replace(/\//g, '_') + '.json');
     var json;
 
     function invalidate() {
@@ -48,14 +48,6 @@ var fetch = function (resource, params, callback, compareFn) {
                 json = JSON.parse(data);
             } catch (jsonParseError) {
                 console.info(data);
-                return invalidate();
-            }
-            //var json = require(cacheFilename);
-            if (compareFn === true) {
-                return invalidate();
-            }
-
-            if (typeof compareFn === 'function' && compareFn(json) === true) {
                 return invalidate();
             }
 
@@ -105,4 +97,4 @@ var fetch = function (resource, params, callback, compareFn) {
 module.exports = fetch;
 
 module.exports.INVALIDATE = true;
-module.exports.CACHE = false;
+module.exports.CACHE = true;
