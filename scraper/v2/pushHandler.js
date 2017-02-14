@@ -7,7 +7,7 @@ var pushRouteSpecs = {
     'xcclassementbuteurs/:lang/:event/:phase': ['event'],
     'xcclassementgroupe/:lang/:event/:group': ['event'],
     'xcequipes/:lang/:event/:phase': ['event'],
-    'xcequipestaff/:lang/:event/:team': ['event', 'team'],
+    'xcequipestaff/:lang/:event/:team': ['event'],
     'xclivematch/:lang/:match/:event': ['match'],
     'xcmatchdetail/:lang/:match/:event': ['match'],
     'xcmatchesphase/:lang/:phase': [], // waiting for :event from AFP

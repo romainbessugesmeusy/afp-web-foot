@@ -88,7 +88,7 @@ function execMatch(params, cb) {
 }
 
 function execTeam(params, cb) {
-    cb();
+    // cb();
 }
 
 function execScoreboard(clientId, cb) {
@@ -129,7 +129,7 @@ module.exports = {
     event: execEvent,
     scoreboard: execScoreboard,
     scoreboards: execScoreboards,
-    team: execTeam,
+    // team: execTeam,
     state: state,
     log: log
 };
