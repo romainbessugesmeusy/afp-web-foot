@@ -5,6 +5,8 @@ var writer = require('../writer');
 var options = require('./options');
 
 function run(clientId) {
+
+    console.info('SCOREBOARD RUN', clientId);
     return new Promise(function (resolve) {
 
         var client = options.clients[clientId] || {};
