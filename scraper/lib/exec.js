@@ -60,6 +60,7 @@ function execEvent(params, cb) {
     }
 
     pool.exec('event', [params.event, params.lang]).then(function () {
+        console.info('EVENT FINISHED', params);
         freeResource('event', key);
     })
 }
@@ -96,6 +97,7 @@ function execScoreboard(clientId, cb) {
         return;
     }
     pool.exec('scoreboard', [clientId]).then(function () {
+        console.info('SCOREBOARD FINISHED', clientId);
         broadcast('scoreboard', clientId);
         freeResource('scoreboard', clientId);
     });
