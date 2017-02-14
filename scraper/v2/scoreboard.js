@@ -14,7 +14,10 @@ function run(clientId) {
 
         async.each(clientEvents, function (eventId, eventCb) {
             getEvent(eventId, clientLang, function (err, competition) {
-                if (err) return eventCb();
+                if (err) {
+                    console.error('could not retreive event', eventId, clientLang);
+                    return eventCb();
+                }
                 scoreboard.competitions[eventId] = {
                     id: competition.id,
                     label: competition.label,

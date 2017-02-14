@@ -167,7 +167,7 @@ function run(eventId, lang) {
 
                 var hasRankings = false;
                 phase.Groupes.forEach(function eachGroupClassement(groupe) {
-                    if (groupe.Classement.Classements.length) {
+                    if (groupe.Classement && groupe.Classement.Classements && groupe.Classement.Classements.length) {
                         hasRankings = true;
                         var props = {};
                         groupe.Classement.Colonnes.forEach(function (colonne) {
