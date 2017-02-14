@@ -17,7 +17,7 @@ module.exports = function notificationHandler(filename) {
 
         fs.unlinkSync(filename);
 
-        if (json.Citius.EvenementId) {
+        if (json && json.Citius && json.Citius.EvenementId) {
             var langs = options.langsForEvent(json.Citius.EvenementId);
             console.info('notif event', json.Citius.EvenementId, langs);
             langs.forEach(function (lang) {
