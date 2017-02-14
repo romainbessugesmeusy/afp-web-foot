@@ -1,123 +1,135 @@
-var exec = require('child_process').exec;
 var pool = require('workerpool').pool(__dirname + '/../v2/workers');
+var broadcast = require('../v2/broadcast');
+var async = require("async");
+var noop = function () {
 
-module.exports = function (broadcast) {
+};
 
-    var state = {
-        scoreboard: {},
-        match: {},
-        event: {}
-    };
+var EXEC_TIMEOUT = 1000 * 60 * 2;
 
-    var matchHistory = {};
+var state = {
+    scoreboard: {},
+    match: {},
+    event: {}
+};
 
-    function registerHandler(type, id, cb) {
-        if (typeof state[type][id] === 'undefined') {
-            state[type][id] = {
-                listeners: [],
-                processing: false
+var matchHistory = {};
+
+function registerHandler(type, id, cb) {
+    if (typeof state[type][id] === 'undefined') {
+        state[type][id] = {
+            listeners: [],
+            processing: false,
+            start: new Date().getTime()
+        }
+    }
+
+    var job = state[type][id];
+
+    if (typeof cb === 'function') {
+        job.listeners.push(cb);
+    }
+
+    if (job.processing && new Date().getTime() - job.start < EXEC_TIMEOUT) {
+        return false;
+    }
+
+    job.processing = true;
+    job.start = new Date().getTime();
+
+    console.info('EXEC', type, id);
+
+    return true;
+}
+
+function freeResource(type, id) {
+    if (typeof state[type][id] === 'undefined') {
+        return false;
+    }
+    state[type][id].processing = false;
+    state[type][id].listeners.forEach(function (listener) {
+        listener();
+    });
+    state[type][id].listeners.length = 0;
+}
+
+function execEvent(params, cb) {
+    var key = params.event + '_' + params.lang;
+    if (registerHandler('event', key, cb) === false) {
+        return;
+    }
+
+    pool.exec('event', [params.event, params.lang]).then(function () {
+        freeResource('event', key);
+    })
+}
+
+function execMatch(params, cb) {
+    var k = params.match + '_' + params.lang;
+    if (registerHandler('match', k, cb) === false) {
+        return;
+    }
+
+    pool.exec('match', [params.event, params.match, params.lang]).then(function (stdout) {
+        if (matchHistory[k] != stdout) {
+            try {
+                var json = JSON.parse(stdout.substr(stdout.indexOf('$$') + 2));
+                json.now = new Date();
+                json.lang = params.lang;
+                broadcast('match', json);
+                matchHistory[k] = stdout;
+            } catch (err) {
+                console.error('could not broadcast', stdout);
             }
         }
-        state[type][id].listeners.push(cb);
 
-        if (state[type][id].processing === true) {
-            return false;
-        }
+        freeResource('match', k);
+    });
+}
 
-        state[type][id].processing = true;
-        return true;
+function execTeam(params, cb) {
+    cb();
+}
+
+function execScoreboard(clientId, cb) {
+    if (registerHandler('scoreboard', clientId, cb) === false) {
+        return;
     }
-
-    function freeResource(type, id) {
-        if (typeof state[type][id] === 'undefined') {
-            console.error('undefined resource', type, id);
-            return false;
-        }
-        state[type][id].processing = false;
-        state[type][id].listeners.forEach(function (listener) {
-            listener();
-        });
-        state[type][id].listeners.length = 0;
-    }
-
-    function execEvent(id, lang, cb) {
-        var key = id + '_' + lang;
-
-        if (registerHandler('event', key, cb) === false) {
-            return;
-        }
-        //var cmd = 'node ' + __dirname + '/../v2/event.js ' + id + ' ' + lang;
-        //exec(cmd, function (/*err, stdout, stderr*/) {
-        //    freeResource('event', key);
-        //});
-
-        pool.exec('event', [id, lang]).then(function () {
-            freeResource('event', key);
-        })
-    }
-
-    function execMatch(eventId, id, lang, cb) {
-        var k = id + '_' + lang;
-        if (registerHandler('match', k, cb) === false) {
-            return;
-        }
-
-        pool.exec('match', [eventId, id, lang]).then(function (stdout) {
-            if (matchHistory[k] != stdout) {
-                try {
-                    var json = JSON.parse(stdout.substr(stdout.indexOf('$$') + 2));
-                    json.now = new Date();
-                    json.lang = lang;
-                    broadcast('match', json);
-                    matchHistory[k] = stdout;
-                } catch (err) {
-                    console.error('could not broadcast', stdout);
-                }
-            }
-
-            freeResource('match', k);
-        });
-    }
-
-    function execTeam(team, lang, cb) {
-        cb();
-    }
-
-    function execScoreboard(clientId, cb) {
-        if (registerHandler('scoreboard', clientId, cb) === false) {
-            return;
-        }
-        pool.exec('scoreboard', [clientId]).then(function () {
-            broadcast('scoreboard', clientId);
-            freeResource('scoreboard', clientId);
-        });
-    }
+    pool.exec('scoreboard', [clientId]).then(function () {
+        broadcast('scoreboard', clientId);
+        freeResource('scoreboard', clientId);
+    });
+}
 
 
-    function log() {
-        var out = '';
-        for (var type in state) {
-            if (state.hasOwnProperty(type)) {
-                out += '\n[' + type + ']\n';
-                for (var id in state[type]) {
-                    if (state[type].hasOwnProperty(id)) {
-                        if (state[type][id].listeners.length) {
-                            out += id + ', ';
-                        }
+function log() {
+    var out = '';
+    for (var type in state) {
+        if (state.hasOwnProperty(type)) {
+            out += '\n[' + type + ']\n';
+            for (var id in state[type]) {
+                if (state[type].hasOwnProperty(id)) {
+                    if (state[type][id].listeners.length) {
+                        out += id + ', ';
                     }
                 }
             }
         }
-        return out;
     }
+    return out;
+}
+
+function execScoreboards(options, cb) {
+    async.each(options.clients, execScoreboard, cb || noop)
+}
 
 
-    return {
-        match: execMatch,
-        event: execEvent,
-        scoreboard: execScoreboard,
-        team: execTeam,
-        state: state,
-        log: log
-    }
+module.exports = {
+    match: execMatch,
+    event: execEvent,
+    scoreboard: execScoreboard,
+    scoreboards: execScoreboards,
+    team: execTeam,
+    state: state,
+    log: log
 };

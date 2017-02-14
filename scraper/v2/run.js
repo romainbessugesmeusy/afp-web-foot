@@ -12,6 +12,7 @@ var writer = require('../writer');
 var fetch = require('./fetch');
 
 var notificationsPath = path.join(__dirname, '/../../dist/data/notifications');
+var pushPath = path.join(__dirname, '/../../dist/data/push');
 var commentsPath = path.join(__dirname, '/../../dist/data/comments');
 
 var dump = require('../lib/dump');
@@ -21,7 +22,6 @@ var options = require('../options.json');
 var getEvent = require('../lib/getEvent');
 var broadcast = require('../../socket/server');
 var exec = require('../lib/exec')(broadcast);
-
 
 var events = [];
 var commentsMap = [];
@@ -210,15 +210,15 @@ function parseNotifications(cb) {
                         var pre = notification.Citius.Matches[0];
                         var post = notification.Citius.Matches[1];
 
-                        if (typeof pre === 'undefined' || typeof post === 'undefined') {
-                            return fileCb();
-                        }
-
-                        if (pre.HomeScore === post.HomeScore
-                            && pre.AwayScore === post.AwayScore
-                            && pre.Status === post.Status) {
-                            return fileCb();
-                        }
+                        // if (typeof pre === 'undefined' || typeof post === 'undefined') {
+                        //     return fileCb();
+                        // }
+                        //
+                        // if (pre.HomeScore === post.HomeScore
+                        //     && pre.AwayScore === post.AwayScore
+                        //     && pre.Status === post.Status) {
+                        //     return fileCb();
+                        // }
 
                         if (lockedMatches.indexOf(notification.Citius.MatchId) !== -1) {
                             createScoreboardsWithEvent(notification.Citius.EvenementId, fileCb);
@@ -337,14 +337,12 @@ function createEventsFromOptions(cb) {
     // Create unique couples [event ID / lang]
     for (var clientId in options.clients) {
         if (options.clients.hasOwnProperty(clientId)) {
-
             var client = options.clients[clientId];
             writer('clients/' + clientId + '/config', client);
 
             client.evts.forEach(function (evt) {
                 events.push(evt + '_' + client.lang);
             });
-
         }
     }
     unique(events);
@@ -374,6 +372,8 @@ function writeClientsEvents(cb) {
         });
     }, cb);
 }
+
+
 function run() {
     async.series([
         createEventsFromOptions,
@@ -389,8 +389,10 @@ function run() {
         // Pas besoin d'attendre pour regarder le dossier des notifications
         watchForNotifications();
 
+        watchForPush();
+
         // On démarre le "cron" qui va regénérer les événements toutes les X min
-        clock();
+        // clock();
     });
 }
 

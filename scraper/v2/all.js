@@ -3,8 +3,7 @@ var async = require('async');
 var writer = require('../writer');
 var options = require('../options');
 var getEvent = require('../lib/getEvent');
-var exec = require('../lib/exec')(function () {
-});
+var exec = require('../lib/exec');
 
 function run(clients) {
 

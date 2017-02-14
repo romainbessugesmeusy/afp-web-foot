@@ -36,13 +36,19 @@ function run(eventId, matchId, lang, cb) {
     }
 
     function getMatchDetail(cb) {
-        fetch('xcmatchdetail/:lang/:id', {id: match.id, lang: lang}, function (err, matchDetail) {
+        fetch('xcmatchdetail/:lang/:id', {id: match.id, lang: lang, event: eventId}, function (err, matchDetail) {
             extend(match, matchDetail);
             cb();
         }, fetch.INVALIDATE);
     }
 
     function getMatchComments(cb) {
+
+        if (!match.competition.code || !match.competition.sport) {
+            match.Comments = [];
+            return cb();
+        }
+
         var filename = path.join(
             __dirname,
             '../../dist/data/comments',
@@ -258,7 +264,7 @@ function run(eventId, matchId, lang, cb) {
     }
 
     function getLiveMatch(cb) {
-        fetch('xclivematch/:lang/:id', {id: match.id, lang: lang}, function (err, livematch) {
+        fetch('xclivematch/:lang/:id', {id: match.id, lang: lang, event: eventId}, function (err, livematch) {
 
             if (typeof livematch === 'undefined') {
                 console.error('undefined Away and Home. id: ' + match.id + ' lang: ' + lang);

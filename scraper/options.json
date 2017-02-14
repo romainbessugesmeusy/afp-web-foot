@@ -1,98 +1,246 @@
 {
-  "root": "http://bdsports.afp.com:80/bdsapi/api/",
   "clients": {
-    "light": {
+    "digital_virgo": {
       "sport": "FB",
-      "lang": 1,
+      "lang": "1",
       "locale": "fr",
       "evts": [
-        6100
+        "6091",
+        "6100",
+        "6142",
+        "6149",
+        "6108",
+        "6101"
       ]
     },
-    "demo": {
+    "information_matrix": {
       "sport": "FB",
-      "lang": 1,
-      "locale": "fr",
-      "evts": [
-        5506,
-        5507,
-        6096,
-        6091,
-        6101,
-        5365,
-        4571,
-        6100,
-        6103,
-        6095,
-        6149,
-        6094,
-        6147,
-        5405,
-        5101,
-        5390,
-        5389,
-        5039,
-        5392,
-        6099,
-        6104,
-        6141,
-        6102,
-        6145,
-        6142,
-        6105
-      ]
-    },
-    "demo2": {
-      "sport": "FB",
-      "lang": 2,
+      "lang": "2",
       "locale": "en",
       "evts": [
-        6098,
-        6091,
-        6108,
-        6142,
-        6149,
-        6100,
-        6101,
-        5101,
-        5405,
-        5389,
-        5390,
-        5039,
-        5392
+        "6098"
       ]
     },
-    "fra": {
+    "radion-nz": {
       "sport": "FB",
-      "lang": 1,
-      "locale": "fr",
+      "lang": "2",
+      "locale": "en",
       "evts": [
-        6098,
-        6091,
-        6108,
-        6142,
-        6149,
-        6100,
-        6101,
-        5101,
-        5405,
-        5389,
-        5390,
-        5039,
-        5392
+        "6098"
       ]
     },
-    "eurochamps": {
+    "vietnam-plus": {
       "sport": "FB",
-      "lang": 1,
+      "lang": "2",
+      "locale": "en",
+      "evts": [
+        "6091",
+        "6098",
+        "6108",
+        "6149",
+        "6142",
+        "6100",
+        "6101"
+      ]
+    },
+    "nordnet": {
+      "sport": "FB",
+      "lang": "1",
       "locale": "fr",
       "evts": [
-        6091,
-        6108,
-        6098,
-        6142,
-        6149
+        "6091",
+        "6098",
+        "6108",
+        "6149",
+        "6142",
+        "6100",
+        "6101"
       ]
+    },
+    "gdn": {
+      "sport": "FB",
+      "lang": "1",
+      "locale": "en",
+      "evts": [
+        "6098",
+        "6108",
+        "6149",
+        "6142",
+        "6100",
+        "6101",
+        "6091"
+      ]
+    },
+    "telecoming-es-sport-click": {
+      "sport": "FB",
+      "lang": "3",
+      "locale": "es",
+      "evts": [
+        "6142",
+        "6100"
+      ]
+    },
+    "telecoming": {
+      "sport": "FB",
+      "lang": "1",
+      "locale": "fr",
+      "evts": [
+        "6091",
+        "6100"
+      ]
+    },
+    "innovative-de": {
+      "sport": "FB",
+      "lang": "136",
+      "locale": "de",
+      "evts": [
+        "6108",
+        "6100",
+        "6101"
+      ]
+    },
+    "innovative-fr": {
+      "sport": "FB",
+      "lang": "1",
+      "locale": "fr",
+      "evts": [
+        "6091",
+        "6100",
+        "6101"
+      ]
+    },
+    "innovative-es": {
+      "sport": "FB",
+      "lang": "3",
+      "locale": "es",
+      "evts": [
+        "6142",
+        "6100",
+        "6101"
+      ]
+    },
+    "nouvelles-caledoniennes": {
+      "sport": "FB",
+      "lang": "1",
+      "locale": "fr",
+      "evts": [
+        "6091"
+      ]
+    },
+    "timwe-sportsa": {
+      "sport": "FB",
+      "lang": "2",
+      "locale": "en",
+      "evts": [
+        "6098",
+        "6108",
+        "6149",
+        "6142",
+        "6100"
+      ]
+    },
+    "france24-en": {
+      "sport": "FB",
+      "lang": "2",
+      "locale": "en",
+      "evts": [
+        "6091",
+        "6098",
+        "6108",
+        "6149",
+        "6142"
+      ]
+    },
+    "france24-fr": {
+      "sport": "FB",
+      "lang": "1",
+      "locale": "fr",
+      "evts": [
+        "6091",
+        "6098",
+        "6108",
+        "6149",
+        "6142"
+      ]
+    },
+    "telecoming-es-full-content": {
+      "sport": "FB",
+      "lang": "3",
+      "locale": "es",
+      "evts": [
+        "6142",
+        "6100"
+      ]
+    },
+    "timwe-comboplusdu": {
+      "sport": "FB",
+      "lang": "2",
+      "locale": "en",
+      "evts": [
+        "6098",
+        "6108",
+        "6149",
+        "6142",
+        "6100"
+      ]
+    },
+    "innovative-en": {
+      "sport": "FB",
+      "lang": "2",
+      "locale": "en",
+      "evts": [
+        "6100",
+        "6149",
+        "6101"
+      ]
+    },
+    "innovative-it": {
+      "sport": "FB",
+      "lang": "102",
+      "locale": "it",
+      "evts": [
+        "6149",
+        "6100",
+        "6101"
+      ]
+    }
+  },
+  "root": "http://bdsports.afp.com:80/bdsapi/api/",
+  "events": {
+    "6091": {
+      "eventId": 6091,
+      "discipline": "FB",
+      "codeFTP": "FRAL1"
+    },
+    "6098": {
+      "eventId": 6098,
+      "discipline": "FB",
+      "codeFTP": "XNGL1"
+    },
+    "6100": {
+      "eventId": 6100,
+      "discipline": "FB",
+      "codeFTP": "EURC1"
+    },
+    "6101": {
+      "eventId": 6101,
+      "discipline": "FB",
+      "codeFTP": "EURC3"
+    },
+    "6108": {
+      "eventId": 6108,
+      "discipline": "FB",
+      "codeFTP": "DEUL1"
+    },
+    "6142": {
+      "eventId": 6142,
+      "discipline": "FB",
+      "codeFTP": "ESPL1"
+    },
+    "6149": {
+      "eventId": 6149,
+      "discipline": "FB",
+      "codeFTP": "ITAL1"
     }
   }
 }

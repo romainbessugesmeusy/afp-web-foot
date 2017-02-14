@@ -1,10 +1,19 @@
-var options = require('../options.json');
+var options = {
+    clients: {},
+    root: 'http://bdsports.afp.com:80/bdsapi/api/'
+};
+
+
 var request = require('request');
 var mkdirp = require('mkdirp');
 var async = require('async');
 var path = require('path');
 var fs = require('fs');
 var stylus = require('stylus');
+var writer = require('../writer');
+var unique = require('array-unique');
+var fetch = require('./fetch');
+var getEvenementMetadata = require('../lib/getEvenementMetadata');
 
 function ClientStylesheet(client, cb) {
 
@@ -100,7 +109,7 @@ ClientStylesheet.prototype.write = function (content) {
 };
 
 
-module.exports = function createOptions(cb) {
+function createOptions(cb) {
     request('https://www.campsi.io/api/v1/projects/afp/collections/clients/entries', function (err, res) {
         var json = JSON.parse(res.body);
         async.forEach(json.entries, function (entry, entryCb) {
@@ -115,4 +124,38 @@ module.exports = function createOptions(cb) {
         });
         cb(options);
     });
-};
+}
+
+createOptions(function (options) {
+    var events = [];
+
+    for (var clientId in options.clients) {
+        //noinspection JSUnfilteredForInLoop
+        var client = options.clients[clientId];
+        debugger;
+        client.evts.forEach(function (evt) {
+            console.dir(evt);
+            events.push(evt);
+        });
+        unique(events);
+        writer('clients/' + clientId + '/config', client);
+    }
+
+    options.events = {};
+
+    async.each(events, function (evt, cb) {
+        fetch('aaevenementinfo/:lang/:id', {id: evt, lang: 1}, function (err, data) {
+            options.events[evt] = {
+                eventId: data.Id,
+                discipline: data.DisciplineCode,
+                codeFTP: getEvenementMetadata(data, 'EDFTP')
+            };
+            cb();
+        });
+    }, function () {
+        var content = JSON.stringify(options, null, 2);
+        fs.writeFile('../options.json', content, 'utf8', function (err) {
+            if (err) console.error(err);
+        });
+    });
+});

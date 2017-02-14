@@ -30,8 +30,20 @@ var fetch = function (resource, params, callback, compareFn) {
         });
     };
 
+
+    /*
+    Suite à la demande faite à l'AFP de rajouter le paramètre /:event
+    dans le push des deux routes matchdetail et livematch,
+    je suis obligé de hacker le nom de la clé de cache.
+     */
+    var cacheResource = resource;
+    if (resource === 'xcmatchdetail/:lang/:id' || resource === 'xclivematch/:lang/:id') {
+        cacheResource += '/:event';
+    }
+
     var uri = uriParams(resource, params);
-    var cacheFilename = path.join(__dirname, '../../dist/data/push/' + uri.replace(/\//g, '_') + '.json');
+    var cacheKey = uriParams(cacheResource, params).replace(/\//g, '_');
+    var cacheFilename = path.join(__dirname, '../../dist/data/push/' + cacheKey + '.json');
     var json;
 
     function invalidate() {
@@ -56,7 +68,7 @@ var fetch = function (resource, params, callback, compareFn) {
     }, function () {
         request({
             url: apiUri(uri),
-            timeout: 2500,
+            timeout: 10000,
             agentOptions: {
                 maxSockets: 30,
                 keepAlive: false
