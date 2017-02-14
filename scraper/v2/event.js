@@ -243,6 +243,7 @@ function run(eventId, lang) {
             getPhases
         ], function () {
             var competition = processCompetition();
+            console.info('event done', competition.id, lang);
             writer('competitions/' + competition.id + '_' + lang, competition, function () {
                 resolve();
             });
