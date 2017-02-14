@@ -1,4 +1,4 @@
 var options = require('./options');
 var exec = require('../lib/exec');
 
-exec.scoreboards(options);
+exec.scoreboards({clients: Object.keys(options)});
