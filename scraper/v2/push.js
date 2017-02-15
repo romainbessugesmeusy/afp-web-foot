@@ -11,4 +11,4 @@ var p = function (dir) {
 
 watch(p('notifications'), {followSymLinks: true, recursive: false}, require('./notificationHandler'));
 watch(p('comments'), {followSymLinks: true, recursive: true}, require('./commentHandler'));
-watch(p('push'), {followSymLinks: true, recursive: false}, require('./pushHandler'));
+watch(p('cache'), {followSymLinks: true, recursive: false}, require('./pushHandler'));
