@@ -82,7 +82,6 @@ function run(eventId, lang) {
                 if (today - matchDate < 1000 * 60 * 60 * 24 * 3) {
                     return matchCb();
                 } else {
-                    exec.match({event: eventId, match: m.Id, lang: lang});
                     fetch('xclivematch/:lang/:id', {id: m.Id, lang: lang, event: eventId}, function (err, match) {
                         m.Minute = match.Minute;
                         m.StatusCode = match.StatusCode;
