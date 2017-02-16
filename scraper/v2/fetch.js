@@ -43,7 +43,7 @@ var fetch = function (resource, params, callback, compareFn) {
 
     var uri = uriParams(resource, params);
     var cacheKey = uriParams(cacheResource, params).replace(/\//g, '_');
-    var cacheFilename = path.join(__dirname, '../../dist/data/push/' + cacheKey + '.json');
+    var cacheFilename = path.join(__dirname, '../../dist/data/cache/' + cacheKey + '.json');
     var json;
 
     function invalidate() {
