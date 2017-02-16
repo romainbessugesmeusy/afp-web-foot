@@ -79,7 +79,7 @@ function run(eventId, lang) {
             phase.matches = matches.Matches;
             async.forEach(phase.matches, function (m, matchCb) {
                 var matchDate = new Date(m.Date);
-                if (matchDate.toDateString() !== today.toDateString()) {
+                if (today - matchDate < 1000 * 60 * 60 * 24 * 3) {
                     return matchCb();
                 } else {
                     exec.match({event: eventId, match: m.Id, lang: lang});
