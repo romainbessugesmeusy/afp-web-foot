@@ -60,7 +60,7 @@ function run(eventId, lang) {
             lang: lang,
             phase: phase.PhaseCompetCode
         }, function (err, classementButeursJson) {
-            if (err) {
+            if (err || typeof classementButeursJson === 'undefined') {
                 console.error(err);
                 return cb();
             }

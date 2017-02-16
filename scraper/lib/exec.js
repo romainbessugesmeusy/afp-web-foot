@@ -125,13 +125,17 @@ function execScoreboards(options, cb) {
     async.each(options.clients, execScoreboard, cb || noop)
 }
 
-
+function execEvents(options, cb){
+    async.forEach(options.combinations, function (combination, eachCombination) {
+        execEvent({event: combination.id, lang: combination.lang}, eachCombination);
+    }, cb);
+}
 module.exports = {
     match: execMatch,
     event: execEvent,
     scoreboard: execScoreboard,
     scoreboards: execScoreboards,
-    // team: execTeam,
+     events: execEvents,
     state: state,
     log: log
 };
