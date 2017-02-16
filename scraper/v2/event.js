@@ -7,6 +7,7 @@ var extractScoreboardTeamInfo = require('../lib/extractScoreboardTeamInfo');
 var createLightMatch = require('../lib/createLightMatch');
 var setMatchWinner = require('../../src/app/setMatchWinner');
 var writer = require('../writer');
+var exec = require('../lib/exec');
 
 
 function run(eventId, lang) {
@@ -81,6 +82,7 @@ function run(eventId, lang) {
                 if (matchDate.toDateString() !== today.toDateString()) {
                     return matchCb();
                 } else {
+                    exec.match({event: eventId, match: m.Id, lang: lang});
                     fetch('xclivematch/:lang/:id', {id: m.Id, lang: lang, event: eventId}, function (err, match) {
                         m.Minute = match.Minute;
                         m.StatusCode = match.StatusCode;
