@@ -121,21 +121,39 @@ function log() {
     return out;
 }
 
-function execScoreboards(options, cb) {
-    async.each(options.clients, execScoreboard, cb || noop)
+function execScoreboards(options, done) {
+    timeout(function(cb){
+        async.each(options.clients, execScoreboard, cb)
+    }, done || noop, 3000);
+
 }
 
-function execEvents(options, cb){
-    async.forEach(options.combinations, function (combination, eachCombination) {
-        execEvent({event: combination.id, lang: combination.lang}, eachCombination);
-    }, cb);
+function execEvents(options, done) {
+    timeout(function (cb) {
+        async.forEach(options.combinations, function (combination, eachCombination) {
+            execEvent({event: combination.id, lang: combination.lang}, eachCombination);
+        }, cb);
+    }, done|| noop, 3000);
 }
+
+function timeout(body, done, wait) {
+    var called = false;
+    var call = function () {
+        if (!called) {
+            called = true;
+            done();
+        }
+    };
+    setTimeout(call, wait);
+    body(call);
+}
+
 module.exports = {
     match: execMatch,
     event: execEvent,
     scoreboard: execScoreboard,
     scoreboards: execScoreboards,
-     events: execEvents,
+    events: execEvents,
     state: state,
     log: log
 };

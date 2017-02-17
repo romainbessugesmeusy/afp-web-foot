@@ -4,4 +4,7 @@ var exec = require('../lib/exec');
 
 async.forEach(options.combinations, function (combination, eachCombination) {
     exec.event({event: combination.id, lang: combination.lang}, eachCombination);
+}, function(){
+    console.info('ALL DONE');
+    process.exit();
 });
