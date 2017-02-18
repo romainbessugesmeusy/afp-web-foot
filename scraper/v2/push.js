@@ -17,10 +17,12 @@ watch(p('cache'), {followSymLinks: true, recursive: false}, require('./pushHandl
 function tock() {
     exec.events({combinations: options.combinations}, function () {
         console.info('events done');
-        exec.scoreboards({clients: Object.keys(options.clients)}, function () {
-            console.info('scoreboards done');
-            tick();
-        })
+    });
+
+
+    exec.scoreboards({clients: Object.keys(options.clients)}, function () {
+        console.info('scoreboards done');
+        tick();
     });
 }
 
