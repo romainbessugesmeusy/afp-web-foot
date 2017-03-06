@@ -307,7 +307,7 @@ function run(eventId, matchId, lang, cb) {
 }
 
 if (process.argv.length > 2) {
-    run(process.argv[2], process.argv[3], process.argv[4] || 1);
+    run(process.argv[2], process.argv[3], process.argv[4] || 1).then(process.exit);
 }
 
 module.exports = run;

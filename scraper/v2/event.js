@@ -78,22 +78,17 @@ function run(eventId, lang) {
             }
             phase.matches = matches.Matches;
             async.forEach(phase.matches, function (m, matchCb) {
-                var matchDate = new Date(m.Date);
-                if (today - matchDate < 1000 * 60 * 60 * 24 * 3) {
+                fetch('xclivematch/:lang/:id', {id: m.Id, lang: lang, event: eventId}, function (err, match) {
+                    m.Minute = match.Minute;
+                    m.StatusCode = match.StatusCode;
+                    ['Home', 'Away'].forEach(function (side) {
+                        m[side].TeamNbYellowCards = match[side].TeamNbYellowCards;
+                        m[side].TeamNbRedCards = match[side].TeamNbRedCards;
+                        m[side].TeamScore = match[side].TeamScore;
+                        m[side].TeamTabScore = match[side].TeamTabScore;
+                    });
                     return matchCb();
-                } else {
-                    fetch('xclivematch/:lang/:id', {id: m.Id, lang: lang, event: eventId}, function (err, match) {
-                        m.Minute = match.Minute;
-                        m.StatusCode = match.StatusCode;
-                        ['Home', 'Away'].forEach(function (side) {
-                            m[side].TeamNbYellowCards = match[side].TeamNbYellowCards;
-                            m[side].TeamNbRedCards = match[side].TeamNbRedCards;
-                            m[side].TeamScore = match[side].TeamScore;
-                            m[side].TeamTabScore = match[side].TeamTabScore;
-                        });
-                        return matchCb();
-                    }, true);
-                }
+                }, true);
             }, cb);
         }, true);
     }
@@ -252,7 +247,7 @@ function run(eventId, lang) {
 }
 
 if (process.argv.length > 2) {
-    run(process.argv[2], process.argv[4] || 1);
+    run(process.argv[2], process.argv[4] || 1).then(process.exit);
 }
 
 module.exports = run;
