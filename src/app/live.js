@@ -1,4 +1,4 @@
-var socket = io(':5000');
+var socket = io('http://ws.afp.opteameo.agilitation.fr');
 var hb = require('../gen/partials');
 var $ = require('jquery');
 var debounce =  require('debounce');
