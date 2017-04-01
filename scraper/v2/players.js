@@ -159,22 +159,20 @@ function downloadTeamLogos(cb) {
 }
 
 var createOptions = require('./createOptions');
-
+var options = require('./options');
 function start() {
     console.info('Update players and team');
     return new Promise(function (resolve) {
-        createOptions(function (options) {
-            for (var clientId in options.clients) {
-                if (options.clients.hasOwnProperty(clientId)) {
-                    options.clients[clientId].evts.forEach(function (eventId) {
-                        events.push(eventId + '_' + options.clients[clientId].lang);
-                    });
-                }
+        for (var clientId in options.clients) {
+            if (options.clients.hasOwnProperty(clientId)) {
+                options.clients[clientId].evts.forEach(function (eventId) {
+                    events.push(eventId + '_' + options.clients[clientId].lang);
+                });
             }
-            events = unique(events).sort();
-            run(resolve);
-        });
-    })
+        }
+        events = unique(events).sort();
+        run(resolve);
+    });
 }
 
 
