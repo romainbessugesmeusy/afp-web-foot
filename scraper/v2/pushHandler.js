@@ -28,8 +28,10 @@ for (var spec in pushRouteSpecs) {
 module.exports = function pushHandler(filename) {
 
     filename = filename.replace('.json', '');
-    filename = filename.substr(filename.lastIndexOf('/') + 1);
+    // filename = filename.substr(filename.lastIndexOf('/') + 1);
     filename = filename.replace(/_/g, '/');
+
+    console.info('PUSH', filename);
 
     pushRoutes.forEach(function (pushRoute) {
         var match = pushRoute.route.match(filename);

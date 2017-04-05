@@ -1,10 +1,11 @@
 var exec = require('../lib/exec');
 var fs = require('fs');
 var options = require('./options');
+var path = require('path');
 
 module.exports = function notificationHandler(filename) {
     console.info('\nNOTIFICATION', filename);
-    fs.readFile(filename, 'utf8', function (err, content) {
+    fs.readFile(path.join(__dirname, '../dist/data/notifications/', filename), 'utf8', function (err, content) {
         var json;
 
         if (err) return;

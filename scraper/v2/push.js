@@ -6,10 +6,6 @@ var exec = require('../lib/exec');
 var clear = require('clear');
 var options = require('./options');
 
-var p = function (dir) {
-    return path.join(__dirname, '/../../dist/data/', dir);
-};
-
 watch('notifications', require('./notificationHandler'));
 watch('comments', require('./commentHandler'));
 watch('cache', require('./pushHandler'));
@@ -18,7 +14,6 @@ function tock() {
     exec.events({combinations: options.combinations}, function () {
         console.info('events done');
     });
-
 
     exec.scoreboards({clients: Object.keys(options.clients)}, function () {
         console.info('scoreboards done');
