@@ -34,6 +34,7 @@
     "extend": "^3.0.0",
     "glob": "^7.0.5",
     "mkdirp": "^0.5.1",
+    "node-redis-pubsub": "^1.0.2",
     "node-watch": "^0.4.0",
     "request": "^2.72.0",
     "route-parser": "0.0.5",
