@@ -330,7 +330,7 @@ Handlebars.registerHelper('matchStatus', function (match, options) {
     var translations = window.translations || {};
 
     if (match.status === constants.status.upcoming || match.status === constants.status.finished) {
-        var dateAndTime = moment(match.date + 'Z').format(translate('dateAndTime', 'app.format', 'dddd <b>DD MMMM</b> Y à <b>H[h]mm</b>'));
+        var dateAndTime = moment(match.date).format(translate('dateAndTime', 'app.format', 'dddd <b>DD MMMM</b> Y à <b>H[h]mm</b>'));
         return new Handlebars.SafeString(dateAndTime);
     }
     return translations['const.' + match.status] || 'const.' + match.status;
